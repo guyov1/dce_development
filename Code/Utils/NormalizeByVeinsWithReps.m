@@ -1,6 +1,7 @@
 % WorkingP='\\fmri-t9\users\Moran\OptDCEinMS\MS-IT-MTX\Sub01_ARIE_CHEN\Study20140520_102624_baseline\DCE\long\ArCh_20140520\';
 WorkingP='\\fmri-t9\users\Moran\OptDCE\BrainT\04_GOLDSHTEIN_CHEN_BELA\Study20140723_133944_T2\DCE\long\GoBe_20140723\';
 DataP=[WorkingP 'AutoArtBAT' filesep];
+PercentToUse=0.9;
 %%
 CTC4D=loadniidata([WorkingP 'CTC4D.nii']);
 VeinsROI=loadniidata([WorkingP 'Veins.nii']);
@@ -43,7 +44,11 @@ nMainDCE=find(DF>DF(1)*1.1,1);
 nTimePointsToUse=numel(SampleTs);
 
 IntAIF=trapz(HSampleTs,HAIF);
-MxIntVeins=max(trapz(SampleTs,CTC2D(:,1:nTimePointsToUse)'));
+IntVeins=trapz(SampleTs,CTC2D(:,1:nTimePointsToUse)');
+NVals=numel(IntVeins);
+Idx=floor(PercentToUse*NVals);
+Sorted=sort(IntVeins);
+MxIntVeins=Sorted(Idx);
 NewFactor=MxIntVeins/IntAIF;
 NewHAIF=HAIF*NewFactor;
 
@@ -56,7 +61,10 @@ for i=1:size(CTC2D,1)
     Is=(MxI-1):(MxI+1);
     IntVeinsBol(i)=trapz(SampleTs(Is),CTC2D(i,Is)');
 end
-MxIntVeinsBol=max(IntVeinsBol);
+NVals=numel(IntVeinsBol);
+Idx=floor(PercentToUse*NVals);
+Sorted=sort(IntVeinsBol);
+MxIntVeinsBol=Sorted(Idx);
 NewFactorBol=MxIntVeinsBol/IntAIFBol;
 NewHAIFBol=HAIF*NewFactorBol;
 
@@ -84,4 +92,3 @@ TmpA=loadniidata([DataP 'KtransFinalN.nii']);
 Raw2Nii(TmpA/FromJimCoeff,[DataP 'KtransFinalNSB.nii'],'float32', MeanFN);
 TmpA=loadniidata([DataP 'VpFinalN.nii']);
 Raw2Nii(TmpA/FromJimCoeff,[DataP 'VpFinalNSB.nii'],'float32', MeanFN);
-
