@@ -1,10 +1,6 @@
 function setComputerParamM(ParamName, Value)
-ParamName=lower(ParamName);
-CompParams=load('CompParams.mat');
-CompParams=CompParams.CompParams;
-CompParams.(ParamName)=Value;
-
 %% Save CompParams in CompParams.mat
+ParamName=lower(ParamName);
 CompParams_File_Path=which('CompParams.mat');
 if(isempty(CompParams_File_Path))
     % Get PC name
@@ -18,7 +14,11 @@ if(isempty(CompParams_File_Path))
     TmpName = char(java.lang.System.getProperty('user.name'));
     
     CompParams_File_Path =[BaseBaseP TmpName filesep 'Database' filesep 'CompParams.mat'];
+    CompParams=struct();
+else
+    CompParams=load('CompParams.mat');
+    CompParams=CompParams.CompParams;
 end
+%%
+CompParams.(ParamName)=Value;
 save(CompParams_File_Path,'CompParams');
-
-

@@ -1,4 +1,8 @@
 function Explore(APath)
+if(nargin==0)
+    Explore(pwd);
+    return;
+end
 if(isstruct(APath))
     APath=APath.Path;
 end
