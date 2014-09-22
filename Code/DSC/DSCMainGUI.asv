@@ -677,10 +677,10 @@ last_sample=str2double(get(handles.last_sample_value,'String'));
 baseline_edges=[first_bl_sample last_bl_sample];
 Header=handles.header;
 Mask=handles.Mask;
-name_str=Header.hdr.hist.descrip;
-TE=0.001*str2double(name_str(strfind(name_str,'TE')+3:strfind(name_str,'TE')+4));
+name_str=Header.hdr.hk.db_name;
+TE=str2double(name_str(strfind(name_str,'TE')+3:strfind(name_str,'TE')+4));
 if isnan(TE)
-    TE=0.030;
+    TE=30;
 elseif TE<0 || TE>1000
     error('TE has an invalid value: ',TE);
 end
@@ -1513,10 +1513,11 @@ if Lia==1
     handles.last_sample=str2double(AIFcurve_text_array(Loc+4));
     set(handles.last_sample_value,'String',AIFcurve_text_array(Loc+4));
     update_bolus_properties_Callback(hObject, eventdata, handles);
-    guidata(hObject,handles);
     AIF=str2double(AIFcurve_text_array(Loc+5:end));
     handles.AIF=AIF;
     plot_AIF(AIF,AIF,handles);
+
+    a=5;
 else
    display('Cannot reaf AIF from file. The text file is not in the right format');
    set(handles.AIF_from_file_textbox,'String','Error reading AIF from file');
