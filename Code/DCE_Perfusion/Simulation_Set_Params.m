@@ -44,7 +44,7 @@ Sim_Struct.iterate_E_larsson             = 0;
 Sim_Struct.iterate_Ve_larsson            = 0;
 Sim_Struct.iterate_AIF_delay             = 0;
 Sim_Struct.iterate_uniformly             = 1; % Uniformly generate parameters data
-Sim_Struct.Add_Randomly_AIF_Delay        = 1;
+Sim_Struct.Add_Randomly_AIF_Delay        = 0;
 
 % Choose which Patlak estimation to take
 % Possible - 1. "Specified Points" 2. "All Points" 3. "Weighted Points"
@@ -96,7 +96,7 @@ Sim_Struct.knots                    = Sim_Struct.time_vec_minutes(1:Sim_Struct.k
 
 % Add randomly delay to the AIF
 Sim_Struct.AIF_delay_low                 = -0.0;
-Sim_Struct.AIF_delay_max                 = +90.0;
+Sim_Struct.AIF_delay_max                 = +3.0;
 
 % Delay parameters
 Sim_Struct.additional_AIF_delay_sec     = +0.0; % Delay added to AIF before filtering
@@ -127,7 +127,7 @@ Sim_Struct.Use_Upsampling_and_Cyclic              = false;      % Use cyclic de-
 Sim_Struct.Use_Upsampling_Delay_Comp              = false;      % Upsample Ct(t) and AIF(t) to try and predict time shift in AIF
 Sim_Struct.Upsampling_resolution_Sec              = 0.1;        % Set the upsampling target
 Sim_Struct.Upsampling_resolution                  = Sim_Struct.Upsampling_resolution_Sec / 60;   % Set the upsampling target
-Sim_Struct.Correct_estimation_due_to_delay        = false;      % Try to correct for delay
+Sim_Struct.Correct_estimation_due_to_delay        = true;      % Try to correct for delay
 Sim_Struct.Max_Time_Delay                         = Sim_Struct.AIF_delay_max;  % Set the maximal possible time delay in seconds for correction
 Sim_Struct.Min_Time_Delay                         = Sim_Struct.AIF_delay_low;  % Set the minimal possible time delay in seconds for correction
 Sim_Struct.RMS_Smooth                             = true;       % When calculating RMS, smooth CTC first
