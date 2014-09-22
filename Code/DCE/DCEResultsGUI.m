@@ -22,7 +22,7 @@ function varargout = DCEResultsGUI(varargin)
 
 % Edit the above text to modify the response to help DCEResultsGUI
 
-% Last Modified by GUIDE v2.5 10-Nov-2013 11:30:54
+% Last Modified by GUIDE v2.5 22-Sep-2014 14:53:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -597,3 +597,23 @@ function edit6_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushExport.
+function pushExport_Callback(hObject, eventdata, handles)
+% hObject    handle to pushExport (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+SDCE=size(handles.Vols{1});
+ChosenVoxels=handles.ChosenVoxels;
+Idxs=handles.Idx3D(sub2ind(SDCE,ChosenVoxels(:,1),ChosenVoxels(:,2),ChosenVoxels(:,3)));
+Good=isfinite(Idxs);
+Idxs=Idxs(Good);
+CurS=get(handles.slider1,'Value');
+
+Export=rmfield(handles,{'Idx3D','PKs','Msk','CTC2D','Vols'});
+Export.Idxs=Idxs;
+Export.CurS=CurS;
+Export.CurPKs=handles.PKs(Idxs,:);
+Export.CurCTCs=handles.CTC2D(Idxs,:)
+save('Export.mat','Export');

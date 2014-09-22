@@ -1,5 +1,5 @@
-WorkingPA='\\fmri-t9\users\Moran\DCE\General\DCE_TABASCO\out\AvGo_20130303\';
-
+% WorkingPA='\\fmri-t9\users\Moran\DCE\General\DCE_TABASCO\out\AvGo_20130303\';
+WorkingPA='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
 % WorkingPA='\\fmri-t9\users\Moran\DCE\General\ForJim_SV1.5\WhSa_20070813\';
 WorkingP=WorkingPA;
 
