@@ -13,7 +13,6 @@ max_BAT_display     = 3;
 BAT_y_scale         = 2;
 
 
-
 % Options
 % '-'  - Solid line (default)
 % '--' - Dashed line
@@ -41,21 +40,20 @@ BAT_y_scale         = 2;
 % k	Black
 % w	White
 
-num_data            = 2;
 graph_format_1      = ':gs';
 graph_format_2      = '--b+';
 graph_format_3      = '-.c*';
 graph_format_4      = '-ro';
 Base_Path           = './Old_Runs/';
-DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_And_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_And_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 %DataPath_1          = 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total.mat';
 %DataPath_2          = 'Results_1000_Iterations_No_Delay_No_Correction_4_sec_interval_6_min_total.mat';
 %DataPath_3          = 'Results_1000_Iterations_No_Delay_No_Correction_6_sec_interval_6_min_total.mat';
-Legend_1            = 'BiExp Correct';
-Legend_2            = 'No Correct';
+Legend_1            = 'MVT';
+Legend_2            = 'Cyclic Deconv. MVT';
 Legend_3            = 'BiExp';
 Legend_4            = 'BiExp';
 idx_fig             = 1;

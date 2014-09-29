@@ -180,22 +180,12 @@ Sim_Struct.UpperBound_Gauss    = [60/60 30/60 3];
 % Larsson filter parameters
 Sim_Struct.F_low      = 10;
 Sim_Struct.F_max      = 150;
-
-if Sim_Struct.RealData_Flag
-    Sim_Struct.Vb_low     = 0.1; % [mL/100g]     , they used 3,6,12,18
-    Sim_Struct.Vb_max     = 100;
-    Sim_Struct.Ve_low     = 0.1; % Must be smaller than Vtis
-    Sim_Struct.Ve_max     = 100;
-else
-    Sim_Struct.Vb_low     = 3; % [mL/100g]     , they used 3,6,12,18
-    Sim_Struct.Vb_max     = 20;
-    Sim_Struct.Ve_low     = 3; % Must be smaller than Vtis
-    Sim_Struct.Ve_max     = 20;
-end
-
+Sim_Struct.Vb_low     = 3; % [mL/100g]     , they used 3,6,12,18
+Sim_Struct.Vb_max     = 20;
+Sim_Struct.Ve_low     = 3; % Must be smaller than Vtis
+Sim_Struct.Ve_max     = 20;
 Sim_Struct.E_low      = 0;
 Sim_Struct.E_max      = 0.99;
-
 Sim_Struct.F_single   = 60;                                         % When a single iteration
 Sim_Struct.F_vec      = linspace(Sim_Struct.F_low, Sim_Struct.F_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vb_single  = 18;

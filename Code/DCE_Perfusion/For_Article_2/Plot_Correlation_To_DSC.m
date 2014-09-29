@@ -1,11 +1,13 @@
-SliceNum      = 3;
-Use_Mask      = true;
-Use_Threshold = true;
-Threshold_val = 200;
+close all;
+SliceNum            = 3;
+Use_Mask            = true;
+Use_Threshold       = true;
+Threshold_val       = 200;
+Remove_Extreme_Vals = false;
 
 % Take values in the range 0.05 - 0.95 (to avoid margin effect)
-MinRange = 0.20 ;
-MaxRange = 0.80 ;
+MinRange = 0.00 ;
+MaxRange = 0.99 ;
 
 %% Create Normalized maps from DCE/DSC results
 Path4Norm     = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study20140615_114415\' ...
@@ -22,16 +24,17 @@ Path_DSC      = [ '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study
     'Perfusion_DCE\coregFlow\DSC2DCE\rdsc_oCBFlr_Thresholded_200_Normalized_0_1.nii'] ;
 
 Path_Mask_1    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-wm-dce.nii'];
-Path_Mask_2    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-wm-dce.nii'];
-Path_Mask_3    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-wm-dce.nii'];
+Path_Mask_2    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-gm-dce.nii'];
+Path_Mask_3    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-lesion-dce.nii'];
 Path_Mask_4    = ['\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\ovl-bv-dce.nii'];
+Mask_Names     = {{'wm'} {'gm'} {'lesion'} {'bv'}};
 
 Mask1          = loadniidata(Path_Mask_1);
 Mask2          = loadniidata(Path_Mask_2);
 Mask3          = loadniidata(Path_Mask_3);
 Mask4          = loadniidata(Path_Mask_4);
-NiiDCE        = loadniidata(Path_DCE);
-NiiDSC        = loadniidata(Path_DSC);
+NiiDCE         = loadniidata(Path_DCE);
+NiiDSC         = loadniidata(Path_DSC);
 
 %% 
 
@@ -43,6 +46,4 @@ NiiDSC        = loadniidata(Path_DSC);
 % imshow(NiiDSC(:,:,SliceNum),'Colormap',jet(255));
 % title(['DSC Map. Slice: ' num2str(SliceNum)]);
 
-
-
-CorrNiiMaps(Path_DCE, Path_DSC, SliceNum, MinRange, MaxRange, Mask1, Mask2, Mask3, Mask4, Use_Mask);
+CorrNiiMaps(Path_DCE, Path_DSC, SliceNum, MinRange, MaxRange, Mask1, Mask2, Mask3, Mask4, Use_Mask, Mask_Names, Remove_Extreme_Vals);
