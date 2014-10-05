@@ -1,6 +1,6 @@
 % WorkingP='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
 %% Load basic stuff
-load('Export.mat');
+load('/home/a/Downloads/Export.mat');
 handles=Export;
 Idxs=Export.Idxs;
 HConvIdxM=CreateConvIdxMFromSampleTs(numel(handles.HSampleTs));
@@ -29,7 +29,7 @@ HHConvIdxMTriB=HHConvIdxM(HHTriB);
 
 HHConvd2=DCECostFuncgrT1ForConv(HHAIF',CurKeps,HHSampleTs,HHConvIdxMTriB,HHTriB);
 for i=1:size(HHConvd2,1)
-    HConvd2(i,:)=interp1(HHSampleTs,HHConvd2(i,:),handles.HSampleTs,[],'extrap');
+    HConvd2(i,:)=interp1(HHSampleTs,HHConvd2(i,:),handles.HSampleTs,'linear','extrap');
 end
 % HConvd2=DCECostFuncgrT1ForConv(handles.HAIF',CurKeps,handles.HSampleTs,HConvIdxMTriB,HTriB);
 
@@ -62,7 +62,7 @@ for i=1:numel(Idxs)
 %         Strs{j}=[Strs{j} ' ' num2str(handles.Vols{j}(ChosenVoxels(i,1),ChosenVoxels(i,2),ChosenVoxels(i,3)))];
 %     end
 end
-%%
+%
 SAIF=zeros([handles.nTDif numel(handles.SampleTs)]);
 CSAIF=zeros([handles.nTDif numel(handles.SampleTs)]);
 CHAIF = cumtrapz(handles.HSampleTs,handles.HAIF);
@@ -70,7 +70,7 @@ for i=1:handles.nTDif
     SAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.SampleTs+handles.TDif(i),[],'extrap');
     CSAIF(i,:)=interp1(handles.HSampleTs,CHAIF,handles.SampleTs+handles.TDif(i),[],'extrap');
 end
-%%
+% Simulate
 for i=1:size(Sims,1)
     SSims(i,:)=interp1(handles.HSampleTs,Sims(i,:),handles.SampleTs,[],'extrap');
 end
@@ -79,7 +79,8 @@ DTs=diff(handles.SampleTs);
 nRegTimePoints=find(DTs>DTs(1)*2,1);
 nExtraTPs=size(handles.SampleTs,2)-nRegTimePoints;
 %% Extract for simulated
-
+LastTimePoints=handles.SampleTs(end-nExtraTPs:end);
+ShortName=handles.TTL(end-22:end-10);
 %    1        2         3        4          5     6        7    8   9    10
 % BATfinal VpFinal KtransFinal Kepfinal VeFinal RSSFinal RSS0 RSS1 RSS2 RSS3
 for k=1:nExtraTPs+1
@@ -91,5 +92,27 @@ for k=1:nExtraTPs+1
     SKtranss(:,k)=PKs_check(k,:,KtransIdx);
     SKeps(:,k)=PKs_check(k,:,KepIdx);
 end
-figure;plot(SKeps','*');hold on;plot(repmat(CurKeps,[1 nExtraTPs+1])','r-')
-title('Real values - red, Blue - Estimated values')
+figure;
+subplot(1,3,1);
+plot(LastTimePoints,SVps','*');hold on;plot(LastTimePoints,repmat(CurVps,[1 nExtraTPs+1])','r-')
+title('Real values-r, Estimated values-b')
+xlabel('minutes');
+ylabel('v_p')
+subplot(1,3,2);
+plot(LastTimePoints,SKtranss','*');hold on;plot(LastTimePoints,repmat(CurKtranses,[1 nExtraTPs+1])','r-')
+title(ShortName)
+xlabel('minutes');
+ylabel('K^{trans}')
+subplot(1,3,3);
+plot(LastTimePoints,SKeps','*');hold on;plot(LastTimePoints,repmat(CurKeps,[1 nExtraTPs+1])','r-')
+xlabel('minutes');
+ylabel('k_{ep}')
+%% Export to csv
+nVoxels=numel(CurVps);
+CurVs=[CurVps CurKtranses CurKeps];
+EstM=[LastTimePoints;SVps;SKtranss;SKeps];
+clear OutM;
+OutM(1,1)=nVoxels;
+OutM(2:(nVoxels+1),1:3)=CurVs;
+OutM((nVoxels+2):(nVoxels*4+2),1:numel(LastTimePoints))=EstM;
+csvwrite(['SimLong_' ShortName '.csv'],OutM);

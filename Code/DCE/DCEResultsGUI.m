@@ -615,5 +615,5 @@ Export=rmfield(handles,{'Idx3D','PKs','Msk','CTC2D','Vols'});
 Export.Idxs=Idxs;
 Export.CurS=CurS;
 Export.CurPKs=handles.PKs(Idxs,:);
-Export.CurCTCs=handles.CTC2D(Idxs,:)
+Export.CurCTCs=handles.CTC2D(Idxs,:);
 save('Export.mat','Export');
