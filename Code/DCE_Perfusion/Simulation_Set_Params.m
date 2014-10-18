@@ -16,12 +16,17 @@ Sim_Struct.Correct_PVE                   = true;   % Correct Partial Volume Effe
 Sim_Struct.Threshold_Norm_Maps           = false;  % Threshold maps before normalizeing them to 0-1 (avoid saturation effects)
 Sim_Struct.Threshold_Val                 = 0.026768 * 242.9221;
 
+% Use model selection
+Sim_Struct.Use_Model_Selection           = true;
+Sim_Struct.AIC_Correction                = true; % Use correction for AIC
+Sim_Struct.Data_Weight                   = 1;  % Data weight comparing to # of params (Gilad uses 0.1)
+
 % Force serial and not parallel
-Sim_Struct.FORCE_SERIAL                  = false;
-Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = false;
+Sim_Struct.FORCE_SERIAL                  = true;
+Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = true;
 
 % Set number of iterations for simulation
-Sim_Struct.num_iterations                = 1000; %15
+Sim_Struct.num_iterations                = 3; %1500
 % Avoid memory overhead if there are too many iteratins
 if (Sim_Struct.num_iterations > 40)
     Sim_Struct.FORCE_SERIAL                  = true;
@@ -96,7 +101,7 @@ Sim_Struct.knots                    = Sim_Struct.time_vec_minutes(1:Sim_Struct.k
 
 % Add randomly delay to the AIF
 Sim_Struct.AIF_delay_low                 = -0.0;
-Sim_Struct.AIF_delay_max                 = +3.0;
+Sim_Struct.AIF_delay_max                 = +10.0;
 
 % Delay parameters
 Sim_Struct.additional_AIF_delay_sec     = +0.0; % Delay added to AIF before filtering

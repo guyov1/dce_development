@@ -197,7 +197,7 @@ else
 end
 
 % Arrange (coreged) data in 4D, and calc mean
-DDSC=dir([WorkingP 'Coreged*.nii']);
+DDSC=dir([WorkingP 'Coreged*vol*.nii']);
 DSCFNs=strcat(WorkingP,{DDSC.name})';
 data4D_init_temp=loadCoregedNiftis(DSCFNs);
 data4D_init=flipdim(permute(data4D_init_temp,[2 1 3 4]),1);
@@ -684,6 +684,7 @@ if isnan(TE)
 elseif TE<0 || TE>1000
     error('TE has an invalid value: ',TE);
 end
+handles.TE=TE;
 data4D_filtered=handles.data4D_filtered;
 [concentration_4D Mask] = Intens2concentration_4D(data4D_filtered,baseline_edges,last_sample,TE,Mask,handles);
 
@@ -1404,7 +1405,14 @@ else % nii files
     end
 end
 % Get the header (of one of the nii created before)
-[Out Header A]=loadniidata([Nii_src_folder,'\vol_0001.nii']);
+% find the exact string of the nifti files, and if begins in 0000 or 0001:
+nii_files_list=dir(Nii_src_folder);
+nii_files_list_str=[nii_files_list.name];
+vol_inds=strfind(nii_files_list_str,'vol');
+first_vol_ind=vol_inds(1);
+second_vol_ind=vol_inds(2);
+first_vol_str=nii_files_list_str(first_vol_ind:second_vol_ind-1);
+[Out Header A]=loadniidata([Nii_src_folder,filesep,first_vol_str]);
 % voxels_data_4D=flipdim(permute(Out,[2 1 3 4]),1);
 % 
 % handles.data4D_init=voxels_data_4D;
@@ -1513,8 +1521,10 @@ if Lia==1
     handles.last_sample=str2double(AIFcurve_text_array(Loc+4));
     set(handles.last_sample_value,'String',AIFcurve_text_array(Loc+4));
     update_bolus_properties_Callback(hObject, eventdata, handles);
-    guidata(hObject,handles);
+    handles=guidata(hObject);
     AIF=str2double(AIFcurve_text_array(Loc+5:end));
+    %in the file, the AIF is 1000 times smaller and need to be normalized:
+    AIF=AIF*1000;
     handles.AIF=AIF;
     plot_AIF(AIF,AIF,handles);
 else

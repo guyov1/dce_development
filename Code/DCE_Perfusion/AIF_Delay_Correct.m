@@ -119,6 +119,7 @@ else
     shift_times      = ( (Min_Time_Delay:time_res_sec:Max_Time_Delay) / 60);
     shift_indices    = round(shift_times/Upsampling_resolution);
     num_shifts       = length(shift_times);
+    AIFShiftVersions = zeros(length(time_vec_minutes), num_shifts);
     
     % Initiate shifts matrices results
     CTC_size         = length(Final_Filter_Estimation_Larss);
@@ -155,6 +156,8 @@ else
         end
         % Downsample to original resolution
         Sim_AIF_with_noise_Regul_shifted = downsample(Sim_AIF_with_noise_Regul_up_samp_shifted,UpSampFactor);
+        % Save shifted AIF version
+        AIFShiftVersions(:,i)            = Sim_AIF_with_noise_Regul_shifted;
         
         %% Create the new Convolution matrix
         [ Conv_X_shift ] = Convolution_Matrix( min_interval, Sim_AIF_with_noise_Regul_shifted );
@@ -420,6 +423,120 @@ est_delay_by_AIF_correct      = shift_times(min_idx)*60;
 
 
 if (plot_flag)
+    
+    %% ACoPeD printing - Preparing parameters
+    font_size           = 25;
+    line_width          = 15;
+    line_width_small    = 7;
+    line_width_smallest = 3;
+    orig_AIF            = Sim_AIF_with_noise_Regul;
+    orig_CTC            = Sim_Ct_larss_Regul_noise;
+    shifted_AIFs        = AIFShiftVersions;
+    deconvoled_IRFs     = Spline_est;
+    BiExp_fit           = est_F_noise * exp_fit;
+    CTC_fitted          = Est_CTCs;
+    
+    % \\fmri-guy2\Dropbox\University\Msc\Thesis\MRM Submission\Figures Etc
+    
+    %% ACoPeD printing - 1 - CTC
+    fig_num = figure;
+    plot(time_vec_minutes, orig_CTC,'LineWidth',line_width_smallest,'Color','k');
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('C_t(t)','FontSize',font_size,'FontWeight','bold');
+    title('Concentration-Time-Curve','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    % Print result to PDF
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_1.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_1', 'ACoPeD_AIFDelayEst_1');
+    %% ACoPeD printing - 2 - AIF shifted
+    
+    fig_num = figure;
+    plot(time_vec_minutes, shifted_AIFs(:,12:20:end),'LineWidth',line_width_smallest);
+    hold on;
+    %h1 = plot(time_vec_minutes, orig_AIF,'LineWidth',line_width_smallest,'Color','k');
+    hold off;
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('AIF(t)_{shifted}','FontSize',font_size,'FontWeight','bold');
+    title('Shifted Arterial-Input-Functions','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    %legend(h1, 'Original AIF','FontSize',font_size,'FontWeight','bold');
+    legend boxoff;
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_2.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_2', 'ACoPeD_AIFDelayEst_2');
+    
+    %% ACoPeD printing - 3 - Original AIF
+    
+    fig_num = figure;
+    plot(time_vec_minutes, orig_AIF, 'LineWidth', line_width_smallest,'Color','k');
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('AIF(t)','FontSize',font_size,'FontWeight','bold');
+    title('Orig. Arterial-Input-Function','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_3.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_3', 'ACoPeD_AIFDelayEst_3');
+    
+    %% ACoPeD printing - 3.1 - Chosen AIF
+    
+    fig_num = figure;
+    plot(time_vec_minutes, orig_AIF, 'LineWidth', line_width_smallest,'Color','b');
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('AIF(t)','FontSize',font_size,'FontWeight','bold');
+    title('Chosen Arterial-Input-Function','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_3_1.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_3_1', 'ACoPeD_AIFDelayEst_3_1');
+    
+    %% ACoPeD printing - 3 - Shifted AIFs
+    
+    fig_num = figure;
+    plot(time_vec_minutes, deconvoled_IRFs(:,12:20:end),'LineWidth',line_width_smallest);
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('IRF(t)','FontSize',font_size,'FontWeight','bold');
+    title('Impulse-Response-Functions','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_4.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_4', 'ACoPeD_AIFDelayEst_4');
+    
+    %% ACoPeD printing - 4 - IRFs
+    
+    fig_num = figure;
+    plot(time_vec_minutes, deconvoled_IRFs(:,12:20:end),'LineWidth',line_width_smallest);
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('IRF(t)','FontSize',font_size,'FontWeight','bold');
+    title('Impulse-Response-Functions','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_5.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_5', 'ACoPeD_AIFDelayEst_5');
+    
+    %% ACoPeD printing - 5 - BiExps
+    
+    fig_num = figure;
+    plot(time_vec_minutes, BiExp_fit(:,12:20:end),'LineWidth',line_width_smallest);
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('IRF(t)_{fit}','FontSize',font_size,'FontWeight','bold');
+    title('Bi-Exponential Fit','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_6.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_6', 'ACoPeD_AIFDelayEst_6');
+    
+    %% ACoPeD printing - 6 - Fitted CTC
+    
+    fig_num = figure;
+    plot(time_vec_minutes, CTC_fitted(:,12:20:end),'LineWidth',line_width_smallest);
+    hold on;
+    h1 = plot(time_vec_minutes, orig_CTC,'LineWidth',line_width_smallest/2,'Color','k','LineStyle', '--');
+    hold off;
+    xlabel('Time [Min]','FontSize',font_size,'FontWeight','bold');
+    ylabel('CTC(t)_{fit}','FontSize',font_size,'FontWeight','bold');
+    title('Concentration-Time-Curve Fit','FontSize',font_size,'FontWeight','bold');
+    set(gca,'FontSize',font_size,'FontWeight','bold');
+    h_legend = legend(h1, 'Original CTC','Location','NorthWest');
+    set(h_legend,'FontSize',font_size*0.75);
+    legend boxoff;
+    [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_7.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_7', 'ACoPeD_AIFDelayEst_7');
+    
+    
+    %%
     
     fig_num = figure;
     

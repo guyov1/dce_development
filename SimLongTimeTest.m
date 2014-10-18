@@ -1,6 +1,6 @@
 % WorkingP='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
 %% Load basic stuff
-load('/home/a/Downloads/Export.mat');
+load('Export.mat');
 handles=Export;
 Idxs=Export.Idxs;
 HConvIdxM=CreateConvIdxMFromSampleTs(numel(handles.HSampleTs));
