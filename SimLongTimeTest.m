@@ -98,17 +98,17 @@ for k=1:nExtraTPs+1
 end
 figure;
 subplot(1,3,1);
-plot(LastTimePoints,SVps','*');hold on;plot(LastTimePoints,repmat(CurVps,[1 nExtraTPs+1])','r-')
+plot(LastTimePoints,SVps','*');hold on;plot(LastTimePoints,repmat(CurVps,[1 nExtraTPs+1])','-')
 title('Real values-r, Estimated values-b')
 xlabel('minutes');
 ylabel('v_p')
 subplot(1,3,2);
-plot(LastTimePoints,SKtranss','*');hold on;plot(LastTimePoints,repmat(CurKtranses,[1 nExtraTPs+1])','r-')
+plot(LastTimePoints,SKtranss','*');hold on;plot(LastTimePoints,repmat(CurKtranses,[1 nExtraTPs+1])','-')
 title(ShortName)
 xlabel('minutes');
 ylabel('K^{trans}')
 subplot(1,3,3);
-plot(LastTimePoints,SKeps','*');hold on;plot(LastTimePoints,repmat(CurKeps,[1 nExtraTPs+1])','r-')
+plot(LastTimePoints,SKeps','*');hold on;plot(LastTimePoints,repmat(CurKeps,[1 nExtraTPs+1])','-')
 xlabel('minutes');
 ylabel('k_{ep}')
 %% Export to csv
