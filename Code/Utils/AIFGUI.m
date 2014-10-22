@@ -146,8 +146,8 @@ CHAIF=[0 cumsum(handles.HAIF(1:end-1))]*handles.Hdt;
 SAIF=zeros([handles.nTDif numel(handles.GoodTs)]);
 CSAIF=zeros([handles.nTDif numel(handles.GoodTs)]);
 for i=1:handles.nTDif
-    SAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.GoodTs+handles.TDif(i),[],'extrap');
-    CSAIF(i,:)=interp1(handles.HSampleTs,CHAIF,handles.GoodTs+handles.TDif(i),[],'extrap');
+    SAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.GoodTs+handles.TDif(i),'linear','extrap');
+    CSAIF(i,:)=interp1(handles.HSampleTs,CHAIF,handles.GoodTs+handles.TDif(i),'linear','extrap');
 end
 [handles.PKs handles.Sims] = FindPKBATgAIFMuraseF(handles.DataToFit,SAIF,handles.GoodTs,CSAIF);
 
@@ -162,6 +162,9 @@ axes(handles.axes1);cla;
 plot(handles.HSampleTs,handles.HAIF,'r-');
 hold on;
 plot(handles.GoodTs,handles.AIFFunc(handles.CurAIFParams,handles.GoodTs),'b*');
+tmp=mean(handles.DataToFit);
+tmp=tmp*max(handles.HAIF)/max(tmp);
+plot(handles.GoodTs,tmp,'g.');
 
 for i=1:numel(handles.Axes)
     axes(handles.Axes(i));cla;

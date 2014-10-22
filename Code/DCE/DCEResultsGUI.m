@@ -356,7 +356,7 @@ HHConvIdxMTriB=HHConvIdxM(HHTriB);
 
 HHConvd2=DCECostFuncgrT1ForConv(HHAIF',CurKeps,HHSampleTs,HHConvIdxMTriB,HHTriB);
 for i=1:size(HHConvd2,1)
-    HConvd2(i,:)=interp1(HHSampleTs,HHConvd2(i,:),handles.HSampleTs,[],'extrap');
+    HConvd2(i,:)=interp1(HHSampleTs,HHConvd2(i,:),handles.HSampleTs,'linear','extrap');
 end
 % HConvd2=DCECostFuncgrT1ForConv(handles.HAIF',CurKeps,handles.HSampleTs,HConvIdxMTriB,HTriB);
 
@@ -370,8 +370,8 @@ CurBATs(isnan(CurBATs))=1;
 for i=1:numel(Idxs)
 %     SHConvd2(i,:)=interp1(handles.HSampleTs,HConvd2(i,:)',handles.HSampleTs+handles.TDif(CurBATs(i)),[],'extrap')';
 %     SHSAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.HSampleTs+handles.TDif(CurBATs(i)),[],'extrap');
-    SHConvd2(i,:)=interp1(handles.HSampleTs,HConvd2(i,:)',handles.HSampleTs+CurBATs(i),[],'extrap')';
-    SHSAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.HSampleTs+CurBATs(i),[],'extrap');
+    SHConvd2(i,:)=interp1(handles.HSampleTs,HConvd2(i,:)',handles.HSampleTs+CurBATs(i),'linear','extrap')';
+    SHSAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.HSampleTs+CurBATs(i),'linear','extrap');
 end
 %
 CurKtranses=handles.PKs(Idxs,KtransIdx);

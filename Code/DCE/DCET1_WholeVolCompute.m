@@ -48,8 +48,8 @@ if(Options.MakeBATManualArtAnalysis)
     SAIF=zeros([nTDif numel(SampleTs)]);
     CSAIF=zeros([nTDif numel(SampleTs)]);
     for i=1:nTDif
-        SAIF(i,:)=interp1(HSampleTs,HAIF,SampleTs+TDif(i),[],'extrap');
-        CSAIF(i,:)=interp1(HSampleTs,CHAIF,SampleTs+TDif(i),[],'extrap');
+        SAIF(i,:)=interp1(HSampleTs,HAIF,SampleTs+TDif(i),'linear','extrap');
+        CSAIF(i,:)=interp1(HSampleTs,CHAIF,SampleTs+TDif(i),'linear','extrap');
     end
     %
     clear R1F DCE2D2 adCTC2D B1 Baseline CT1 CosFA DCEM0
@@ -248,8 +248,8 @@ SAIF  = zeros([nTDif numel(SampleTs)]);
 CSAIF = zeros([nTDif numel(SampleTs)]);
 
 for i=1:nTDif
-    SAIF(i,:)  = interp1(HSampleTs,HAIF,SampleTs+TDif(i),[],'extrap');
-    CSAIF(i,:) = interp1(HSampleTs,CHAIF,SampleTs+TDif(i),[],'extrap');
+    SAIF(i,:)  = interp1(HSampleTs,HAIF,SampleTs+TDif(i),'linear','extrap');
+    CSAIF(i,:) = interp1(HSampleTs,CHAIF,SampleTs+TDif(i),'linear','extrap');
 end
 
 % Clear unnecessary old variables
