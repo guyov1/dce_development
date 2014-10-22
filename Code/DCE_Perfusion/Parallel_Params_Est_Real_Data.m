@@ -27,6 +27,7 @@ LowerBound_Larsson                    = Sim_Struct.LowerBound_Larsson;
 UpperBound_Larsson                    = Sim_Struct.UpperBound_Larsson;
 Correct_estimation_due_to_delay       = Sim_Struct.Correct_estimation_due_to_delay;
 Use_Model_Selection                   = Sim_Struct.Use_Model_Selection;
+Ignore_Delay_Model_Selection          = Sim_Struct.Ignore_Delay_Model_Selection;
 
 time_vec_minutes                      = Sim_Struct.time_vec_minutes;
 Patlak_Est_Type                       = Sim_Struct.Patlak_Est_Type;
@@ -171,9 +172,11 @@ parfor j=1:num_voxels
             est_E_Patlak_noise_with_Delay, est_MTT_Patlak_noise_with_Delay, ~] ...
             = Patlak_Estimation(In_Struct,  AIF_delay_corrected(j,:)', Ct(j,:), est_F_noise_with_Delay, Verbosity, iter_num, avg_num, idx_fig);
         
-        [est_Ktrans_Patlak_noise_no_Delay, est_Vb_Patlak_noise_no_Delay ,...
-            est_E_Patlak_noise_no_Delay, est_MTT_Patlak_noise_no_Delay, ~]     ...
-            = Patlak_Estimation(In_Struct,  AIF_no_Delay'       , Ct(j,:), est_F_noise_no_Delay  , Verbosity, iter_num, avg_num, idx_fig);
+        if ~Ignore_Delay_Model_Selection
+            [est_Ktrans_Patlak_noise_no_Delay, est_Vb_Patlak_noise_no_Delay ,...
+                est_E_Patlak_noise_no_Delay, est_MTT_Patlak_noise_no_Delay, ~]     ...
+                = Patlak_Estimation(In_Struct,  AIF_no_Delay'       , Ct(j,:), est_F_noise_no_Delay  , Verbosity, iter_num, avg_num, idx_fig);
+        end
     else
         % With and without delay is the same
         [est_Ktrans_Patlak_noise_no_Delay, est_Vb_Patlak_noise_no_Delay ,...
@@ -252,10 +255,14 @@ parfor j=1:num_voxels
                 LowerBound_Larsson,UpperBound_Larsson,algorithm_options);
             
             % Fitting with no delay
-            %[est_params_Larsson_no_Delay_noise,residue_norm_Larsson_no_Delay_noise,residual_Larsson_no_Delay_noise,exitflag_Larsson_no_Delay_noise,algo_info_Larsson_no_Delay_noise] = ...
-            [est_params_Larsson_no_Delay_noise,~,~,~,~] = ...
-                lsqcurvefit(Larsson_function_no_Delay,Init_Guess_Larsson_no_Delay,time_vec_minutes_T,Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j),...
-                LowerBound_Larsson,UpperBound_Larsson,algorithm_options);
+            if ~Ignore_Delay_Model_Selection
+                
+                %[est_params_Larsson_no_Delay_noise,residue_norm_Larsson_no_Delay_noise,residual_Larsson_no_Delay_noise,exitflag_Larsson_no_Delay_noise,algo_info_Larsson_no_Delay_noise] = ...
+                [est_params_Larsson_no_Delay_noise,~,~,~,~] = ...
+                    lsqcurvefit(Larsson_function_no_Delay,Init_Guess_Larsson_no_Delay,time_vec_minutes_T,Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j),...
+                    LowerBound_Larsson,UpperBound_Larsson,algorithm_options);
+                
+            end
             
         else
             % With and without delay is the same
@@ -319,18 +326,21 @@ parfor j=1:num_voxels
             Ve_with_Delay_High_F_vec(j)       = est_params_Larsson_noise_with_Delay_High_F(3);
             
             % ------------------------------------- Fit with high f ---------------------------------------------------------------
-            %To_Fit_High_F_no_Delay = Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j);
-            To_Fit_High_F_no_Delay = Est_ht_no_Delay_T(:,j);
-            %[est_params_Larsson_noise_no_Delay_High_F,residue_norm_Larsson_noise_no_Delay_High_F,residual_Larsson_noise_no_Delay_High_F,exitflag_Larsson_noise_no_Delay_High_F,algo_info_Larsson_noise_no_Delay_High_F] = ...
-            [est_params_Larsson_noise_no_Delay_High_F,~,~,~,~] = ...
-                lsqcurvefit(Larsson_function_no_Delay_High_F,Init_Guess_Larsson_no_Delay_High_F,time_vec_minutes_T,To_Fit_High_F_no_Delay,...
-                LowerBound_Larsson,UpperBound_Larsson,algorithm_options);
-            
-            % Assigning two compartment parameters estimation
-            Vb_no_Delay_High_F_vec(j)       = est_params_Larsson_noise_no_Delay_High_F(1);
-            Ktrans_no_Delay_High_F_vec(j)        = est_params_Larsson_noise_no_Delay_High_F(2);
-            Ve_no_Delay_High_F_vec(j)       = est_params_Larsson_noise_no_Delay_High_F(3);
-            
+            if ~Ignore_Delay_Model_Selection
+                
+                %To_Fit_High_F_no_Delay = Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j);
+                To_Fit_High_F_no_Delay = Est_ht_no_Delay_T(:,j);
+                %[est_params_Larsson_noise_no_Delay_High_F,residue_norm_Larsson_noise_no_Delay_High_F,residual_Larsson_noise_no_Delay_High_F,exitflag_Larsson_noise_no_Delay_High_F,algo_info_Larsson_noise_no_Delay_High_F] = ...
+                [est_params_Larsson_noise_no_Delay_High_F,~,~,~,~] = ...
+                    lsqcurvefit(Larsson_function_no_Delay_High_F,Init_Guess_Larsson_no_Delay_High_F,time_vec_minutes_T,To_Fit_High_F_no_Delay,...
+                    LowerBound_Larsson,UpperBound_Larsson,algorithm_options);
+                
+                % Assigning two compartment parameters estimation
+                Vb_no_Delay_High_F_vec(j)       = est_params_Larsson_noise_no_Delay_High_F(1);
+                Ktrans_no_Delay_High_F_vec(j)        = est_params_Larsson_noise_no_Delay_High_F(2);
+                Ve_no_Delay_High_F_vec(j)       = est_params_Larsson_noise_no_Delay_High_F(3);
+                
+            end
             % ------------------------------------- Fit with delay and no permeability ---------------------------------------------------------------
             To_Fit_no_E_with_Delay = Est_ht_with_Delay_T(:,j)/Flow_vec_with_Delay(j);
             
@@ -343,16 +353,19 @@ parfor j=1:num_voxels
             Vb_with_Delay_no_E_vec(j)         = est_params_Larsson_noise_with_Delay_no_E(1);
             
             % ------------------------------------- Fit with no delay and no permeability ---------------------------------------------------------------
-            To_Fit_no_E_no_Delay = Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j);
-            
-            %[est_params_Larsson_noise_no_Delay_no_E,residue_norm_Larsson_noise_no_Delay_no_E,residual_Larsson_noise_no_Delay_no_E,exitflag_Larsson_noise_no_Delay_no_E,algo_info_Larsson_noise_no_Delay_no_E] = ...
-            [est_params_Larsson_noise_no_Delay_no_E,~,~,~,~] = ...
-                lsqcurvefit(Larsson_function_no_Delay_no_E,Init_Guess_Larsson_no_Delay_no_E,time_vec_minutes_T,To_Fit_no_E_no_Delay,...
-                LowerBound_Larsson(1),UpperBound_Larsson(1),algorithm_options);
-            
-            % Assigning two compartment parameters estimation
-            Vb_no_Delay_no_E_vec(j)         = est_params_Larsson_noise_no_Delay_no_E(1);
-            
+            if ~Ignore_Delay_Model_Selection
+                
+                To_Fit_no_E_no_Delay = Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j);
+                
+                %[est_params_Larsson_noise_no_Delay_no_E,residue_norm_Larsson_noise_no_Delay_no_E,residual_Larsson_noise_no_Delay_no_E,exitflag_Larsson_noise_no_Delay_no_E,algo_info_Larsson_noise_no_Delay_no_E] = ...
+                [est_params_Larsson_noise_no_Delay_no_E,~,~,~,~] = ...
+                    lsqcurvefit(Larsson_function_no_Delay_no_E,Init_Guess_Larsson_no_Delay_no_E,time_vec_minutes_T,To_Fit_no_E_no_Delay,...
+                    LowerBound_Larsson(1),UpperBound_Larsson(1),algorithm_options);
+                
+                % Assigning two compartment parameters estimation
+                Vb_no_Delay_no_E_vec(j)         = est_params_Larsson_noise_no_Delay_no_E(1);
+                
+            end
             % ------------------------------------- Fit with high f and no permeability + Delay ---------------------------------------------------------------
             %To_Fit_no_E_High_F_with_Delay = Est_ht_with_Delay_T(:,j)/Flow_vec_with_Delay(j);
             To_Fit_no_E_High_F_with_Delay = Est_ht_with_Delay_T(:,j);
@@ -367,21 +380,29 @@ parfor j=1:num_voxels
             % ------------------------------------- Fit with high f and no permeability ---------------------------------------------------------------
             %To_Fit_no_E_High_F_no_Delay = Est_ht_no_Delay_T(:,j)/Flow_vec_no_Delay(j);
             To_Fit_no_E_High_F_no_Delay = Est_ht_no_Delay_T(:,j);
-            %[est_params_Larsson_noise_no_Delay_no_E_High_F,residue_norm_Larsson_noise_no_Delay_no_E_High_F,residual_Larsson_noise_no_Delay_no_E_High_F,exitflag_Larsson_noise_no_Delay_no_E_High_F,algo_info_Larsson_noise_no_Delay_no_E_High_F] = ...
-            [est_params_Larsson_noise_no_Delay_no_E_High_F,~,~,~,~] = ...
-                lsqcurvefit(Larsson_function_no_Delay_no_E_High_F,Init_Guess_Larsson_no_Delay_no_E_High_F,time_vec_minutes_T,To_Fit_no_E_High_F_no_Delay,...
-                LowerBound_Larsson(1),UpperBound_Larsson(1),algorithm_options);
+            if ~Ignore_Delay_Model_Selection
+                %[est_params_Larsson_noise_no_Delay_no_E_High_F,residue_norm_Larsson_noise_no_Delay_no_E_High_F,residual_Larsson_noise_no_Delay_no_E_High_F,exitflag_Larsson_noise_no_Delay_no_E_High_F,algo_info_Larsson_noise_no_Delay_no_E_High_F] = ...
+                [est_params_Larsson_noise_no_Delay_no_E_High_F,~,~,~,~] = ...
+                    lsqcurvefit(Larsson_function_no_Delay_no_E_High_F,Init_Guess_Larsson_no_Delay_no_E_High_F,time_vec_minutes_T,To_Fit_no_E_High_F_no_Delay,...
+                    LowerBound_Larsson(1),UpperBound_Larsson(1),algorithm_options);
+            end
             
             % Assigning two compartment parameters estimation
             Vb_no_Delay_no_E_High_F_vec(j)         = est_params_Larsson_noise_no_Delay_no_E_High_F(1);
             
             if (Adjusted_Larsson_Model)
                 fitted_larsson_with_Delay_High_F(j, :)      = Adjusted_Larsson_Filter_High_F      ( time_vec_minutes,                          Vb_with_Delay_High_F_vec(j)      , Ktrans_with_Delay_High_F_vec(j) , Ve_with_Delay_High_F_vec(j));
-                fitted_larsson_no_Delay_High_F(j, :)        = Adjusted_Larsson_Filter_High_F      ( time_vec_minutes,                          Vb_no_Delay_High_F_vec(j)        , Ktrans_no_Delay_High_F_vec(j)   , Ve_no_Delay_High_F_vec(j));
+                if ~Ignore_Delay_Model_Selection
+                    fitted_larsson_no_Delay_High_F(j, :)        = Adjusted_Larsson_Filter_High_F      ( time_vec_minutes,                          Vb_no_Delay_High_F_vec(j)        , Ktrans_no_Delay_High_F_vec(j)   , Ve_no_Delay_High_F_vec(j));
+                end
                 fitted_larsson_with_Delay_no_E(j, :)        = Flow_vec_with_Delay(j) * Adjusted_Larsson_Filter_no_E        ( time_vec_minutes, Flow_vec_with_Delay(j) , Vb_with_Delay_no_E_vec(j)        );
-                fitted_larsson_no_Delay_no_E(j, :)          = Flow_vec_no_Delay(j)   * Adjusted_Larsson_Filter_no_E        ( time_vec_minutes, Flow_vec_no_Delay(j)   , Vb_no_Delay_no_E_vec(j)          );
+                if ~Ignore_Delay_Model_Selection
+                    fitted_larsson_no_Delay_no_E(j, :)          = Flow_vec_no_Delay(j)   * Adjusted_Larsson_Filter_no_E        ( time_vec_minutes, Flow_vec_no_Delay(j)   , Vb_no_Delay_no_E_vec(j)          );
+                end
                 fitted_larsson_with_Delay_no_E_High_F(j, :) = Adjusted_Larsson_Filter_no_E_High_F ( time_vec_minutes,                          Vb_with_Delay_no_E_High_F_vec(j) );
-                fitted_larsson_no_Delay_no_E_High_F(j, :)   = Adjusted_Larsson_Filter_no_E_High_F ( time_vec_minutes,                          Vb_no_Delay_no_E_High_F_vec(j)   );
+                if ~Ignore_Delay_Model_Selection
+                    fitted_larsson_no_Delay_no_E_High_F(j, :)   = Adjusted_Larsson_Filter_no_E_High_F ( time_vec_minutes,                          Vb_no_Delay_no_E_High_F_vec(j)   );
+                end
             else
                 fitted_larsson_with_Delay_High_F(j, :)      = Larsson_Filter( time_vec_minutes, est_F_with_Delay_High_F      , Vb_with_Delay_High_F_vec(j)      , 0, Ve_with_Delay_High_F_vec(j), Hct);
                 fitted_larsson_no_Delay_High_F(j, :)        = Larsson_Filter( time_vec_minutes, est_F_no_Delay_High_F        , Vb_no_Delay_High_F_vec(j)        , 0, Ve_no_Delay_High_F_vec(j)  , Hct);
