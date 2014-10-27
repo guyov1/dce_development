@@ -11,9 +11,7 @@ max_E_display       = 0.5;
 min_BAT_display     = 0;
 max_BAT_display     = 20;
 
-
-Delay_Methods_flag  = true;
-
+Legend_Just_for_F   = false; % Plot legend just for flow parameter
 
 % Options
 % '-'  - Solid line (default)
@@ -48,6 +46,15 @@ graph_format_3      = '-.c*';
 graph_format_4      = '-ro';
 Base_Path           = './Old_Runs/';
 
+idx_fig             = 1;
+create_PDF          = false;
+error_type          = 'rel' ; % Choose 'abs' or 'rel'
+std_or_sem          = 'sem'; % Choose standard deviation or standard error of the mean
+param_list_cells    = {'Flow' 'Ktrans' 'Vb' 'Ve' 'E' 'BAT'};
+param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[a.u]' '[sec]'};
+
+% ------------------------------------- Different Analysis Techniques -------------------------------------------
+
 % DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
@@ -59,19 +66,29 @@ Base_Path           = './Old_Runs/';
 % E_y_scale           = 0.9/max_E_display;
 % BAT_y_scale         = 1;
 % num_data            = 4;
+% Delay_Methods_flag  = false;
 
-DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
-DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
-DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Simple_Correction_2_sec_interval_6_min_total.mat'];
-DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
-Legend_1            = 'ACoPeD';
-Legend_2            = 'Cyclic Deconv. MVT';
-Legend_3            = 'MVT';
-Legend_4            = 'No Correct';
-E_y_scale           = 1/max_E_display;
-BAT_y_scale         = 1.4;
-num_data            = 4;
+% ------------------------------------- with Delay -------------------------------------------
 
+% DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
+% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
+% DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% %DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
+% Legend_1            = 'ACoPeD';
+% Legend_2            = 'Cyclic Deconv. MVT';
+% %Legend_3            = 'MVT';
+% %Legend_2            = 'MVT';
+% Legend_3            = 'LQ';
+% Legend_4            = 'No Correct';
+% E_y_scale           = 1/max_E_display;
+% BAT_y_scale         = 1.4;
+% num_data            = 4;
+% Delay_Methods_flag  = true;
+
+% ------------------------------------- Temproal Res. -------------------------------------------
 
 % DataPath_1          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat';
 % DataPath_2          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_4_sec_interval_6_min_total_Spline_2nd.mat';
@@ -79,25 +96,21 @@ num_data            = 4;
 % Legend_1            = '2 sec';
 % Legend_2            = '4 sec';
 % Legend_3            = '6 sec';
-% E_y_scale           = 0.5/max_E_display;
+% E_y_scale           = 0.65/max_E_display;
 % BAT_y_scale         = 1;
 % num_data            = 3;
+% Delay_Methods_flag  = false;
 
-% DataPath_1          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_20_min_total_Spline_2nd.mat';
-% DataPath_2          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat';
-% Legend_1            = '20 min';
-% Legend_2            = '6 min';
-% E_y_scale           = 0.5/max_E_display;
-% BAT_y_scale         = 1;
-% num_data            = 2;
+%------------------------------------- Scan duration. -------------------------------------------
+DataPath_1          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_20_min_total_Spline_2nd.mat';
+DataPath_2          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat';
+Legend_1            = '20 min';
+Legend_2            = '6 min';
+E_y_scale           = 0.5/max_E_display;
+BAT_y_scale         = 1;
+num_data            = 2;
+Delay_Methods_flag  = false;
 
-idx_fig             = 1;
-create_PDF          = false;
-error_type          = 'rel' ; % Choose 'abs' or 'rel'
-std_or_sem          = 'sem'; % Choose standard deviation or standard error of the mean
-
-param_list_cells    = {'Flow' 'Ktrans' 'Vb' 'Ve' 'E' 'Delay'};
-param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '' '[sec]'};
 legendInfo          = cell(1,num_data);
 legendInfo_error    = cell(1,num_data);
 
@@ -204,6 +217,7 @@ generationMaxVal                 = [F_max_1 E_max_1*F_max_1 Vb_max_1 Ve_max_1 E_
 
 iter_idx = 0;
 
+% Go over each parameter
 for param_list = param_list_cells
     
     iter_idx = iter_idx + 1;    
@@ -215,9 +229,11 @@ for param_list = param_list_cells
     
     
     hold on;
+    % Dealing with Delay
     if Delay_Methods_flag && ( strcmp(param_name,'BAT') || strcmp(param_name,'Delay'))
         
-        for idx = [1 2 4]
+%         for idx = [1 2 4]
+         for idx = 1:num_data
             
             eval(['[real_bins_' num2str(idx) ', mean_bins_' num2str(idx) ', std_bins_' num2str(idx) ', sem_bins_' num2str(idx) ', mean_abs_error_' num2str(idx) ...
                 ', std_abs_error_' num2str(idx) ', sem_abs_error_' num2str(idx) ', mean_rel_error_' num2str(idx) ', std_rel_error_' num2str(idx) ...
@@ -239,7 +255,8 @@ for param_list = param_list_cells
             
             legend boxoff;
         end
-        
+    
+        % Dealing with all parameters except Delay
     else
         
         for idx = 1:num_data
@@ -269,11 +286,13 @@ for param_list = param_list_cells
     
     hold off;
     
-    [hleg, hobj] = legend(legendInfo,'Location','NorthWest');
-    legend boxoff;
-    
-    textobj = findobj(hobj, 'type', 'text');
-    set(textobj, 'Interpreter', 'latex', 'fontsize', font_legend);
+    % Plot legend just for F if required
+    if (~Legend_Just_for_F || strcmp(param_name,'Flow'))
+        [hleg, hobj] = legend(legendInfo,'Location','NorthWest');
+        legend boxoff;
+        textobj = findobj(hobj, 'type', 'text');
+        set(textobj, 'Interpreter', 'latex', 'fontsize', font_legend);
+    end
     
     %hr = refline(1); % y=x reference line
     %set(hr,'Color','k','LineStyle','--','LineWidth',Line_Width);
@@ -365,3 +384,4 @@ if create_PDF
 end
 
 
+close all;

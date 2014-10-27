@@ -5,6 +5,8 @@ function [Subject_name, Subject_Path, WM_mask_absolute_path, Art_Mask, Vein_Mask
 Subject_name          = 'PeNe';
 Subject_Path          = '\\fmri-t9\users\Moran\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE6min';
 %Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study20140615_114415\DCE-HTR';
+%Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\KOCHAV_ZAFRIRA\Study20141022_134250\DCE';
+
 WM_mask_absolute_path = [Subject_Path  '\RefT1_WM_830.nii'];
 %Art_Mask              = [Subject_Path  '\ManualArtMask.nii'];
 Art_Mask              = [Subject_Path  '\InspectedRepVox.nii'];
@@ -14,6 +16,7 @@ After_CTC_mat         = [Subject_Path  '\AfterCTC.mat'];
 % \\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL
 %DCECoregP             = [Subject_Path filesep 'DCE_out' filesep 'OrZe_20130811' filesep];
 DCECoregP             = '\\fmri-t9\users\Moran\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE6min\PeNe_20140902_2sec\';
+%DCECoregP             = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\KOCHAV_ZAFRIRA\Study20141022_134250\DCE\KoZa_20141022\';
 %DCECoregP             = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study20140615_114415\DCE-HTR\ReYe_20140615_2sec';
 
 %Subject_name          = 'KUDISH_IRITH';

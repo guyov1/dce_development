@@ -1,4 +1,4 @@
-function [ est_delay_by_AIF_correct, Sim_AIF_with_noise_Regul_shifted, Final_Filter_Estimation_Larss, idx_fig ] = AIF_Delay_Correct( Sim_Struct, ht_Struct, Final_Filter_Estimation_Larss, Sim_Ct_larss_Regul_noise,Verbosity, iter_num, avg_num, idx_fig)
+function [ est_delay_by_AIF_correct_sec, Sim_AIF_with_noise_Regul_shifted, Final_Filter_Estimation_Larss, idx_fig ] = AIF_Delay_Correct( Sim_Struct, ht_Struct, Final_Filter_Estimation_Larss, Sim_Ct_larss_Regul_noise,Verbosity, iter_num, avg_num, idx_fig)
 
 % Take from struct variables used in local function
 normalize                       = Sim_Struct.normalize;
@@ -27,8 +27,10 @@ adjusted_larsson                = Sim_Struct.Adjusted_Larsson_Model;
 Filter_Est_Chosen               = Sim_Struct.Filter_Est_Chosen;
 RealData_Flag                   = Sim_Struct.RealData_Flag;
 Simple_AIF_Delay_Correct        = Sim_Struct.Simple_AIF_Delay_Correct;
+LQ_Model_AIF_Delay_Correct      = Sim_Struct.LQ_Model_AIF_Delay_Correct;
 init_Ve_guess                   = Sim_Struct.init_Ve_guess;
 FMS_Algorithm                   = Sim_Struct.FMS_Algorithm;
+LQ_Model_AIF_Delay_Correct      = Sim_Struct.LQ_Model_AIF_Delay_Correct;
 
 %Final_Filter_Estimation_Larss   = ht_Struct.Final_Filter_Estimation_Larss;
 %Sim_Ct_larss_Regul_noise        = ht_Struct.Sim_Ct_larss_Regul_noise;
@@ -39,7 +41,7 @@ Conv_X_no_noise                 = ht_Struct.Conv_X_no_noise;
 % ---------------------------------------------------------------------
 %                 Regular correction by looking on h(t) shift
 % ---------------------------------------------------------------------
-est_simple_delay       = NaN; % Initiate with NaN
+est_simple_delay_min       = NaN; % Initiate with NaN
 
 if Simple_AIF_Delay_Correct
     
@@ -54,7 +56,7 @@ if Simple_AIF_Delay_Correct
         if ~isempty(peak_idx)
             
             % The estimated delay in minutes
-            est_simple_delay                   = time_vec_minutes(peak_idx(1));
+            est_simple_delay_min                   = time_vec_minutes(peak_idx(1));
             
             % Shift the AIF according to estimation
             shift_index                                             = peak_idx(1);
@@ -62,40 +64,114 @@ if Simple_AIF_Delay_Correct
             Sim_AIF_with_noise_Regul_shifted(1:end-shift_index)     = Sim_AIF_with_noise_Regul(shift_index+1:end);
             Sim_AIF_with_noise_Regul_shifted(end-shift_index+1:end) = Sim_AIF_with_noise_Regul_shifted(end-shift_index); % Duplicate the last values?
             
-            % Create new convolution matrix for
+            % Create new convolution matrix for findinf IRF
             [ Conv_X_shifted ] = Convolution_Matrix( min_interval, Sim_AIF_with_noise_Regul_shifted );
             
             if RealData_Flag
-                [ ~, ~, ~, Final_Filter_Estimation_Larss, ~, ~, ~, idx_fig ] =  ...
-                    Regularization_Methods_Simulation( Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise, Conv_Matrix, Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
+                [ ~, ~, ~, Final_Filter_Estimation_Larss, ~, ~, ~, idx_fig ]...
+                    = Regularization_Methods_Simulation( Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise, Conv_Matrix,  ...
+                      Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
             else
-                
                 [~, ~, ~, Final_Filter_Estimation_Larss, ~, ~, ~, idx_fig]...
-                    = Regularization_Methods_Simulation(Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise,Conv_X_shifted,Conv_X_no_noise,time_vec_minutes,...
-                    lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig , 'Larss' , Derivative_Time_Devision, plot_flag, RealData_Flag );
-                    
+                    = Regularization_Methods_Simulation( Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise, Conv_X_shifted,...
+                      Conv_X_no_noise,      time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig , filter_type , Derivative_Time_Devision, plot_flag, RealData_Flag );    
             end
         else
-            est_simple_delay                 = 0; % If the maximum is the first delay, there is no delay
+            est_simple_delay_min                 = 0; % If the maximum is the first delay, there is no delay
             Sim_AIF_with_noise_Regul_shifted = Sim_AIF_with_noise_Regul;
             
         end
     else
         
-        est_simple_delay                 = 0; % If the maximum is the first delay, there is no delay
+        est_simple_delay_min                 = 0; % If the maximum is the first delay, there is no delay
         Sim_AIF_with_noise_Regul_shifted = Sim_AIF_with_noise_Regul;
         
     end
     
-    est_delay_by_AIF_correct = est_simple_delay;
+    est_delay_by_AIF_correct_sec = est_simple_delay_min*60;
     
         
     return;
+
+elseif LQ_Model_AIF_Delay_Correct
+    % ---------------------------------------------------------------------
+    %                 Correction by Linear-Quadratic model (Cheong 2003)
+    % ---------------------------------------------------------------------
     
+    % Get the index of maximal point
+    [~, max_idx] = max(Final_Filter_Estimation_Larss);
+    
+    %all_X_mats = zeros(max_idx,3,max_idx);
+    
+    % If the maximum is not the first value, we might think there is a delay
+    if (max_idx ~= 1)
+        
+        % Initiate error vector in which we look for minimum
+        error_vector = Inf*ones(max_idx,1); 
+        CTC_vec      = Sim_Ct_larss_Regul(1:max_idx);
+        
+        
+        
+        for possible_delay_idx = 1 : max_idx
+            
+
+            LB_vec = [-Inf; 0   ;  0]; % beta1 and beta2 must be positive
+            UB_vec = [+Inf; +Inf; +Inf]; % beta1 and beta2 must be positive
+            
+            % Solve Constrained Linear Least-Squares Problem
+            % min (X_mat*beta_vec - CTC_vec)^2, such that lower_bound < beta_vec
+            
+            % Build the minimization matrix
+            
+            X_mat      = build_LQ_model_matrix( time_vec_minutes, possible_delay_idx, max_idx );
+            
+            %all_X_mats(:,:,possible_delay_idx) = X_mat;
+            
+            % [x,resnorm,residual,exitflag,output,lambda] = lsqlin(_)
+            algo_options   = optimset('Display','off');
+            [beta_vec, error_vector(possible_delay_idx) ] = lsqlin(X_mat,CTC_vec,[],[],[],[],LB_vec,UB_vec,[],algo_options);
+            %[~       , error_vector(possible_delay_idx) ] = lsqlin(X_mat,CTC_vec,[],[],[],[],LB_vec,UB_vec);
+            
+        end
+        
+        % Set the estimation as the one that minimizes least squares
+        [~, best_idx] = min(error_vector);
+        est_LQ_model_min  = time_vec_minutes(best_idx);
+        
+        shift_index                                             = best_idx;
+        Sim_AIF_with_noise_Regul_shifted                        = zeros(size(Sim_AIF_with_noise_Regul));
+        Sim_AIF_with_noise_Regul_shifted(1:end-shift_index)     = Sim_AIF_with_noise_Regul(shift_index+1:end);
+        Sim_AIF_with_noise_Regul_shifted(end-shift_index+1:end) = Sim_AIF_with_noise_Regul_shifted(end-shift_index); % Duplicate the last values?
+        
+        % Create new convolution matrix for findinf IRF
+        [ Conv_X_shifted ] = Convolution_Matrix( min_interval, Sim_AIF_with_noise_Regul_shifted );
+        
+        if RealData_Flag
+            [ ~, ~, ~, Final_Filter_Estimation_Larss, ~, ~, ~, idx_fig ]...
+                = Regularization_Methods_Simulation( Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise, Conv_Matrix,  ...
+                Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
+        else
+            [~, ~, ~, Final_Filter_Estimation_Larss, ~, ~, ~, idx_fig]...
+                = Regularization_Methods_Simulation( Sim_Ct_larss_Regul, Sim_Ct_larss_Regul_noise, Conv_X_shifted,...
+                Conv_X_no_noise,      time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig , filter_type , Derivative_Time_Devision, plot_flag, RealData_Flag );
+        end
+           
+    else
+        
+        est_LQ_model_min                     = 0; % If the maximum is the first delay, there is no delay
+        Sim_AIF_with_noise_Regul_shifted = Sim_AIF_with_noise_Regul;
+        
+    end
+    
+    est_delay_by_AIF_correct_sec = est_LQ_model_min*60;
+    
+    return;
+    
+
+else
     % ---------------------------------------------------------------------
     %                 Correction by setting multiple optional time delays
     % ---------------------------------------------------------------------
-else
     
     %     [peak_val, peak_idx]       = findpeaks(b_spline_larss_result_2nd_deriv);
     %     est_delay_by_spline_result = time_vec_minutes(peak_idx(1));
@@ -198,7 +274,7 @@ else
             est_F_noise         = max(Spline_est(:,i));
             if est_F_noise<=0
                 % Something is wrong with data. Return the input and stop iterating
-                est_delay_by_AIF_correct         = 0;
+                est_delay_by_AIF_correct_sec         = 0;
                 Sim_AIF_with_noise_Regul_shifted = Sim_AIF_with_noise_Regul;
                 %Final_Filter_Estimation_Larss
                 return;
@@ -409,7 +485,7 @@ min_idx_BiExp      = min_idx_BiExp(1); % Take the first one if there is more tha
 % Estimate the delay
 min_shift_sec_BiExp           = shift_times(min_idx_BiExp)*60;
 min_shift_sec_CTC             = shift_times(min_idx_CTC)*60;
-est_delay_by_AIF_correct      = shift_times(min_idx)*60;
+est_delay_by_AIF_correct_sec  = shift_times(min_idx)*60;
 
 
 % CTC = smooth(Sim_Ct_larss_Regul_noise);

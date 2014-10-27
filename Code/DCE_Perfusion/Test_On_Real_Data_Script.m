@@ -28,6 +28,7 @@ Sim_Struct.Ve_max              = 100;
 Sim_Struct.LowerBound_Larsson  = [Sim_Struct.Vb_low Sim_Struct.E_low  Sim_Struct.Ve_low];
 Sim_Struct.UpperBound_Larsson  = [Sim_Struct.Vb_max Sim_Struct.E_max  Sim_Struct.Ve_max];
 Sim_Struct.init_Ve_guess       = 0.1;
+Sim_Struct.LQ_Model_AIF_Delay_Correct             = false;
 
 % Set parallel processing if needed
 Set_Parallel_Processing(Sim_Struct, Verbosity);

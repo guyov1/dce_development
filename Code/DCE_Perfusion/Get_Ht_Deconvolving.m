@@ -150,7 +150,8 @@ elseif USE_TICHONOV
     In_Struct1.Vb_larss                           = NaN; % Simulation ground truth values
     In_Struct1.init_Ve_guess                      = Sim_Struct.init_Ve_guess;
     In_Struct1.FMS_Algorithm                      = Sim_Struct.FMS_Algorithm;
-    
+    In_Struct1.LQ_Model_AIF_Delay_Correct         = Sim_Struct.LQ_Model_AIF_Delay_Correct;
+
     In_Struct2                                    = struct;
     In_Struct2.Sim_AIF_with_noise_Regul           = AIF;
     In_Struct2.Sim_Ct_larss_Regul                 = NaN;
