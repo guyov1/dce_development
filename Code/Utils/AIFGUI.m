@@ -161,10 +161,31 @@ end
 axes(handles.axes1);cla;
 plot(handles.HSampleTs,handles.HAIF,'r-');
 hold on;
+
+TimeBetweenDCEVols=handles.TimeBetweenDCEVolsFinal;
+nSVols=handles.nNormalTs;
+BolusStartSec=40;
+
+A1=0.809;A2=0.330;T1=0.17046;T2=0.364;
+sig1=0.055;sig2=0.134;alpha=1.064;beta=0.166;
+s=37.772;tau=0.482;
+% Before there were really slighltly different numbers, from other place?
+% A~mM.min, T~min; sig~min, alpha~mM, beta,s~1/min, tau~min
+% Time stamp (in minutes) for every temporal point
+TimeBetweenDCEVolsMin=TimeBetweenDCEVols/60;
+SampleTs=((1:nSVols)-1)*TimeBetweenDCEVolsMin;
+T1x=BolusStartSec/60;
+% Population average c(t) according to Parker's article.
+C=AIF_Parker(handles.GoodTs,A1,sig1,T1x,A2,sig2,T2+T1x-T1,alpha,beta,s,tau+T1x-T1)/10;
+plot(handles.GoodTs,C,'k');
+
+
 plot(handles.GoodTs,handles.AIFFunc(handles.CurAIFParams,handles.GoodTs),'b*');
 tmp=mean(handles.DataToFit);
 tmp=tmp*max(handles.HAIF)/max(tmp);
 plot(handles.GoodTs,tmp,'g.');
+ax=axis;
+% axis([0 2 ax(3:4)]);
 
 for i=1:numel(handles.Axes)
     axes(handles.Axes(i));cla;

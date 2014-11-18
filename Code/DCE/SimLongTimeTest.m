@@ -1,11 +1,14 @@
 % WorkingP='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
-AIFP='\\fmri-t9\users\Moran\DCE\DCE_Duration\01_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
+AIFP='\\fmri-t9\users\Moran\DCE_Duration\01_HAVLIN_HAIM_MORDECHAY_3\Study20141019_100533\DCE\DCE6-3\HaMo_20141019\';
 %%
 ExportMatToCsv;
 %% Load basic stuff
 load('Export.mat');
 ImportMatFromCsv;
 handles=Export;
+
+GeneralDataFN=[UntilDelimiter(Export.TTL,filesep,-1) filesep 'Params.mat'];
+load(GeneralDataFN);
 
 UseBAT=true;
 
@@ -30,7 +33,7 @@ KepIdx=4;
 CurKeps=handles.CurPKs(:,KepIdx);
 CurKeps(isnan(CurKeps))=0;
 
-CurVps=handles.CurPKs(:,VpIdx);
+CurVps=handles.CurPKs(:,VpIdx)/AIFAmpCoeff;
 CurVps(isnan(CurVps))=0;
 
 qq=load([AIFP 'InspectedAIFParams.mat']);
@@ -39,6 +42,26 @@ handles.GoodTs=ww.InspectedParamsTimeSamples;
 AIF_Parker9t=@(x,t) AIF_Parkerg3( t,1,x(3),x(1),x(5),x(6),x(1)+x(4),x(7),x(8),x(9),max(handles.GoodTs))*x(2);
 AIFFunc=@(x,t) AIF_Parker9t(x,t);
 handles.HAIF=AIFFunc(qq.InspectedParams,handles.HSampleTs);
+
+A1=0.809;A2=0.330;T1=0.17046;T2=0.364;
+sig1=0.055;sig2=0.134;alpha=1.064;beta=0.166;
+s=37.772;tau=0.482;
+% Before there were really slighltly different numbers, from other place?
+% A~mM.min, T~min; sig~min, alpha~mM, beta,s~1/min, tau~min
+% Time stamp (in minutes) for every temporal point
+TimeBetweenDCEVols=diff(Export.SampleTs(1:2))*60;
+nSVols=nRegTimePoints;
+BolusStartSec=40;
+
+TimeBetweenDCEVolsMin=TimeBetweenDCEVols/60;
+SampleTs=((1:nSVols)-1)*TimeBetweenDCEVolsMin;
+T1x=BolusStartSec/60;
+% Population average c(t) according to Parker's article.
+C=AIF_Parker(handles.HSampleTs,A1,sig1,T1x,A2,sig2,T2+T1x-T1,alpha,beta,s,tau+T1x-T1)/10;
+
+% figure;plot(handles.HSampleTs,[C; handles.HAIF]);
+
+
 
 HHSampleTs=0:Hdt:handles.HSampleTs(end);
 HHAIF=interp1(handles.HSampleTs,handles.HAIF',HHSampleTs);
@@ -71,7 +94,7 @@ for i=1:numel(Idxs)
     SHSAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.HSampleTs+CurBATs(i),'linear','extrap');
 end
 %
-CurKtranses=handles.CurPKs(:,KtransIdx);
+CurKtranses=handles.CurPKs(:,KtransIdx)/AIFAmpCoeff;
 CurKtranses(isnan(CurKtranses))=0;
 clear Sims
 for i=1:numel(Idxs)
@@ -94,7 +117,7 @@ for i=1:size(Sims,1)
 end
 SSimsA=SSims;
 %% Extract for simulated
-SSimsB=SSims.*(1+randn(size(SSims))*0.2);
+SSimsB=SSims.*(1+randn(size(SSims))*0.2); %insert noise (0.2=20%)
 LastTimePoints=handles.SampleTs(end-nExtraTPs:end);
 ShortName=handles.TTL(end-22:end-10);
 clear PKs_check
@@ -108,7 +131,8 @@ clear SVps SKtranss SKeps
 for k=1:nExtraTPs+1
     SVps(:,k)=PKs_check(k,:,VpIdx);
     SKtranss(:,k)=PKs_check(k,:,KtransIdx);
-    SKeps(:,k)=PKs_check(k,:,KepIdx);
+    %SKeps(:,k)=PKs_check(k,:,KepIdx); Run with Model Selection
+    SKeps(:,k)=PKs_check(k,:,22); %Run without Model Selection
 end
 %%
 figure;

@@ -1,8 +1,12 @@
-function In=UntilDelimiter(In,Del)
+function In=UntilDelimiter(In,Del,K)
 if(iscell(In))
     for i=1:numel(In)
-        In{i}=UntilDelimiter(In{i},Del);
+        In{i}=UntilDelimiter(In{i},Del,K);
     end
 else
-    In=In(1:find(In==Del,1)-1);
+    if(K>0)
+        In=In(1:find(In==Del,K)-1);
+    else
+        In=In(1:find(In==Del,abs(K),'last')-1);
+    end
 end
