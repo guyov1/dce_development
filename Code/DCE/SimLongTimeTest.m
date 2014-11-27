@@ -36,6 +36,8 @@ CurKeps(isnan(CurKeps))=0;
 CurVps=handles.CurPKs(:,VpIdx)/AIFAmpCoeff;
 CurVps(isnan(CurVps))=0;
 
+nVoxels=numel(CurVps);
+
 qq=load([AIFP 'InspectedAIFParams.mat']);
 ww=load([AIFP 'InspectedAIFParamsTime.mat']);
 handles.GoodTs=ww.InspectedParamsTimeSamples;
@@ -89,7 +91,7 @@ end
 CurBATs=handles.CurPKs(:,BATIdx)/-60;
 CurBATs(isnan(CurBATs))=1;
 clear SHConvd2 SHSAIF
-for i=1:numel(Idxs)
+for i=1:nVoxels
     SHConvd2(i,:)=interp1(handles.HSampleTs,HConvd2(i,:)',handles.HSampleTs+CurBATs(i),'linear','extrap')';
     SHSAIF(i,:)=interp1(handles.HSampleTs,handles.HAIF,handles.HSampleTs+CurBATs(i),'linear','extrap');
 end
@@ -97,7 +99,7 @@ end
 CurKtranses=handles.CurPKs(:,KtransIdx)/AIFAmpCoeff;
 CurKtranses(isnan(CurKtranses))=0;
 clear Sims
-for i=1:numel(Idxs)
+for i=1:nVoxels
     Regressors=[SHSAIF(i,:); squeeze(SHConvd2(i,:))];
     Sims(i,:)=((Regressors')*([handles.CurPKs(i,[VpIdx]) CurKtranses(i)]'));        
 end
@@ -171,7 +173,6 @@ for CurVox=WhichToShow
     plot(Export.SampleTs(1:size(Export.CurCTCs,2)),Export.CurCTCs(CurVox,:),'ko');
 end
 %% Export to csv
-nVoxels=numel(CurVps);
 CurVs=[CurVps CurKtranses CurKeps];
 EstM=[LastTimePoints;SVps;SKtranss;SKeps];
 clear OutM;
