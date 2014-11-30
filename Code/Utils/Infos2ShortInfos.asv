@@ -37,7 +37,22 @@ for i=1:length(FNs)
     CurShort.ImagesInAcquisition=-777;
     if(isfield(Infos.(FNs{i}),'Private_0025_1007'))
 %         CurShort.ImagesInAcquisition=Infos.(FNs{i}).Private_0025_1007(1);
-        CurShort.ImagesInAcquisition=double(Infos.(FNs{i}).Private_0025_1007')*(256.^[0:3]');
+        if(numel(Infos.(FNs{i}).Private_0025_1007')==1)
+            CurShort.ImagesInAcquisition=Infos.(FNs{i}).Private_0025_1007;
+        else
+            CurShort.ImagesInAcquisition=double(Infos.(FNs{i}).Private_0025_1007')*(256.^[0:3]');
+        end
+        if(numel(CurShort.ImagesInAcquisition)>1)
+            aq=232;
+        end
+    end
+    if(isfield(Infos.(FNs{i}),'Private_2001_1018'))
+        CurShort.ImagesInAcquisition=double(Infos.(FNs{i}).Private_2001_1018);
+    else
+        a=5;
+    end
+    if(isfield(Infos.(FNs{i}),'Private_0029_1020'))
+        Prot=char(Infos.(FNs{i}).Private_0029_1020');
     end
     CurShort.R1=-777;
     if(isfield(Infos.(FNs{i}),'Private_0019_108a'))

@@ -71,7 +71,7 @@ else
                             D=D(~ismember({D.name},{'Coreg' 'anat' 'dti' 'func' 'N3'}));
                             if(numel(D)==1)
                                 DD=dir([Base filesep D.name filesep]);
-                                movefile([Base filesep D.name filesep DD(3).name],TRG_FN);
+                                movefile([Base filesep D.name filesep DD(end).name],TRG_FN);
                                 delete([Base filesep D.name filesep '*.*']);
                                 rmdir([Base filesep D.name]);
                             else

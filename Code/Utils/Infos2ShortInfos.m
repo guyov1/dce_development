@@ -51,6 +51,10 @@ for i=1:length(FNs)
     else
         a=5;
     end
+    if(isfield(Infos.(FNs{i}),'Private_0029_1020'))
+        Prot=char(Infos.(FNs{i}).Private_0029_1020');
+        CurShort.ImagesInAcquisition=GetParameterFromSiemensMrProt(Prot,'lRepetitions');
+    end
     CurShort.R1=-777;
     if(isfield(Infos.(FNs{i}),'Private_0019_108a'))
         CurShort.R1=Infos.(FNs{i}).Private_0019_108a(1);

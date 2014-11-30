@@ -6,6 +6,7 @@ AddToLog(WorkingP,'b_00','\\subsection*{Relaxometry}');
 RelaxFN=[WorkingP 'Relax.mat'];
 %% Create the Relaxometry directory and needed initial structs in case it does not exist already
 DCERelaxP=[WorkingP 'Relaxometry' filesep];
+DCEInfos=DCEInfos(~ismember({DCEInfos.SeriesInstanceUID},MainInfo.SeriesInstanceUID));
 
 % Create relaxometry directory
 mkdir(DCERelaxP);

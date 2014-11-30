@@ -274,7 +274,7 @@ if(Options.UseN3OnT1)
 %         CurSli=11;
         F=find(I{3}==CurSli);
         FF=find(IF{3}==CurSli);
-        [X Y]=meshgrid(1:size(RefVol,1),1:size(RefVol,2));
+        [X Y]=meshgrid(1:size(RefVol,2),1:size(RefVol,1));
         X(:)=IF{1}(FF);
         Y(:)=IF{2}(FF);
         gsubplot(numel(GoodSlices),i);

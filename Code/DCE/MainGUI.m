@@ -272,7 +272,7 @@ GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
 Tmp(Tmp==55)=2500; % For Verona PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % For Siemens
 % If we got more than 1 main, return an error
 if(numel(DCEMainI)~=1)
     if(isfield(handles,'ListMode') && handles.ListMode)
@@ -343,7 +343,7 @@ CrgTo=CrgToS{get(handles.t1coregto,'Value')};
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 MainInfo=handles.ShortInfos(GoodS(DCEMainI));
 
 % Starting T1 calculation
@@ -395,7 +395,7 @@ GoodS=get(handles.DCE_Data_ListBox,'Value');
 % Find the main data file
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 
 % Remove the Main from the rest
@@ -448,7 +448,7 @@ GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Philips=Tmp(end)==25;
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 f = helpdlg([handles.ShortSeriesName ': Finding represntative voxels...']);
@@ -485,7 +485,7 @@ GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Philips=Tmp(end)==25;
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 f = helpdlg([handles.ShortSeriesName ': AIF extraction...']);
@@ -519,7 +519,7 @@ Options=handles.Options;
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 
@@ -813,7 +813,7 @@ Descriptions=strrep(Descriptions,'_',' ');
 GoodS=intersect(get(handles.DCE_Data_ListBox,'Value'),1:numel(handles.ShortInfos));
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 for i=DCEMainI
     Descriptions{i}=[Descriptions{i} ' ' num2str(handles.ShortInfos(i).FlipAngle) ' ' num2str(handles.ShortInfos(i).ImagesInAcquisition)];
@@ -1170,7 +1170,7 @@ load(CTCFN);
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>100);
+DCEMainI=find(Tmp>50); % Siemens
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 disp('DCET1_PKf..');
@@ -1345,7 +1345,7 @@ for i=1:numel(CurPs)
     
     Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
     Tmp(Tmp==25)=2500; % For PHILIPS now
-    DCEMainI=find(Tmp>100);
+    DCEMainI=find(Tmp>50); % Siemens
 
     if(isempty(DCEMainI))
         continue;
