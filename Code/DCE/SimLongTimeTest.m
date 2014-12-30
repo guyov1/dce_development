@@ -1,5 +1,6 @@
 % WorkingP='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
-AIFP='\\fmri-t9\users\Moran\DCE_Duration\01_HAVLIN_HAIM_MORDECHAY_3\Study20141019_100533\DCE\DCE6-3\HaMo_20141019\';
+% AIFP='\\fmri-t9\users\Moran\DCE_Duration\01_HAVLIN_HAIM_MORDECHAY_3\Study20141019_100533\DCE\DCE6-3\HaMo_20141019\';
+AIFP='\\fmri-t9\users\Moran\DCE_Duration\ParamsForParkerAIF\';
 %%
 ExportMatToCsv;
 %% Load basic stuff
@@ -167,7 +168,8 @@ end
 %%
 figure;
 WhichToShow=1; %:size(PKs_check,2);
-plot(Stuff.HSampleTs,Stuff.HAIF/200,'k');hold on;
+%plot(Stuff.HSampleTs,Stuff.HAIF/200,'k');hold on;
+plot(Stuff.HSampleTs,Stuff.HAIF/10,'k');hold on;
 for CurVox=WhichToShow
     plot(handles.HSampleTs,squeeze(ASims(:,:,CurVox))');hold on;
     plot(Export.SampleTs(1:size(Export.CurCTCs,2)),Export.CurCTCs(CurVox,:),'ko');

@@ -58,6 +58,7 @@ Sim_Struct.Patlak_Est_Type               = 'Specified Points';
 % Choose which filter estimation to use when calculating parameters (non-linear method)
 % Possible: 'Wiener', 'Ridge', 'Spline', 'Spline_1st', 'Spline_2nd', 'PCA', 'PCA_1st', 'PCA_2nd'
 Sim_Struct.Filter_Est_Chosen             = 'Spline_2nd';
+Sim_Struct.filter_type                   = 'Larss';
 % Number of iterations for PCA basis creation
 Sim_Struct.Num_iterations_PCA            = 1000; % 100,000
 % Use the adjusted Larsson filter
@@ -131,7 +132,7 @@ Sim_Struct.Use_Cyclic_Conv_4_ht_est               = false;       % Use cyclic de
 Sim_Struct.Cyclic_End_Padding                     = true;       % Pad at the beginning or end
 Sim_Struct.Use_Upsampling_and_Cyclic              = false;      % Use cyclic de-convolution to correct for delay + upsampling
 Sim_Struct.Use_Upsampling_Delay_Comp              = false;      % Upsample Ct(t) and AIF(t) to try and predict time shift in AIF
-Sim_Struct.Upsampling_resolution_Sec              = 0.1;        % Set the upsampling target
+Sim_Struct.Upsampling_resolution_Sec              = 0.05;        % Set the upsampling target
 Sim_Struct.Upsampling_resolution                  = Sim_Struct.Upsampling_resolution_Sec / 60;   % Set the upsampling target
 Sim_Struct.Max_Time_Delay                         = Sim_Struct.AIF_delay_max;  % Set the maximal possible time delay in seconds for correction
 Sim_Struct.Min_Time_Delay                         = Sim_Struct.AIF_delay_low;  % Set the minimal possible time delay in seconds for correction

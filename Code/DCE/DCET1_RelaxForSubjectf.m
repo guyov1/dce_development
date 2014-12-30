@@ -1,12 +1,26 @@
 function DCET1_RelaxForSubjectf(DCEInfos,WorkingP,DoN3,DoGlobal,DoDeviations,CalcForce,WhichMean,Options,MainInfo)
 
+LogFN=[WorkingP 'Log.mat'];
+if(~exist(LogFN,'file'))
+    SN=[WorkingP];
+    Log.a_00={['\\title{' SN '}\r\n\\maketitle\r\n']};
+    save(LogFN,'Log');
+end
+
+JustT1Mode=false;
+if(isempty(MainInfo))
+    JustT1Mode=true;
+end
+
 AddToLog(WorkingP,'b_00','\\subsection*{Relaxometry}');
 
 % DoN3,DoGlobal,DoDeviations
 RelaxFN=[WorkingP 'Relax.mat'];
 %% Create the Relaxometry directory and needed initial structs in case it does not exist already
 DCERelaxP=[WorkingP 'Relaxometry' filesep];
-DCEInfos=DCEInfos(~ismember({DCEInfos.SeriesInstanceUID},MainInfo.SeriesInstanceUID));
+if(~isempty(MainInfo))
+    DCEInfos=DCEInfos(~ismember({DCEInfos.SeriesInstanceUID},MainInfo.SeriesInstanceUID));
+end
 
 % Create relaxometry directory
 mkdir(DCERelaxP);
@@ -91,19 +105,20 @@ for j =FASetsToWorkOn
         % Create file name for nifti
         CurOtherFAsInfos=DCEInfos;
         i=1;
-        OtherFABaseFNs{i}=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '.nii'];
+        CurFA=round(CurOtherFAsInfos(i).FlipAngle);
+        OtherFABaseFNs{i}=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '.nii'];
         
         % Create temp nifti out of dicom data
         Tmp=gDicom2Nifti(CurOtherFAsInfos(i).Path,OtherFABaseFNs{i});
         
         % Same nifti file name concatenated with "_0001"
-        MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0001.nii'];
+        MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0001.nii'];
         
         % Not clear what the purpose of the following...
         if(Tmp>1 && Tmp<10 && exist(MainSubFN,'file'))
-            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_' sprintf('%04d',floor(Tmp/2))   '.nii'];
+            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_' sprintf('%04d',floor(Tmp/2))   '.nii'];
             movefile(MainSubFN,OtherFABaseFNs{i});
-            delete([Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_*.nii']);
+            delete([Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_*.nii']);
         end
         
         if(~exist(OtherFABaseFNs{i},'file'))
@@ -213,27 +228,27 @@ for j =FASetsToWorkOn
     
     % Creating nifti for all original FAs
     for i=1:nOtherFAs
+        CurFA=round(CurOtherFAsInfos(i).FlipAngle);
         
         % Create file name for nifti
-        OtherFABaseFNs{i}=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '.nii'];
+        OtherFABaseFNs{i}=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '.nii'];
         
         % Create temp nifti out of dicom data
         Tmp=gDicom2Nifti(CurOtherFAsInfos(i).Path,OtherFABaseFNs{i});
-        
         % Same nifti file name concatenated with "_01"
-        MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_01.nii'];
+        MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_01.nii'];
         if(~exist(MainSubFN,'file'))
-            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0001.nii'];
+            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0001.nii'];
         end
         if(Tmp==3)
-            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0002.nii'];
+            MainSubFN=[Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_0002.nii'];
         end
         
         % Not clear what the purpose of the following...
         if(Tmp>1 && Tmp<10 && exist(MainSubFN,'file'))
             
             movefile(MainSubFN,OtherFABaseFNs{i});
-            delete([Set_Dir 'OrigFA_' sprintf('%02d',CurOtherFAsInfos(i).FlipAngle) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_*.nii']);
+            delete([Set_Dir 'OrigFA_' sprintf('%02d',CurFA) '_' sprintf('%02d',CurOtherFAsInfos(i).SeriesNumber) '_*.nii']);
             
         end
         
@@ -288,7 +303,25 @@ for j =FASetsToWorkOn
     PrepareFN=[WorkingP 'AfterPrepare4D.mat'];
     
     %load(PrepareFN,'BrainMask','C2','RepSli','MeanVol');
-    load(PrepareFN,'BrainMask','RepSli','MeanVol');
+    if(JustT1Mode)
+        MeanVol=loadniidata(MeanFN);
+        Raw2Nii(MeanVol,CMeanFN,'float32',MeanFN);
+        if(Options.Mask_thresh<0)
+            [BetStrippedMeanFN, BetMaskFN]=mcbet2(CMeanFN,CalcForce,abs(Options.Mask_thresh));
+        else
+            [BetStrippedMeanFN, BetMaskFN]=mcbet2(CMeanFN,CalcForce);
+        end
+        ManMaskFN=[WorkingP 'Manual_BrainMask.nii'];
+        if(exist(ManMaskFN,'file'))
+            %AddToLog(WorkingP,'a_2caaaaa','Using Manual_BrainMask');
+            AddToLog(WorkingP,'a_2caaaaa','Using Manual.BrainMask');
+            BrainMask=loadniidata(ManMaskFN)>0;
+        else
+            BrainMask=loadniidata(BetMaskFN)>0;
+        end
+    else
+        load(PrepareFN,'BrainMask');
+    end
     
     % If the brain mask have black holes in it, fill them
     FBrainMask=bwfillHoles3Dby2D(BrainMask);
@@ -539,7 +572,66 @@ for j =FASetsToWorkOn
     Raw2Nii(squeeze(FRelax4D3(:,:,:,3)),[RWorkingP 'RMS3DOFA.nii'],'float32', MeanFN);
     
     MidSli=floor(size(FA4D,3)/2);
-    load(PrepareFN,'BadSlicesF2');
+    if(JustT1Mode)
+        SDCE=size(FA4D);
+        %  Mark the first and the last slices to be false
+        BadSlicesA=[1 size(MeanVol,3)];
+        
+        % Remove the first and last slices
+        BrainMask(:,:,BadSlicesA)=false;
+        
+        %Selecting slices
+        disp('Find problematic slices');
+        
+        MedSlice=zeros(SDCE(3),1);
+        % Go over every slice
+        for i=1:SDCE(3)
+            % Slice mask at every iteration holds values different than 0 for the
+            % current slice only (this is why we initiate it with zeros)
+            SliceMsk=zeros(SDCE(1),SDCE(2),SDCE(3));
+            SliceMsk(:,:,i)=BrainMask(:,:,i);
+            
+            % Take the first time index only because we want an image before the enhancement.
+            % We should have taken the entire baseline (all images before
+            % enhancmenet), but this is an approximation
+            Tmp=Reshape4d22d(MeanVol,SliceMsk);
+            % Get the median value of every slice
+            MedSlice(i,:)=median(Tmp,1);
+        end
+        
+        % The following function is problematic (dimenstions for repPlus,repMulti
+        % are incorrect)
+        %NMedSlice=repMulti(repPlus(MedSlice,-mean(MedSlice,1)),1./std(MedSlice,0,1));
+        
+        % BadSlices=any(abs(NMedSlice)>2,2);
+        NaNSlices=isnan(MedSlice);
+        disp('Looking for weird slices');
+        if(numel(MedSlice(~NaNSlices))<2)
+            error('Only one slice!');
+        end
+        
+        BadSlices=NaNSlices;
+        
+        % The following function is checking if there are any other bad slices
+        % A slice is considered bad if its median is far (>50) than the 3 middle slices (which should have a reliable signal
+        BadSlices(~NaNSlices)=abs(MedSlice(~NaNSlices)-mean(MedSlice(MidSli-1:MidSli+1)))>50-Philips*30;
+        BadSlicesF=find(BadSlices);
+        disp(['Ignoring slices ' num2str(BadSlicesF')]);
+        AddToLog(WorkingP,'a_2ccc',['Ignoring slices ' num2str(BadSlicesF')]);
+        figure(78362);clf;subplot(1,2,1);
+        % Plot the median value of each slice
+        plot(1:SDCE(3),MedSlice,'b',BadSlicesF,MedSlice(BadSlicesF),'ro');
+        title('Median of slices and ignored ones');
+        xlabel('Slices');
+        ylabel('Median');
+        MskSlices=ones(size(MeanVol))>0;
+        MskSlices(:,:,BadSlicesF)=false;
+        % Get a list of all bad slices (unite the extreme slices and the ones >50)
+        BadSlicesF2=union(BadSlicesF,[1 size(MeanVol,3)]);
+    else
+        load(PrepareFN,'BadSlicesF2');
+    end
+    
     GoodSlices=setdiff(1:size(FA4D,3),BadSlicesF2);
     
     % ASK GILAD - What is the purpose of the following paragraph?
@@ -728,9 +820,9 @@ for j =FASetsToWorkOn
     Raw2Nii(squeeze(FRelax4DN(:,:,:,3)),[RWorkingP 'RMS3DNFA.nii'],'float32', MeanFN);
     
     %% Coregister
-    CoregRelaxToMain=true;
+    CoregRelaxToMain=true && ~JustT1Mode;
     if(isfield(Options,'CoregRelaxToMain'))
-        CoregRelaxToMain=Options.CoregRelaxToMain;
+        CoregRelaxToMain=Options.CoregRelaxToMain && ~JustT1Mode;
     end
     if(CoregRelaxToMain && ~strcmp(WhichMean,'Mean 4D'))
         CMeanFN=[WorkingP 'DCEMean.nii'];
@@ -901,3 +993,275 @@ clear(BigMem{:});
 AddToLog(WorkingP,'b_9','Relaxometry finished');
 save(RelaxFN);
 disp(['DCET1_RelaxForSubjectf finished for ' WorkingP]);
+if(~JustT1Mode)
+    return;
+end
+%% Step 6.5 SPM masking
+BrainMskFN=[WorkingP 'BrainMask.nii'];
+[tmp, MaxFAI]=max(FAsF);
+
+BaselineNoBadSliFN=OtherFACrgFNs{MaxFAI}; % [WorkingP 'BaselineNoBadSli.nii'];
+BaselineNoBadSli=loadniidata(BaselineNoBadSliFN);
+
+MeanVol=BaselineNoBadSli;
+
+BaselineNoBadSli(:,:,BadSlicesF2)=NaN;
+Raw2Nii(BaselineNoBadSli,BaselineNoBadSliFN,'float32', MeanFN);
+% 
+% DCEMeanSegP=SPM_Segment(BaselineNoBadSliFN,Force,[],false);
+DCEMeanSegQB1=SPM_SegmentWithB1(BaselineNoBadSliFN,CalcForce);
+
+DCEMeanSegP=DCEMeanSegQB1;
+C1=loadniidata([DCEMeanSegP 'c1ForSeg.nii'])/256;
+C2=loadniidata([DCEMeanSegP 'c2ForSeg.nii'])/256;
+C3=loadniidata([DCEMeanSegP 'c3ForSeg.nii'])/256;
+if(Options.Mask_thresh>0)
+    MinSPMBrainValue=Options.Mask_thresh;
+else
+    MinSPMBrainValue=0.5;    
+end
+% % BrainMask=(C1+C2)>MinSPMBrainValue;
+% % 
+BrainMaskA=(C1+C2+C3)>MinSPMBrainValue;
+BrainMaskA=bwfillHoles3Dby2D(BrainMaskA);
+se=strel('disk',2,8);
+BrainMaskA=imerode(BrainMaskA,se);
+BrainMaskA=bwfillHoles3Dby2D(BrainMaskA);
+if((Options.Mask_thresh>0) && ~exist(ManMaskFN,'file'))
+    BrainMask=BrainMaskA;
+    FBrainMask=BrainMask;
+end
+Raw2Nii(BrainMask,BrainMskFN,'float32',MeanFN);
+Raw2Nii(BrainMask,FMaskFN,'float32',MeanFN);
+
+disp('SPM segment finished');
+BaselineNoBadSliFN2=[WorkingP 'BaselineNoBadSli2.nii'];
+
+% In unix, run the system cp command with no "-p" because it gives an
+% error when the destination is in another computer so source and dest
+% files have different owner
+if (filesep == '/') % Unix
+    system(['cp -f ' BaselineNoBadSliFN ' ' BaselineNoBadSliFN2]);
+else  % Windows
+    copyfile(BaselineNoBadSliFN,BaselineNoBadSliFN2,'f');    
+end
+
+% DCEMeanSegP2=SPM_Segment(BaselineNoBadSliFN2,Force,[],FMaskFN);
+DCEMeanSegP2=DCEMeanSegQB1;
+
+BaseSeg3D(:,:,:,1)=loadniidata([DCEMeanSegP2 'c1ForSeg.nii'])/256;
+BaseSeg3D(:,:,:,2)=loadniidata([DCEMeanSegP2 'c2ForSeg.nii'])/256;
+BaseSeg3D(:,:,:,3)=loadniidata([DCEMeanSegP2 'c3ForSeg.nii'])/256;
+BaseSeg3D(:,:,:,4)=loadniidata(FMaskFN);
+[Tmp, BaseSeg3DAll]=max(BaseSeg3D(:,:,:,1:3),[],4);
+BaseSeg3DAll(~BaseSeg3D(:,:,:,4))=0;
+% BaseCleaned=loadniidata([DCEMeanSegP2 'mForSeg.nii']);
+BaseCleaned=MeanVol;
+
+se=strel('disk',4,8);
+EBrainMask=imerode(FBrainMask,se);
+EEBrainMask=imerode(EBrainMask,se);
+EEEBrainMask=imerode(EEBrainMask,se);
+
+CSFMask=BaseSeg3DAll==3 & BaseSeg3D(:,:,:,3)>Options.ThreshForRefMasks & EEEBrainMask==1;
+WMMask=BaseSeg3DAll==2 & BaseSeg3D(:,:,:,2)>Options.ThreshForRefMasks & EEEBrainMask==1;
+
+if(sumn(WMMask)<100)
+    WMMask=BaseSeg3DAll==2 & BaseSeg3D(:,:,:,2)>Options.ThreshForRefMasks*0.9 & EEEBrainMask==1 & ~TooEnhancedForNAWM;
+end
+BaseSeg3DAllx=BaseSeg3DAll;
+BaseSeg3DAllx(CSFMask)=4;
+BaseSeg3DAllx(WMMask)=5;
+
+Tmp=max(BrainMask,[],3);
+F=find(max(Tmp,[],2));
+GoodRows=F(1):F(end);
+F=find(max(Tmp,[],1));
+GoodCols=F(1):F(end);
+GoodSlices=setdiff(1:SDCE(3),BadSlicesF2);
+
+MaxV=median(BaseCleaned(isfinite(BaseCleaned) & BaseCleaned>100))*2;
+[q MaxV]=FindDR(BaseCleaned(BrainMask));
+for i=1:numel(GoodSlices)
+    CurSli=GoodSlices(i);
+    I=squeeze(BaseCleaned(:,:,CurSli));
+    %         [Tmp MaxV]=FindDR(I);
+    ClrM=[1 0 0; 0 1 0; 0 0 1; 1 1 0; 1 0 1];
+    IRGB=repmat(min(1,I/MaxV),[1 1 3]);
+    for tt=1:3
+        BW2 = bwmorph(squeeze(BaseSeg3DAll(:,:,CurSli)==tt),'remove');
+        for kk=1:3
+            TmpI=IRGB(:,:,kk);
+            TmpI(BW2)=ClrM(tt,kk);
+            IRGB(:,:,kk)=TmpI;
+        end
+    end
+    for tt=4:5
+        BW2 = bwmorph(squeeze(BaseSeg3DAllx(:,:,CurSli)==tt),'remove');
+        for kk=1:3
+            TmpI=IRGB(:,:,kk);
+            TmpI(BW2)=ClrM(tt,kk);
+            IRGB(:,:,kk)=TmpI;
+        end
+    end
+    IRGB3(:,:,:,i)=IRGB;
+end
+
+figure(9899);clf;
+montage(mritransform(IRGB3(GoodRows,GoodCols,:,:)))
+title(num2str(GoodSlices));
+saveas(9899,[WorkingP 'BaseSeg'  '.png']);
+saveas(9899,[WorkingP 'BaseSeg'  '.fig']);
+%%
+close(9899);
+AddToLog(WorkingP,'ya_2d',['Img segmentation. Red - GM, Green - WM, Blue - CSF, Magenta - WM for reference, Yellow - CSF for reference.'],['BaseSeg'  '.png']);
+%%
+Raw2Nii(CSFMask,[WorkingP 'RefAuto_Base' '_CSF_2430.nii'],'float32', MeanFN);
+Raw2Nii(WMMask,[WorkingP 'RefAuto_Base' '_WM_830.nii'],'float32', MeanFN);
+
+%% B1
+T1CleanedFN=[RWorkingP 'Seg_ForSeg'  filesep 'mForSeg.nii'];
+% T1UnCleanedFN=[RWorkingP 'Seg_ForSeg'  filesep 'ForSeg.nii'];
+T1UnCleanedFN=[RWorkingP 'T13DNFA.nii'];
+% RelaxFN=T1CleanedFN;
+RelaxFN=T1UnCleanedFN;
+% Load .nifti data of the T1 map
+CT1=loadniidata(RelaxFN);
+
+% Find B1 by WM ref
+D = dir([WorkingP 'RefT1_*.nii']);
+if(isempty(D))
+    D=dir([WorkingP 'RefAuto_Base_WM*.nii']);
+end
+
+Baseline=MeanVol;
+
+RefFN=[WorkingP D(1).name];
+AddToLog(WorkingP,'c_20Norm',['T1 Normalization ref file: ' strrep(D(1).name,'_','-')]);
+RefTrgVal=str2num(RefFN(find(RefFN=='_',1,'last')+1:end-4));
+RefVol=loadniidata(RefFN)>0;
+D2 = dir([WorkingP 'WMExMask.nii']);
+if(~isempty(D2))
+    AddToLog(WorkingP,'c_20NormEx','Using WM exclusion mask!');
+    ExMask=loadniidata([WorkingP 'WMExMask.nii'])>0;
+    RefVol=RefVol & ~ExMask;
+end
+RefVolX=RefVol & CT1>100;
+% If removing the bad slices, leave us with no remaining voxels, keep them
+TmpRefVol = RefVolX;
+TmpRefVol(:,:,BadSlicesF2) = false;
+if sum(sum(sum(TmpRefVol))) ~= 0
+    RefVolX(:,:,BadSlicesF2) = false;
+end  
+clear TmpRefVol;
+
+%%
+% ASK GILAD - what is the purpose of the following?
+if(Options.UseN3OnT1)
+    %     PseudoB1=sqrt(double(loadniidata(T1Res{1,DoDeviations+1,2}))./double(loadniidata(T1Res{1,DoDeviations+1,1})));
+    %     UncleanedT1=loadniidata(T1Res{1,1+Options.ExtractFAs,1});
+    UncleanedT1=loadniidata(T1UnCleanedFN);
+%     PseudoB1=sqrt(CT1./UncleanedT1);
+    ShowSurfFit=false;
+    NonLinTransformPower=1;
+    NonLinTransform=@(x) log(x.^(1/NonLinTransformPower));
+    rNonLinTransform=@(x) exp(x).^NonLinTransformPower;
+
+    FindB1gWM_LS;
+    %%
+%     if(ShowSurfFit)
+    gfig(5001);clf;
+    for i=1:numel(GoodSlices)
+            CurSli=GoodSlices(i);
+%         CurSli=11;
+        F=find(I{3}==CurSli);
+        FF=find(IF{3}==CurSli);
+        [X Y]=meshgrid(1:size(RefVol,2),1:size(RefVol,1));
+        X(:)=IF{1}(FF);
+        Y(:)=IF{2}(FF);
+        gsubplot(numel(GoodSlices),i);
+        CurFld=squeeze(NewField(:,:,CurSli));
+        surf(X,Y,CurFld,'EdgeColor','none');
+        colormap hsv
+        alpha(.7)
+        hold on;
+        if(isempty(F))
+%             plot3(I{1}(F), I{2}(F),rNonLinTransform(SolVec(F))/RefTrgVal,'ko');
+%             ax=axis;
+%             axis([min(I{1}(F))-10 max(I{1}(F))+10 min(I{2}(F))-10 max(I{1}(F))+10 ax(5:6)]);
+        else
+            plot3(I{1}(F), I{2}(F),rNonLinTransform(SolVec(F))/RefTrgVal,'ko');
+            ax=axis;
+            axis([min(I{1}(F))-10 max(I{1}(F))+10 min(I{2}(F))-10 max(I{2}(F))+10 ax(5:6)]);
+        end
+        title(CurSli);
+        zlabel([mean(CurFld(:)) std(CurFld(:))]);
+    end
+    %%
+    MaximizeSaveCloseAndAddToLog(WorkingP,'B1gWM','yc_30B1gWMrRMS','$B_1$ given WM.');
+    %%
+    B1FN=[RWorkingP 'N3B1.nii'];
+    Raw2Nii(PseudoB1,B1FN,'float32', MeanFN);
+end
+%% Setting threshold values
+
+% ASK GILAD - how did he determine those values?
+% ASNWER - He uses those values to see if the T1 calculation failed.
+%                    He checks whether 1000 voxels or more has a value greater than T1 = 4000.
+%                    He used T1=1200 before for the iterations for calculating the REAL T1_base to converge.
+%                    T1=40,000 before was just a really high limit (so we won't realty limit the possible results).
+
+% Maximum value of T1 in image
+T1Thresh=10000;
+
+% Maximum number of values exceeding the T1 threshold
+NaTThresh=1000;
+
+Msk=FBrainMask;
+
+% Go over each slice
+for i=1:size(CT1,3)
+    CurMsk=squeeze(Msk(:,:,i));
+    CurCT1=squeeze(CT1(:,:,i));
+    nAT(i)=sumn(CurCT1(CurMsk)>T1Thresh);
+end
+BadSlicesAgain=find(nAT>NaTThresh);
+% If the number of pixels in slice, exceeding T1Thresh is bigger than NaTThresh, mark the slice as NaN.
+CT1(:,:,BadSlicesAgain)=NaN;
+%%
+% ASK GILAD - I don't understand the B1 calculations
+% ASNWER       - SHOULD READ THE ARTICLE AND CHECK THAT.
+if(Options.UseN3OnT1)
+    B1=loadniidata(B1FN);
+else
+    B1=CT1*0+1;
+end
+
+S=sort(CT1(RefVolX));
+WhichPercent=0.5;
+RefCurVal=S(max(1,floor(numel(S)*WhichPercent)));
+% RefCurVal=median(CT1(RefVolX));
+kCoeff=RefTrgVal/RefCurVal;
+AddToLog(WorkingP,'c_1kc',['kCoeff:' num2str(kCoeff)]);
+FinalT1=CT1*kCoeff;
+FinalT1FromDESPOT1=FinalT1;
+
+
+if(~Options.UseN3OnT1)
+    kCoeff=1;
+end
+% kCoeff=1;
+B1Nok=B1;
+B1=B1*sqrt(kCoeff);
+FinalT1FN=[WorkingP 'FinalT1.nii'];
+Raw2Nii(FinalT1,FinalT1FN,'float32',MeanFN);
+
+WMD=dir([WorkingP 'RefT1_*WM*.nii']);
+if(isempty(WMD))
+    WMD=dir([WorkingP 'Ref*.nii']);
+    WMD=WMD(strhas({WMD.name},'WM'));
+end
+RefWMFN=[WorkingP WMD(1).name];
+RefWMVol=loadniidata(RefWMFN)>0;
+RefWMVal=median(FinalT1(RefWMVol));
+AddToLog(WorkingP,'c_2wm',['RefWMVal:' num2str(RefWMVal)],[],2);

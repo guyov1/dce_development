@@ -1,5 +1,5 @@
 % WorkingP='\\fmri-t9\users\Moran\OptDCEinMS\MS-IT-MTX\Sub01_ARIE_CHEN\Study20140520_102624_baseline\DCE\long\ArCh_20140520\';
-WorkingP='\\fmri-t9\users\Moran\OptDCE\Healthy\02_Sharon_Rabinovitz\DCE\ShRa_20101224\';
+WorkingP='\\fmri-t9\users\Moran\DCE_SVM\11_HASSMAN_MODI\T1_Study20140923_133838\DCE\HaMo_20140923\';
 DataP=[WorkingP 'AutoArtBAT' filesep];
 PercentToUse=0.9;
 

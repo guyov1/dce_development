@@ -65,6 +65,7 @@ set(handles.list_of_paths_box,'Min',0);
 set(handles.list_of_paths_box,'Max',3);
 
 Defaults.SubSampling=1;
+Defaults.nVolsToRemoveFromStart=0;
 Defaults.nVolsToRemoveFromEnd=0;
 Defaults.SubSecondResolution=2;
 Defaults.MinFirstBolusStd=2;
@@ -529,6 +530,8 @@ disp('DCET1_PKf..');
 DCET1_PKf;
 disp('WholeROICompute..');
 
+WorkingP=handles.destFolder;
+
 % Calculate parameters for the entire brain (all voxels)
 DCET1_WholeVolCompute;
 
@@ -890,7 +893,7 @@ if(DoDebug)
         ArtFind(hObject, eventdata, handles);
         MakeReport; % Create PDF Report
     end
-    if(ismember('DCE Analysis',ToDo))
+    if(ismember('Find AIF',ToDo))
         AIFFind(hObject, eventdata, handles);
         MakeReport; % Create PDF Report
     end
@@ -919,7 +922,7 @@ else % In regular mode, use try-catch
             ArtFind(hObject, eventdata, handles);
             MakeReport; % Create PDF Report
         end
-        if(ismember('DCE Analysis',ToDo))
+        if(ismember('Find AIF',ToDo))
             AIFFind(hObject, eventdata, handles);
             MakeReport; % Create PDF Report
         end
@@ -1733,3 +1736,27 @@ function popupmenu3_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbuttonDestSame.
+function pushbuttonDestSame_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbuttonDestSame (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.destFolderBase=handles.BaseP;
+
+% Save the destination as the default one for next use
+base_path_dir = getComputerParams('basepath');
+if( exist(base_path_dir,'dir') )
+    Dest_Folder_File_Path =[base_path_dir 'Default_Dest_Folder.mat'];
+    Default_dest_folder_Val = handles.destFolderBase;
+    % Remove old default file
+    %if(exist(Dest_Folder_File_Path,'file'))
+    %    delete(Dest_Folder_File_Path);
+    %end
+    save(Dest_Folder_File_Path,'Default_dest_folder_Val');
+end
+   
+
+set(handles.Dest_Folder_TextBox,'String',handles.destFolderBase);
+guidata(hObject, handles);

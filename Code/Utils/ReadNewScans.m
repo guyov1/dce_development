@@ -63,6 +63,9 @@ for i=1:length(FNs)
     ShortInfos.(FNs{i}).Class=ClassifySeq(ShortInfos.(FNs{i}).SeriesDescription,1);
     if(isfield(ShortInfos.(FNs{i}).PatientName,'FamilyName'))
         ShortInfos.(FNs{i}).Name=ShortInfos.(FNs{i}).PatientName.FamilyName;
+        if(isfield(ShortInfos.(FNs{i}).PatientName,'GivenName'))
+            ShortInfos.(FNs{i}).Name=[ShortInfos.(FNs{i}).PatientName.FamilyName ' ' ShortInfos.(FNs{i}).PatientName.GivenName];
+        end
     else
         ShortInfos.(FNs{i}).Name='None';
     end

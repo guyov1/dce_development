@@ -20,21 +20,21 @@ Sim_Struct = struct;
 Sim_Struct = Simulation_Set_Params(Sim_Struct, Verbosity);
 
 % Override real data flag and parameters range
-Sim_Struct.RealData_Flag       = true;
-Sim_Struct.Vb_low              = 0.1; % [mL/100g]     , they used 3,6,12,18
-Sim_Struct.Vb_max              = 100;
-Sim_Struct.Ve_low              = 0.1; % Must be smaller than Vtis
-Sim_Struct.Ve_max              = 100;
-Sim_Struct.LowerBound_Larsson  = [Sim_Struct.Vb_low Sim_Struct.E_low  Sim_Struct.Ve_low];
-Sim_Struct.UpperBound_Larsson  = [Sim_Struct.Vb_max Sim_Struct.E_max  Sim_Struct.Ve_max];
-Sim_Struct.init_Ve_guess       = 0.1;
-Sim_Struct.LQ_Model_AIF_Delay_Correct             = false;
+Sim_Struct.RealData_Flag              = true;
+Sim_Struct.Vb_low                     = 0.1; % [mL/100g]     , they used 3,6,12,18
+Sim_Struct.Vb_max                     = 100;
+Sim_Struct.Ve_low                     = 0.1; % Must be smaller than Vtis
+Sim_Struct.Ve_max                     = 100;
+Sim_Struct.LowerBound_Larsson         = [Sim_Struct.Vb_low Sim_Struct.E_low  Sim_Struct.Ve_low];
+Sim_Struct.UpperBound_Larsson         = [Sim_Struct.Vb_max Sim_Struct.E_max  Sim_Struct.Ve_max];
+Sim_Struct.init_Ve_guess              = 0.1;
+Sim_Struct.LQ_Model_AIF_Delay_Correct = false;
 
 % Set parallel processing if needed
 Set_Parallel_Processing(Sim_Struct, Verbosity);
 
 % Read input MRI data
-[Subject_name, Subject_Path, WM_mask_absolute_path, Art_Mask, Vein_Mask, After_CTC_mat, DCECoregP] = ReadRealData();
+[Subject_name, Subject_Path, WM_mask_absolute_path, Art_Mask, Vein_Mask, After_CTC_mat, DCECoregP, Brain_Extract_path] = ReadRealData();
 
 % Create output directory
 mkdir([Subject_Path filesep 'Perfusion_DCE\']);
@@ -90,6 +90,9 @@ if exist('Vein_Mask','var')
     ICA_Vein2D         = Reshape4d22d(ICA_Vein3D,Msk2);
     ICA_Vein2D_indices = find(ICA_Vein2D>0);
 end
+
+% Brain Mask
+Brain_Mask_3D   = loadniidata(Brain_Extract_path);
 
 % Plot Arteris/veins Ct's and their averages
 fig_num            = figure;
@@ -270,14 +273,15 @@ save(Mat_File_To_Save,'Flow_Larsson_with_Delay','Flow_Larsson_no_Delay','Delay_s
     ,'est_delay_by_AIF_correct','t_delay_single_gauss_sec','sigma_seconds_single_gauss','Amp_single_gauss'...
     ,'Est_IRF_with_Delay','Est_IRF_no_Delay', 'conv_result_Larss_with_Delay', 'conv_result_Larss_no_Delay', 'conv_result_Larss_no_Delay_High_F'...
     , 'conv_result_Larss_no_Delay_no_E','conv_result_Larss_no_Delay_no_E_High_F','conv_result_no_Delay_IRF', 'conv_result_gaussian'...
-    , 'RMS_Larss_with_Delay', 'RMS_Larss_no_Delay', 'RMS_Larss_with_Delay_High_F', 'RMS_Larss_no_Delay_High_F', 'RMS_Larss_no_Delay_no_E','RMS_Larss_with_Delay_no_E', 'RMS_Larss_with_Delay_no_E_High_F', 'RMS_Larss_no_Delay_no_E_High_F','RMS_ht_no_Delay'...
+    , 'RMS_Larss_with_Delay', 'RMS_Larss_no_Delay', 'RMS_Larss_with_Delay_High_F', 'RMS_Larss_no_Delay_High_F', 'RMS_Larss_no_Delay_no_E','RMS_Larss_with_Delay_no_E', 'RMS_Larss_with_Delay_no_E_High_F', 'RMS_Larss_no_Delay_zero_params', 'RMS_Larss_no_Delay_no_E_High_F','RMS_ht_no_Delay'...
     ,'RMS_gauss','RMS_params_Gauss','double_gauss_params','RMS_double_gauss','RMS_params_double_gauss'...
     ,'Ktrans_with_Delay','Ktrans_no_Delay', 'E_with_Delay', 'E_no_Delay', 'Ktrans_with_Delay_High_F', 'Ktrans_no_Delay_High_F','Vb_with_Delay', 'Vb_no_Delay','Vb_with_Delay_High_F'...
     , 'Vb_no_Delay_High_F', 'Vb_no_Delay_no_E', 'Vb_with_Delay_no_E', 'Vb_with_Delay_no_E_High_F', 'Vb_no_Delay_no_E_High_F'...
     , 'Ve_with_Delay', 'Ve_no_Delay','Ve_with_Delay_High_F', 'Ve_no_Delay_High_F', 'MTT_with_Delay', 'MTT_no_Delay'...
     , 'Ktrans_Patlak_with_Delay_vec', 'Ktrans_Patlak_no_Delay_vec'...
     , 'Vb_Patlak_with_Delay_vec', 'Vb_Patlak_no_Delay_vec', 'MTT_Patlak_with_Delay_vec', 'MTT_Patlak_no_Delay_vec'...
-    ,'Msk2','WorkingP','PefusionOutput','num_total_voxels','time_vec_minutes','TimeBetweenDCEVolsFinal','time_vec_minutes');
+    ,'Msk2','WorkingP','PefusionOutput','num_total_voxels','time_vec_minutes','TimeBetweenDCEVolsFinal','time_vec_minutes'...
+    ,'fitted_gaussian', 'fitted_double_gaussian','Chosen_AIF', 'DCECoregP','Sim_Struct','WM_mask_absolute_path','Subject_Path');
 %load(Mat_File_To_Save);
 
 % Write only in case we used the entire brain (say, above 1000 voxels)
@@ -291,6 +295,8 @@ if (num_total_voxels > 1000)
     Est_IRF_with_Delay_4D                = Reshape2DCto4D(mat2cell(Est_IRF_with_Delay,size(Est_IRF_with_Delay,1),ones(1,size(Est_IRF_with_Delay,2))),Msk2);
     Est_IRF_no_Delay_4D                  = Reshape2DCto4D(mat2cell(Est_IRF_no_Delay,size(Est_IRF_no_Delay,1),ones(1,size(Est_IRF_no_Delay,2))),Msk2);
     CTC_4D                               = Reshape2DCto4D(mat2cell(CTC2D,size(CTC2D,1),ones(1,size(CTC2D,2))),Msk2);
+    
+    
     conv_result_no_Delay_IRF_4D          = Reshape2DCto4D(mat2cell(conv_result_no_Delay_IRF,size(conv_result_no_Delay_IRF,1),ones(1,size(conv_result_no_Delay_IRF,2))),Msk2);
     conv_result_gaussian_3D              = Reshape2DCto4D(mat2cell(conv_result_gaussian,size(conv_result_gaussian,1),ones(1,size(conv_result_gaussian,2))),Msk2);
     RMS_ht_no_Delay_3D                   = Reshape2DCto4D(RMS_ht_no_Delay,Msk2);
@@ -353,8 +359,10 @@ if (num_total_voxels > 1000)
     Ve_with_Delay_High_F_3D              = Reshape2DCto4D(Ve_with_Delay_High_F,Msk2);
     Ve_no_Delay_High_F_3D                = Reshape2DCto4D(Ve_no_Delay_High_F,Msk2);
     
-    MTT_with_Delay_3D                    = Reshape2DCto4D(MTT_no_Delay,Msk2);
-    MTT_no_Delay_3D                      = Reshape2DCto4D(MTT_no_Delay,Msk2);
+    MTT_with_Delay_Min_3D                = Reshape2DCto4D(MTT_no_Delay,Msk2);
+    MTT_with_Delay_Sec_3D                = 60* MTT_with_Delay_Min_3D;
+    MTT_no_Delay_Min_3D                  = Reshape2DCto4D(MTT_no_Delay,Msk2);
+    MTT_no_Delay_Sec_3D                  = 60 * MTT_no_Delay_Min_3D;
     
     MTT_with_Delay_Patlak_3D             = Reshape2DCto4D(MTT_Patlak_with_Delay_vec,Msk2);
     MTT_no_Delay_Patlak_3D               = Reshape2DCto4D(MTT_Patlak_no_Delay_vec,Msk2);
@@ -447,8 +455,11 @@ if (num_total_voxels > 1000)
     %
     
     nDataPoints      = length(time_vec_minutes);
+    zeros_map        = zeros(size(Flow_Larsson_with_Delay_3D));
+    Inf_map          = exp(100) * ones(size(Flow_Larsson_with_Delay_3D));
     
     if Sim_Struct.Ignore_Delay_Model_Selection
+        
         NParams          = [0 1 2 3 4];
         num_maps         = length(NParams);
         size_3D          = size(RMS_Larss_no_Delay_3D);
@@ -524,8 +535,6 @@ if (num_total_voxels > 1000)
         %[ ChosenByAIC_3D ]                      = Model_Selection( nDataPoints, RMSmaps, NParams, 0.1, Sim_Struct.AIC_Correction);
         
         % Delay
-        zeros_map                                      = zeros(size(Flow_Larsson_with_Delay_3D));
-        Inf_map                                        = exp(100) * ones(size(Flow_Larsson_with_Delay_3D));
         AIF_Delay_Model_Selected_3D                    = zeros(size(est_delay_by_AIF_correct_3D));
         AIF_Delay_Model_Selected_3D(ChosenByAIC_3D==9) = est_delay_by_AIF_correct_3D (ChosenByAIC_3D==9);
         AIF_Delay_Model_Selected_3D(ChosenByAIC_3D==7) = est_delay_by_AIF_correct_3D (ChosenByAIC_3D==7);
@@ -776,11 +785,29 @@ if (num_total_voxels > 1000)
     
     % -------------------- MTT ----------------------------
     
-    MeanFN=[PefusionOutput 'MTT_with_Delay.nii'];
-    Raw2Nii(MTT_with_Delay_3D,MeanFN,'float32',DCEFNs{1});
+    MeanFN=[PefusionOutput 'MTT_with_Delay_Sec.nii'];
+    Raw2Nii(MTT_with_Delay_Sec_3D,MeanFN,'float32',DCEFNs{1});
     
-    MeanFN=[PefusionOutput 'MTT_no_Delay.nii'];
-    Raw2Nii(MTT_no_Delay_3D,MeanFN,'float32',DCEFNs{1});
+    MeanFN=[PefusionOutput 'MTT_no_Delay_Sec.nii'];
+    Raw2Nii(MTT_no_Delay_Sec_3D,MeanFN,'float32',DCEFNs{1});
+    
+    MTT_no_Delay_Sec_3D_brain_extract                    = zeros(size(MTT_no_Delay_Sec_3D));
+    MTT_no_Delay_Sec_3D_brain_extract(Brain_Mask_3D > 0) = MTT_no_Delay_Sec_3D(Brain_Mask_3D > 0);
+    MeanFN=[PefusionOutput 'MTT_no_Delay_Sec_Brain_Extract.nii'];
+    Raw2Nii(MTT_no_Delay_Sec_3D_brain_extract,MeanFN,'float32',DCEFNs{1});
+    
+    
+    MTT_with_Delay_Sec_3D_Norm_0_1                                     = MTT_with_Delay_Sec_3D ./ max(max(max(MTT_with_Delay_Sec_3D)));
+    MeanFN=[PefusionOutput 'MTT_no_Delay_Sec_Norm_0_1.nii'];
+    Raw2Nii(MTT_with_Delay_Sec_3D_Norm_0_1,MeanFN,'float32',DCEFNs{1});
+    
+    
+    max_idx = length(time_vec_minutes); %130
+    min_idx = 1; 
+    est_MTT_noise = cumtrapz(time_vec_minutes(min_idx:max_idx),IRF_4D(:,:,:,min_idx:max_idx),4); est_MTT_noise = est_MTT_noise(:,:,:,end);
+    MeanFN=[PefusionOutput 'MTT_Test.nii'];
+    Raw2Nii(est_MTT_noise*60,MeanFN,'float32',DCEFNs{1});
+    
     
     MeanFN=[PefusionOutput 'MTT_with_Delay_Patlak.nii'];
     Raw2Nii(MTT_with_Delay_Patlak_3D,MeanFN,'float32',DCEFNs{1});
@@ -828,6 +855,42 @@ if (num_total_voxels > 1000)
     MeanFN=[PefusionOutput 'CTC_per_voxel.nii'];
     Raw2Nii(CTC_4D,MeanFN,'float32',DCEFNs{1});
     
+    
+    mean_CTC           = mean(abs(CTC_4D),4);
+    max_mean_CTC       = max(mean_CTC(:));
+    med_mean_CTC       = median(mean_CTC(:));
+    screen_val         = 0.0015; % 0.00125, 0.001, 0.0015
+    CTC_4D_Mask_By_Val = mean_CTC > screen_val*max_mean_CTC;
+    
+    
+    MeanFN=[PefusionOutput 'CTC_Mask_per_voxel_' num2str(screen_val*100) '.nii'];
+    Raw2Nii(CTC_4D_Mask_By_Val,MeanFN,'float32',DCEFNs{1});
+    
+    CTC_4D_Mask_By_Val_brain_exract                         = zeros(size(CTC_4D_Mask_By_Val));
+    CTC_4D_Mask_By_Val_brain_exract(Brain_Mask_3D > 0) = CTC_4D_Mask_By_Val(Brain_Mask_3D > 0);
+    
+    MeanFN=[PefusionOutput 'CTC_Mask_per_voxel_' num2str(screen_val*100) '_Brain_Extract.nii'];
+    Raw2Nii(CTC_4D_Mask_By_Val_brain_exract,MeanFN,'float32',DCEFNs{1});
+    
+    
+    est_delay_by_AIF_correct_no_noisy_3D = zeros(size(est_delay_by_AIF_correct_3D));
+    est_delay_by_AIF_correct_no_noisy_3D(CTC_4D_Mask_By_Val > 0) = est_delay_by_AIF_correct_3D(CTC_4D_Mask_By_Val > 0);
+    
+    MeanFN=[PefusionOutput 'Time_Delay_Novel_AIF_Correct_Noisy_' num2str(screen_val*100) '_Masked.nii'];
+    Raw2Nii(est_delay_by_AIF_correct_no_noisy_3D,MeanFN,'float32',DCEFNs{1});
+    
+    est_delay_by_AIF_correct_no_noisy_brain_extract_3D      = zeros(size(est_delay_by_AIF_correct_no_noisy_3D));
+    est_delay_by_AIF_correct_no_noisy_brain_extract_3D(Brain_Mask_3D > 0) = est_delay_by_AIF_correct_no_noisy_3D(Brain_Mask_3D > 0);
+    
+    MeanFN=[PefusionOutput 'Time_Delay_Novel_AIF_Correct_Noisy_' num2str(screen_val*100) '_Masked_Brain_Extract.nii'];
+    Raw2Nii(est_delay_by_AIF_correct_no_noisy_brain_extract_3D,MeanFN,'float32',DCEFNs{1});
+    
+    
+    est_delay_by_AIF_correct_brain_extract_3D                    = zeros(size(est_delay_by_AIF_correct_3D));
+    est_delay_by_AIF_correct_brain_extract_3D(Brain_Mask_3D > 0) = est_delay_by_AIF_correct_3D(Brain_Mask_3D > 0);
+    MeanFN=[PefusionOutput 'Time_Delay_Novel_AIF_Correct_Brain_Extract.nii'];
+    Raw2Nii(est_delay_by_AIF_correct_brain_extract_3D,MeanFN,'float32',DCEFNs{1});
+    
     MeanFN=[PefusionOutput 'Est_IRF_Larsson_Filter.nii'];
     Raw2Nii(Est_IRF_no_Delay_4D,MeanFN,'float32',DCEFNs{1});
     
@@ -870,14 +933,49 @@ if (num_total_voxels > 1000)
         WM_mask_3D                = loadniidata(WM_mask_absolute_path);
         
         % According to Larsson. WM Flow should be 30.6 [mL/100mL/min]
-        [ Normalized_F_Map ]      = Normalize_Output_Maps( Flow_Larsson_no_Delay_3D, WM_mask_3D , 30.6);
+        [ Normalized_F_Map ]             = Normalize_Output_Maps( Flow_Larsson_no_Delay_3D, WM_mask_3D , 30.6);
+        
+        % Take indices where both F and WM mask exist
+        WM_mask_3D_Flow                           = zeros(size(WM_mask_3D));
+        WM_mask_3D_Flow(F_Model_Selected_3D ~= 0) =  WM_mask_3D(F_Model_Selected_3D ~= 0);
+        
+        
+        Normalized_F_Map_Brain_Extract                    = zeros(size(Normalized_F_Map));
+        Normalized_F_Map_Brain_Extract(Brain_Mask_3D > 0) = Normalized_F_Map(Brain_Mask_3D > 0);
+        
+        MeanFN = [PefusionOutput 'Flow_Larsson_Relative_WM_30_6_Brain_Extract.nii'];
+        Raw2Nii(Normalized_F_Map_Brain_Extract,MeanFN,'float32',DCEFNs{1});
+        
+        
+        rCBF                = loadniidata('\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\rCBF.nii');
+        rCBF_Brain_Extract                    = zeros(size(rCBF));
+        rCBF_Brain_Extract(Brain_Mask_3D > 0) = rCBF(Brain_Mask_3D > 0);
+        
+        MeanFN = [PefusionOutput 'rCBF_Brain_Extract.nii'];
+        Raw2Nii(rCBF_Brain_Extract,MeanFN,'float32',DCEFNs{1});
+        
+        
+        
+        [ Normalized_F_Model_Select_Map ]         = Normalize_Output_Maps( F_Model_Selected_3D, WM_mask_3D_Flow , 30.6);      
+        
+        
+        Normalized_F_Model_Select_Map_Brain_Extract  = zeros(size(Normalized_F_Model_Select_Map));
+        Normalized_F_Model_Select_Map_Brain_Extract(Brain_Mask_3D > 0) = Normalized_F_Model_Select_Map(Brain_Mask_3D > 0);
+        
+        MeanFN = [PefusionOutput 'Flow_Larsson_model_selection_Relative_WM_30_6_Brain_Extract.nii'];
+        Raw2Nii(Normalized_F_Model_Select_Map_Brain_Extract,MeanFN,'float32',DCEFNs{1});
+        
+        
         % According to Larsson. WM Ktrans should be 0.84 [mL/100mL/min]
         [ Normalized_Ktrans_Map ] = Normalize_Output_Maps( Ktrans_no_Delay_3D, WM_mask_3D , 0.84);
         % According to Jim.     WM Vp should be 0.01 [mL/100mL]
         [ Normalized_Vb_Map ]     = Normalize_Output_Maps( Vb_no_Delay_3D, WM_mask_3D , 0.01);
         
-        MeanFN = [PefusionOutput 'Flow_Larsson_no_Delay_Relative_WM_30_6.nii'];
+        MeanFN = [PefusionOutput 'Flow_Larsson_Relative_WM_30_6.nii'];
         Raw2Nii(Normalized_F_Map,MeanFN,'float32',DCEFNs{1});
+        
+        MeanFN = [PefusionOutput 'Flow_Larsson_model_selection_Relative_WM_30_6.nii'];
+        Raw2Nii(Normalized_F_Model_Select_Map,MeanFN,'float32',DCEFNs{1});
         
         MeanFN = [PefusionOutput 'Ktrans_Relative_no_Delay_WM_0_84.nii'];
         Raw2Nii(Normalized_Ktrans_Map,MeanFN,'float32',DCEFNs{1});

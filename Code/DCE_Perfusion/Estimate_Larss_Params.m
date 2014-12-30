@@ -302,7 +302,7 @@ end
 est_IRF                         = Final_Filter_Estimation_Larss / est_F_noise;
 est_MTT_noise                   = cumtrapz(time_vec_minutes,est_IRF);
 est_MTT_noise                   = est_MTT_noise(end);
-est_MTT_normal_tis_noise        =  est_Vb_Patlak_noise / est_F_noise;
+est_MTT_normal_tis_noise        = est_Vb_Patlak_noise / est_F_noise;
 % Estimate Vd (also in normal tissue)
 est_Vd_noise                    = est_F_noise * est_MTT_noise;
 est_Vd_normal_tis_noise         = est_F_noise * est_MTT_normal_tis_noise;
@@ -362,9 +362,9 @@ if (plot_flag)
     
     % Warn in the title in case one filter exploded
     if (isempty(Bad_indices))
-        title('Original and estimated h(t) - Larsson','FontWeight','bold');
+        title('True and estimated h(t) - Larsson','FontWeight','bold');
     else
-        title('Original and estimated h(t) - Larsson - REMOVED BAD FILTERS','FontWeight','bold');
+        title('True and estimated h(t) - Larsson - REMOVED BAD FILTERS','FontWeight','bold');
     end
     
     xlabel('Time [Min]');
@@ -403,7 +403,7 @@ if (plot_flag)
     h17 = plot(time_vec_minutes,AIF_filtered_by_est_PCA_2nd_deriv,'y');
     h18 = plot(time_vec_minutes,AIF_filtered_by_est_PCA_2nd_deriv,'yh');
     
-    title('Original and estimated Ct(t)','FontWeight','bold');
+    title('True and estimated Ct(t)','FontWeight','bold');
     xlabel('Time [Min]');
     hold off;
     legend([h2 h4 h6 h8 h10 h12 h14 h16 h18],'Orig. h(t)',...
@@ -427,7 +427,7 @@ if (plot_flag)
     title('Estimated h(t) and non-linear fit','FontWeight','bold');
     xlabel('Time [Min]');
     hold off;
-    legend([h2 h4 h6],'Original h(t)','Est. h(t)','Fitted h(t) - Non-Linear');
+    legend([h2 h4 h6],'True h(t)','Est. h(t)','Fitted h(t) - Non-Linear');
     
     % Print result to PDF
     [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Filter_and_Fitted_one.png', './Run_Output/',...
@@ -438,7 +438,7 @@ if (plot_flag)
     
     annotation('textbox',...
         [0 0 1 1],...
-        'String',{'Larsson Filter Original Params:','',['F         = ' num2str(F,'%.2f') '        [mL/100g/min]'],...
+        'String',{'Larsson Filter True Params:','',['F         = ' num2str(F,'%.2f') '        [mL/100g/min]'],...
         ['Delay  = ' num2str(additional_AIF_delay_sec,'%.2f') '          [sec]'],...
         ['Ktrans        = ' num2str(Ktrans,'%.2f') '          [mL/100g/min]'],...
         ['PS      = ' num2str(PS,'%.2f') '           [mL/100g/min]'],...

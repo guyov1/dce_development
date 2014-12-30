@@ -435,13 +435,13 @@ if (plot_error_results_flag)
             %plot(real_sigma_vec,error_percent_sigma);
             errorbar(real_sigma_vec,error_percent_sigma,std_sigma);
             title('est. error vs. original \sigma','FontSize',font_size,'FontWeight','bold');
-            xlabel('Original sigma [sec]');
+            xlabel('True sigma [sec]');
             ylabel('Error percent');
             set(gca,'fontsize',font_size_axis,'FontWeight','bold');
             
             % Print result to PDF
             [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Gaussian_sigma.png', './Run_Output/',...
-                'est. Error Analysis - Original Gaussian Sigma Values Change', 'EstErrorAnalysis');
+                'est. Error Analysis - True Gaussian Sigma Values Change', 'EstErrorAnalysis');
             
         end
         
@@ -451,7 +451,7 @@ if (plot_error_results_flag)
             %plot(real_t_d_vec_sec,error_percent_t_d);
             errorbar(real_t_d_vec_sec,error_percent_t_d,std_t_d_sec);
             title('est. error vs. original time delay','FontSize',font_size,'FontWeight','bold');
-            xlabel('Original time delay value [sec]');
+            xlabel('True time delay value [sec]');
             ylabel('Error percent');
             set(gca,'fontsize',font_size_axis,'FontWeight','bold');
             
@@ -460,7 +460,7 @@ if (plot_error_results_flag)
             
             idx_fig = idx_fig + 1;
             idx_string = ['idx_' num2str(idx_fig,'%03i')];
-            AddToLog('./Run_Output/',idx_string,'\\subsection*{\\underline{est. Error Analysis - Original Gaussian Time Delay Values Change}}');
+            AddToLog('./Run_Output/',idx_string,'\\subsection*{\\underline{est. Error Analysis - True Gaussian Time Delay Values Change}}');
             idx_fig = idx_fig + 1;
             idx_string = ['idx_' num2str(idx_fig,'%03i')];
             AddToLog('./Run_Output/',idx_string,'EstErrorAnalysis','Est_Error_Analysis_Gaussian_time_delay.png');
@@ -473,13 +473,13 @@ if (plot_error_results_flag)
             %plot(real_sigma_vec,error_percent_sigma);
             errorbar(real_amp_vec,error_percent_amp,std_amp);
             title('est. error vs. original Amplitude','FontSize',font_size,'FontWeight','bold');
-            xlabel('Original amplitude');
+            xlabel('True amplitude');
             ylabel('Error percent');
             set(gca,'fontsize',font_size_axis,'FontWeight','bold');
             
             % Print result to PDF
             [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Gaussian_Amp.png', './Run_Output/',...
-                'est. Error Analysis - Original Gaussian Amplitude Values Change', 'EstErrorAnalysis');
+                'est. Error Analysis - True Gaussian Amplitude Values Change', 'EstErrorAnalysis');
             
         end
         
@@ -511,7 +511,7 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. error vs. original Flow. Vb=%d, E=%.2f',Vb_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Flow','FontSize',font_size,'FontWeight','bold');
+        xlabel('True Flow','FontSize',font_size,'FontWeight','bold');
         ylabel('Error percent','FontSize',font_size,'FontWeight','bold');
         set(gca,'fontsize',font_size_axis,'FontWeight','bold');
         
@@ -532,13 +532,13 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. Flow vs. original Flow. Vb=%d, E=%.2f',Vb_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Flow','FontSize',font_size,'FontWeight','bold');
+        xlabel('True Flow','FontSize',font_size,'FontWeight','bold');
         ylabel('est. Flow','FontSize',font_size,'FontWeight','bold');
         set(gca,'fontsize',font_size_axis,'FontWeight','bold');
         
         % Print result to PDF
         [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Larsson_F.png', './Run_Output/',...
-            'est. Error Analysis - Original Larsson Flow Values Change', 'EstErrorAnalysis');
+            'est. Error Analysis - True Larsson Flow Values Change', 'EstErrorAnalysis');
         
     end
     
@@ -551,7 +551,7 @@ if (plot_error_results_flag)
         errorbar(real_larsson_Vb_Patlak_vec,error_percent_Vb_Patlak,std_Vb_Patlak);
         title_string = sprintf('est. error vs. original Vb. F=%d, E=%.2f',F_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Vb');
+        xlabel('True Vb');
         ylabel('Error percent');
         
         subplot(2,1,2);
@@ -561,12 +561,12 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. Patlak Vb vs. original Vb. F=%d, E=%.2f',F_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Vb');
+        xlabel('True Vb');
         ylabel('est. Vb');
         
         % Print result to PDF
         [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Patlak_Vb.png', './Run_Output/',...
-            'est. Error Analysis - Original Larsson Vb Values Change', 'EstErrorAnalysis');
+            'est. Error Analysis - True Larsson Vb Values Change', 'EstErrorAnalysis');
         
         fig_num = figure;
         
@@ -575,7 +575,7 @@ if (plot_error_results_flag)
         errorbar(real_larsson_Vb_2CXM_vec,error_percent_Vb_2CXM,std_Vb_2CXM);
         title_string = sprintf('est. error vs. original Vb. F=%d, E=%.2f',F_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Vb');
+        xlabel('True Vb');
         ylabel('Error percent');
         
         subplot(2,1,2);
@@ -585,12 +585,12 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. 2CXM Vb vs. original Vb. F=%d, E=%.2f',F_single,E_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original Vb');
+        xlabel('True Vb');
         ylabel('est. Vb');
         
         % Print result to PDF
         [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Larsson_Vb.png', './Run_Output/',...
-            'est. Error Analysis - Original Larsson Vb Values Change', 'EstErrorAnalysis');
+            'est. Error Analysis - True Larsson Vb Values Change', 'EstErrorAnalysis');
         
     end
     
@@ -603,7 +603,7 @@ if (plot_error_results_flag)
         errorbar(real_larsson_E_vec,error_percent_E,std_E);
         title_string = sprintf('est. error vs. original E. F=%d, Vb=%.2f',F_single,Vb_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original E');
+        xlabel('True E');
         ylabel('Error percent');
         
         subplot(2,1,2);
@@ -613,12 +613,12 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. E vs. original E. F=%d, Vb=%.2f',F_single,Vb_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original E');
+        xlabel('True E');
         ylabel('est. E');
         
         % Print result to PDF
         [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_Patlak_E.png', './Run_Output/',...
-            'est. Error Analysis - Original Larsson E Values Change', 'EstErrorAnalysis');
+            'est. Error Analysis - True Larsson E Values Change', 'EstErrorAnalysis');
         
     end
     
@@ -636,7 +636,7 @@ if (plot_error_results_flag)
         %         end
         %         title_string = sprintf('est. error vs. original AIF Delay. F=%d, Vb=%.2f. (RED-Gaussian)',F_single,Vb_single);
         %         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        %         xlabel('Original AIF delay');
+        %         xlabel('True AIF delay');
         %         ylabel('Error percent');
         
         %subplot(2,1,2);
@@ -652,12 +652,12 @@ if (plot_error_results_flag)
         
         title_string = sprintf('est. Larss AIF delay vs. original AIF delay. F=%d, Vb=%.2f. (RED-Gaussian)',F_single,Vb_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel('Original AIF delay');
+        xlabel('True AIF delay');
         ylabel('est. AIF delay');
         
         % Print result to PDF
         [idx_fig] = Print2Pdf(fig_num, idx_fig, 'Est_Error_Analysis_AIF_Delay.png', './Run_Output/',...
-            'est. Error Analysis - Original AIF Delay Values Change', 'EstErrorAnalysis');
+            'est. Error Analysis - True AIF Delay Values Change', 'EstErrorAnalysis');
         
         
         fig_num = figure;
@@ -776,9 +776,9 @@ if (plot_error_results_flag)
         hr = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
 
-        title_string = sprintf(['Est. Vs. Original ' param_name]);
+        title_string = sprintf(['Est. Vs. True ' param_name]);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel(['Original ' param_name]);
+        xlabel(['True ' param_name]);
         ylabel(['Estimated ' param_name]);
         legend([h1], 'Spline 2nd. Uniform Generation.');
         % Scale X and Y the same
@@ -803,9 +803,9 @@ if (plot_error_results_flag)
         hr                    = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
         
-        title_string = sprintf(['Est. Vs. Original ' param_name]);
+        title_string = sprintf(['Est. Vs. True ' param_name]);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel(['Original ' param_name]);
+        xlabel(['True ' param_name]);
         ylabel(['Estimated ' param_name]);
         legend([h1], 'Spline 2nd. Uniform Generation.');
         % Scale X and Y the same
@@ -839,9 +839,9 @@ if (plot_error_results_flag)
         hr = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
         
-        title_string = sprintf(['Est. Vs. Original ' param_name]);
+        title_string = sprintf(['Est. Vs. True ' param_name]);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel(['Original ' param_name]);
+        xlabel(['True ' param_name]);
         ylabel(['Estimated ' param_name]);
         legend([h1], 'Spline 2nd. Uniform Generation.');
         % Scale X and Y the same
@@ -865,9 +865,9 @@ if (plot_error_results_flag)
         hr = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
         
-        title_string = sprintf(['Est. Vs. Original ' param_name]);
+        title_string = sprintf(['Est. Vs. True ' param_name]);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel(['Original ' param_name]);
+        xlabel(['True ' param_name]);
         ylabel(['Estimated ' param_name]);
         legend([h1], 'Spline 2nd. Uniform Generation.');
         % Scale X and Y the same
@@ -891,9 +891,9 @@ if (plot_error_results_flag)
         hr = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
         
-        title_string = sprintf(['Est. Vs. Original ' param_name]);
+        title_string = sprintf(['Est. Vs. True ' param_name]);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
-        xlabel(['Original ' param_name]);
+        xlabel(['True ' param_name]);
         ylabel(['Estimated ' param_name]);
         legend([h1], 'Spline 2nd. Uniform Generation.');
         % Scale X and Y the same

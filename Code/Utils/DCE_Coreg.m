@@ -2,6 +2,7 @@ DCECoregP=[WorkingP 'DCEMainCoreged' filesep];
 mkdir(DCECoregP);
 DDCE=dir([DCEMNiiOrigP '*.nii']);
 DCEFNs=strcat(DCEMNiiOrigP,{DDCE.name})';
+DCEFNs=DCEFNs((Options.nVolsToRemoveFromStart+1):end);
 if(Options.MainCoregistration==1)
         MatFN=RealignEstimate(DCEFNs,Force,false);
         DCECrgFNs=CoregWrite(DCEFNs,MatFN,Force,DCECoregP,false);

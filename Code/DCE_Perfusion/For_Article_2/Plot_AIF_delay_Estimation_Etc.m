@@ -51,7 +51,7 @@ set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
 
 title_string = sprintf('est. Larss AIF delay vs. original AIF delay. F=%d, Vb=%.2f.',F_single,Vb_single);
 title(title_string,'FontWeight','bold');
-xlabel('Original AIF delay');
+xlabel('True AIF delay');
 ylabel('est. AIF delay');
 legend([h1 h2],'Max IRF','BiExp method');
 
@@ -74,7 +74,7 @@ hold off;
 
 title_string = sprintf('est. error vs. original Flow. Vb=%d, E=%.2f',Vb_single,E_single);
 title(title_string,'FontWeight','bold');
-xlabel('Original Flow');
+xlabel('True Flow');
 ylabel('Error percent');
 legend([h1 h2],'No correction','With correction'); 
 
@@ -93,6 +93,6 @@ set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
 
 title_string = sprintf('est. Flow vs. original Flow. Vb=%d, E=%.2f',Vb_single,E_single);
 title(title_string,'FontWeight','bold');
-xlabel('Original Flow');
+xlabel('True Flow');
 ylabel('est. Flow');
 legend([h1 h2],'No correction','With correction'); 

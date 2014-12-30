@@ -164,7 +164,7 @@ hold off;
 
 title_string = sprintf('Estimated Larss AIF delay vs. original AIF delay. F=%d, Vb=%.2f. (RED-Gaussian)',F_single,Vb_single);
 title(title_string,'FontWeight','bold');
-xlabel('Original AIF delay');
+xlabel('True AIF delay');
 ylabel('Estimated AIF delay');
 axis equal;
 legend([h1 h2],'Max point time','Novel method'); 
@@ -184,7 +184,7 @@ hold off;
 title_string = sprintf('Est. error vs. original Flow. Vb=%d, E=%.2f, F=%.2f',Vb_single,E_single,real_larsson_F_vec(1));
 title(title_string,'FontWeight','bold');
 legend([h1 h2 h3],'6 [sec]','4 [sec]','2 [sec]'); 
-xlabel('Original Flow');
+xlabel('True Flow');
 ylabel('Error percent');
 
 

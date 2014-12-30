@@ -11,7 +11,7 @@ max_E_display       = 0.5;
 min_BAT_display     = 0;
 max_BAT_display     = 20;
 
-Legend_Just_for_F   = false; % Plot legend just for flow parameter
+Legend_Just_for_F   = true; % Plot legend just for flow parameter
 
 % Options
 % '-'  - Solid line (default)
@@ -70,23 +70,24 @@ param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g
 
 % ------------------------------------- with Delay -------------------------------------------
 
-% DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
-% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
-% DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% %DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
-% Legend_1            = 'ACoPeD';
-% Legend_2            = 'Cyclic Deconv. MVT';
-% %Legend_3            = 'MVT';
-% %Legend_2            = 'MVT';
-% Legend_3            = 'LQ';
-% Legend_4            = 'No Correct';
-% E_y_scale           = 1/max_E_display;
-% BAT_y_scale         = 1.4;
-% num_data            = 4;
-% Delay_Methods_flag  = true;
+%DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
+%DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.05_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+%DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
+DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+%DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
+Legend_1            = 'ACoPeD';
+Legend_2            = 'Cyclic Deconv. MVT';
+%Legend_3            = 'MVT';
+%Legend_2            = 'MVT';
+Legend_3            = 'LQ';
+Legend_4            = 'No Correct';
+E_y_scale           = 1/max_E_display;
+BAT_y_scale         = 1.4;
+num_data            = 4;
+Delay_Methods_flag  = true;
 
 % ------------------------------------- Temproal Res. -------------------------------------------
 
@@ -101,15 +102,17 @@ param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g
 % num_data            = 3;
 % Delay_Methods_flag  = false;
 
-%------------------------------------- Scan duration. -------------------------------------------
-DataPath_1          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_20_min_total_Spline_2nd.mat';
-DataPath_2          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat';
-Legend_1            = '20 min';
-Legend_2            = '6 min';
-E_y_scale           = 0.5/max_E_display;
-BAT_y_scale         = 1;
-num_data            = 2;
-Delay_Methods_flag  = false;
+% %------------------------------------- Scan duration. -------------------------------------------
+% DataPath_1          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_20_min_total_Spline_2nd.mat';
+% DataPath_2          = 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat';
+% Legend_1            = '20 min';
+% Legend_2            = '6 min';
+% E_y_scale           = 0.5/max_E_display;
+% BAT_y_scale         = 1;
+% num_data            = 2;
+% Delay_Methods_flag  = false;
+
+
 
 legendInfo          = cell(1,num_data);
 legendInfo_error    = cell(1,num_data);
@@ -297,10 +300,10 @@ for param_list = param_list_cells
     %hr = refline(1); % y=x reference line
     %set(hr,'Color','k','LineStyle','--','LineWidth',Line_Width);
     
-    title_string = sprintf(['Est. Vs. Original ' param_name]);
+    title_string = sprintf(['Est. Vs. True ' param_name]);
     title(title_string,'FontSize',font_size,'FontWeight','bold');
     
-    xlabel(['Original ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
+    xlabel(['True ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
     ylabel(['Estimated ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
     %legend([h1 h2], Legend_1, Legend_2);
     % Scale X and Y the same
@@ -357,7 +360,7 @@ for param_list = param_list_cells
     title_string = sprintf(['Error Stats - ' param_name '. Best: ' num2str(best_error, '%.2f') '+-' num2str(best_std_or_sem, '%.2f') ]);
     
     title(title_string,'FontSize',font_size,'FontWeight','bold');
-    xlabel(['Original ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
+    xlabel(['True ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
     ylabel(['Error Val ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');
     
     saveas(fig_num,['./Run_Output/' param_name '_Error_Comparison.jpg'])

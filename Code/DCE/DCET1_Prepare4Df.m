@@ -143,6 +143,13 @@ else
         AddToLog(WorkingP,'a_2b3','Used old time calculation');
     end
 end
+
+if(isfield(Options,'TimeMultiplier'))
+    TimeBetweenDCEVols=TimeBetweenDCEVols*Options.TimeMultiplier;
+end
+if(isfield(Options,'TimeMultiplier') && Options.TimeMultiplier<0)
+    TimeBetweenDCEVols=-Options.TimeMultiplier;
+end
 TimeBetweenDCEVolsMin=TimeBetweenDCEVols/60;
 %% Step 3 - Create mutual information curve to see when the registration did not succeed
 
@@ -503,7 +510,8 @@ GoodRows=F(1):F(end);
 F=find(max(Tmp,[],1));
 GoodCols=F(1):F(end);
 %Tmp=loadniidata([WorkingP '\DCEMainCoreged\Coreged_vol_0001.nii']);
-Tmp=loadniidata([WorkingP filesep 'DCEMainCoreged' filesep 'Coreged_vol_0001.nii']);
+% Tmp=loadniidata([WorkingP filesep 'DCEMainCoreged' filesep 'Coreged_vol_0001.nii']);
+Tmp=loadniidata(DCEFNs{1});
 Tmp=Tmp(GoodRows,GoodCols,:);
 [QQ, MX]=FindDR(Tmp(:));
 Tmp=permute(Tmp,[1 2 4 3])./MX;

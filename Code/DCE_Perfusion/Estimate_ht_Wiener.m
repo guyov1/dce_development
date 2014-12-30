@@ -82,8 +82,8 @@ if (plot_flag)
         subplot(3,1,3);
         
         plot(time_vec_minutes,gauss_filter,'r*',time_vec_minutes,Est_Wiener_Filter_real_PSD_gauss,'gd',time_vec_minutes,Est_Wiener_Filter_est_PSD_gauss,'bo');
-        title('Original vs. Estimated h(t)','FontWeight','bold');
-        legend('Original h(t)','Estimated h(t)-PSD','Estimated h(t)-est PSD');
+        title('True vs. Estimated h(t)','FontWeight','bold');
+        legend('True h(t)','Estimated h(t)-PSD','Estimated h(t)-est PSD');
         xlabel('Time [Min]');
         
         % Print result to PDF
@@ -123,8 +123,8 @@ if (plot_flag)
     subplot(3,1,3);
     
     plot(time_vec_minutes,larss_filter,'r*',time_vec_minutes,Est_Wiener_Filter_real_PSD_larss,'gd',time_vec_minutes,Est_Wiener_Filter_est_PSD_larss,'bo');
-    title('Original vs. Estimated h(t)','FontWeight','bold');
-    legend('Original h(t)','Estimated h(t)-PSD','Estimated h(t)-est PSD');
+    title('True vs. Estimated h(t)','FontWeight','bold');
+    legend('True h(t)','Estimated h(t)-PSD','Estimated h(t)-est PSD');
     xlabel('Time [Min]');
     
     % Print result to PDF

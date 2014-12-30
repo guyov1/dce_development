@@ -30,7 +30,9 @@ Simple_AIF_Delay_Correct        = Sim_Struct.Simple_AIF_Delay_Correct;
 LQ_Model_AIF_Delay_Correct      = Sim_Struct.LQ_Model_AIF_Delay_Correct;
 init_Ve_guess                   = Sim_Struct.init_Ve_guess;
 FMS_Algorithm                   = Sim_Struct.FMS_Algorithm;
+
 LQ_Model_AIF_Delay_Correct      = Sim_Struct.LQ_Model_AIF_Delay_Correct;
+filter_type                     = Sim_Struct.filter_type;
 
 %Final_Filter_Estimation_Larss   = ht_Struct.Final_Filter_Estimation_Larss;
 %Sim_Ct_larss_Regul_noise        = ht_Struct.Sim_Ct_larss_Regul_noise;
@@ -535,12 +537,12 @@ if (plot_flag)
     ylabel('AIF(t)_{shifted}','FontSize',font_size,'FontWeight','bold');
     title('Shifted Arterial-Input-Functions','FontSize',font_size,'FontWeight','bold');
     set(gca,'FontSize',font_size,'FontWeight','bold');
-    %legend(h1, 'Original AIF','FontSize',font_size,'FontWeight','bold');
+    %legend(h1, 'True AIF','FontSize',font_size,'FontWeight','bold');
     legend boxoff;
     
     [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_2.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_2', 'ACoPeD_AIFDelayEst_2');
     
-    %% ACoPeD printing - 3 - Original AIF
+    %% ACoPeD printing - 3 - True AIF
     
     fig_num = figure;
     plot(time_vec_minutes, orig_AIF, 'LineWidth', line_width_smallest,'Color','k');
@@ -606,7 +608,7 @@ if (plot_flag)
     ylabel('CTC(t)_{fit}','FontSize',font_size,'FontWeight','bold');
     title('Concentration-Time-Curve Fit','FontSize',font_size,'FontWeight','bold');
     set(gca,'FontSize',font_size,'FontWeight','bold');
-    h_legend = legend(h1, 'Original CTC','Location','NorthWest');
+    h_legend = legend(h1, 'True CTC','Location','NorthWest');
     set(h_legend,'FontSize',font_size*0.75);
     legend boxoff;
     [Sim_Struct.idx_fig] = Print2Pdf(fig_num, Sim_Struct.idx_fig, 'ACoPeD_Estimation_7.png', './Run_Output/', 'ACoPeD - AIF Delay Estimation_7', 'ACoPeD_AIFDelayEst_7');
@@ -664,7 +666,7 @@ if (plot_flag)
     title('Orig. CTC, Fitted splines (est. and orig. delay)');
     
     % subplot(3,1,3);
-    % title('Bi-Exp fit - Original h(t) vs. Estimated');
+    % title('Bi-Exp fit - True h(t) vs. Estimated');
     
     %     % Printing image to PDF
     %     gprint(fig_num,'Run_Output/Time_Shift_Estimation.png');

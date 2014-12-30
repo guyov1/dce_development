@@ -72,7 +72,7 @@ if (plot_flag)
     h13 = plot(time_vec_minutes,b_PCA_larss_result_2nd_deriv ,'y');
     h14 = plot(time_vec_minutes,b_PCA_larss_result_2nd_deriv ,'yh');
     
-    title('Original and estimated h(t) - Gauss','FontWeight','bold');
+    title('True and estimated h(t) - Gauss','FontWeight','bold');
     xlabel('Time [Min]');
     hold off;
     legend([h2 h4 h6 h8 h10 h12 h14],'Orig. h(t)',...
@@ -95,7 +95,7 @@ if (plot_flag)
     h13 = plot(time_vec_minutes,filter(b_PCA_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num)),'y');
     h14 = plot(time_vec_minutes,filter(b_PCA_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num)),'yh');
     
-    title('Original and estimated Ct(t)','FontWeight','bold');
+    title('True and estimated Ct(t)','FontWeight','bold');
     xlabel('Time [Min]');
     hold off;
     legend([h2 h4 h6 h8 h10 h12 h14],'Orig. Ct(t)','Est. Ct(t) - Wiener',...
@@ -106,7 +106,7 @@ if (plot_flag)
     plot(time_vec_minutes,gauss_filter,'b*',time_vec_minutes,filter_from_estimated_params,'r.');
     %title('h(t)- Estimated params (Blue).Orig h(t) (Red dots)');
     title('Estimated Params fit result with noise','FontWeight','bold');
-    legend('Original h(t)','h(t) - Est. Params');
+    legend('True h(t)','h(t) - Est. Params');
     xlabel('Time [Min]');
     
     % Print result to PDF
