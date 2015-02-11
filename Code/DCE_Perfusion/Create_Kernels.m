@@ -28,6 +28,13 @@ Ve_max                    = Sim_Struct.Ve_max;
 E_low                     = Sim_Struct.E_low;
 E_max                     = Sim_Struct.E_max;
 
+Vp_ETM_low                = Sim_Struct.Vp_ETM_low;
+Vp_ETM_max                = Sim_Struct.Vp_ETM_max;
+Ve_ETM_low                = Sim_Struct.Ve_ETM_low;
+Ve_ETM_max                = Sim_Struct.Ve_ETM_max;
+Ktrans_ETM_low            = Sim_Struct.Ktrans_ETM_low;
+Ktrans_ETM_max            = Sim_Struct.Ktrans_ETM_max;
+
 % ------------------------
 % Gaussian filter
 % ------------------------
@@ -73,8 +80,12 @@ if (Sim_Struct.iterate_uniformly)
     Sim_Struct.E        = E_low  + (E_max  - E_low)  * rand(1, num_iterations);
     Sim_Struct.Vb_larss = Vb_low + (Vb_max - Vb_low) * rand(1, num_iterations);
     Sim_Struct.Ve_larss = Ve_low + (Ve_max - Ve_low) * rand(1, num_iterations);
+    
+    Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
+    Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
+    Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
+    
 end
-
 
 % Hematocrit according to Larsson's article
 Sim_Struct.Hct          = repmat(Sim_Struct.Hct_single,1,num_iterations);
@@ -82,26 +93,30 @@ Sim_Struct.Hct          = repmat(Sim_Struct.Hct_single,1,num_iterations);
 Sim_Struct.IRF_larss         = zeros(size(time_vec_minutes,2),num_iterations);
 Sim_Struct.IRF_larss_HighRes = zeros(size(time_vec_minutes_high_res,2),num_iterations);
 for i=1:num_iterations
-    
-    if (adjusted_larsson)
+    if Sim_Struct.ETM_Model
+        Sim_Struct.IRF_larss(:,i)         = ETM_Filter(time_vec_minutes, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.Ve_ETM(i));  % No units
+        Sim_Struct.IRF_larss_HighRes(:,i) = ETM_Filter(time_vec_minutes_high_res, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.Ve_ETM(i));  % No units
+    elseif (adjusted_larsson)
         Sim_Struct.IRF_larss(:,i)         = Adjusted_Larsson_Filter(time_vec_minutes, Sim_Struct.F(i), Sim_Struct.Vb_larss(i), Sim_Struct.E(i),...
             Sim_Struct.Ve_larss(i));  % No units
         Sim_Struct.IRF_larss_HighRes(:,i) = Adjusted_Larsson_Filter(time_vec_minutes_high_res, Sim_Struct.F(i), Sim_Struct.Vb_larss(i), Sim_Struct.E(i),...
             Sim_Struct.Ve_larss(i));  % No units
         
-    else
+    else % Regular larsson
         Sim_Struct.IRF_larss(:,i)         = Larsson_Filter(time_vec_minutes, Sim_Struct.F(i), Sim_Struct.Vb_larss(i), Sim_Struct.E(i),...
             Sim_Struct.Ve_larss(i), Sim_Struct.Hct(i));  % No units
         Sim_Struct.IRF_larss_HighRes(:,i) = Larsson_Filter(time_vec_minutes_high_res, Sim_Struct.F(i), Sim_Struct.Vb_larss(i), Sim_Struct.E(i),...
             Sim_Struct.Ve_larss(i), Sim_Struct.Hct(i));  % No units
     end
-    
-    
 end
 
-
-Sim_Struct.larss_filter           = repmat(Sim_Struct.F,[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
-Sim_Struct.larss_filter_HighRes   = repmat(Sim_Struct.F,[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
+if Sim_Struct.ETM_Model
+    Sim_Struct.larss_filter           = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
+    Sim_Struct.larss_filter_HighRes   = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
+else
+    Sim_Struct.larss_filter           = repmat(Sim_Struct.F,[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
+    Sim_Struct.larss_filter_HighRes   = repmat(Sim_Struct.F,[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
+end
 Sim_Struct.CBF                    = Sim_Struct.F;
 Sim_Struct.CBV                    = Sim_Struct.Vb_larss;
 Sim_Struct.Vd                     = Sim_Struct.Vb_larss + Sim_Struct.Ve_larss;
@@ -110,7 +125,7 @@ Sim_Struct.Vd                     = Sim_Struct.Vb_larss + Sim_Struct.Ve_larss;
 Sim_Struct.MTT                    = cumtrapz(time_vec_minutes,Sim_Struct.IRF_larss);
 Sim_Struct.MTT                    = Sim_Struct.MTT(end,:);
 Sim_Struct.Vd                     = Sim_Struct.Vb_larss + Sim_Struct.Ve_larss; %Vd = F * MTT;
-Sim_Struct.Ktrans                     = Sim_Struct.E .* Sim_Struct.F;
+Sim_Struct.Ktrans                 = Sim_Struct.E .* Sim_Struct.F;
 
 %Sim_Struct.PS                     = -Sim_Struct.F .* log(1-(Sim_Struct.Ktrans ./ Sim_Struct.F));
 Sim_Struct.PS                     = ( Sim_Struct.E .* Sim_Struct.F ) ./ (1 - Sim_Struct.E);                             % [mL/100g/min]
@@ -127,7 +142,7 @@ Sim_Struct.Ve_sourbron       = Sim_Struct.Ve_larss; % Must be smaller than Vtis
 Sim_Struct.IRF_sourbron = zeros(size(time_vec_minutes,2),num_iterations);
 for i=1:num_iterations
     Sim_Struct.IRF_sourbron(:,i)      = Sourbron_Filter(time_vec_minutes, Sim_Struct.Fp(i), Sim_Struct.Vp_sourbron(i),...
-                                                        Sim_Struct.Fe(i), Sim_Struct.Ve_sourbron(i));  % No units
+        Sim_Struct.Fe(i), Sim_Struct.Ve_sourbron(i));  % No units
 end
 
 Sim_Struct.sourbron_filter   = repmat(Sim_Struct.Fp,[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_sourbron; % [mL/100g/min]
@@ -135,6 +150,7 @@ Sim_Struct.sourbron_filter   = repmat(Sim_Struct.Fp,[size(time_vec_minutes,2) 1]
 
 % Plotting sourbron vs. larsson filter
 if (Sim_Struct.plot_flag)
+    
     
     fig_num = figure;
     hold on;

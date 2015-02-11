@@ -286,7 +286,7 @@ end
 % Assigning two compartment parameters estimation
 est_Vb_Two_Comp_noise           = est_params_Larsson_noise(1);
 est_E_Two_Comp_noise            = est_params_Larsson_noise(2);
-est_Ktrans_Two_Comp_noise           = est_E_Two_Comp_noise * est_F_noise;
+est_Ktrans_Two_Comp_noise       = est_E_Two_Comp_noise * est_F_noise;
 est_Ve_Two_Comp_noise           = est_params_Larsson_noise(3);
 
 % Assigning two compartment parameters estimation using Sourbron

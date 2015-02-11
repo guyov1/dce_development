@@ -27,7 +27,7 @@ Sim_Struct.FORCE_SERIAL                  = true;
 Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = true;
 
 % Set number of iterations for simulation
-Sim_Struct.num_iterations                = 1000; %1500
+Sim_Struct.num_iterations                = 10; %1500
 % Avoid memory overhead if there are too many iteratins
 if (Sim_Struct.num_iterations > 40)
     Sim_Struct.FORCE_SERIAL                  = true;
@@ -36,7 +36,7 @@ end
 % Do each iteration a few time and average results for better statistic information
 Sim_Struct.num_averages                  = 1; %5
 % Determines SNR ( noise_var = mean(signal)/SNR_base )
-Sim_Struct.SNR_single                    = 15; %15 
+Sim_Struct.SNR_single                    = 150; %15 
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 % Determine according to what parameter to check simulations
 Sim_Struct.iterate_SNR                   = 0;
@@ -50,7 +50,7 @@ Sim_Struct.iterate_E_larsson             = 0;
 Sim_Struct.iterate_Ve_larsson            = 0;
 Sim_Struct.iterate_AIF_delay             = 0;
 Sim_Struct.iterate_uniformly             = 1; % Uniformly generate parameters data
-Sim_Struct.Add_Randomly_AIF_Delay        = 1;
+Sim_Struct.Add_Randomly_AIF_Delay        = 0;
 
 % Choose which Patlak estimation to take
 % Possible - 1. "Specified Points" 2. "All Points" 3. "Weighted Points"
@@ -61,8 +61,10 @@ Sim_Struct.Filter_Est_Chosen             = 'Spline_2nd';
 Sim_Struct.filter_type                   = 'Larss';
 % Number of iterations for PCA basis creation
 Sim_Struct.Num_iterations_PCA            = 1000; % 100,000
+% Use the ETM model instead of the Larsson filter
+Sim_Struct.ETM_Model                     = true;
 % Use the adjusted Larsson filter
-Sim_Struct.Adjusted_Larsson_Model        = true;
+Sim_Struct.Adjusted_Larsson_Model        = false;
 % Choose whether to plot L curve
 Sim_Struct.plot_L_Curve                  = false;
 % Polynomial degree for basis splines
@@ -203,7 +205,21 @@ Sim_Struct.E_vec      = linspace(Sim_Struct.E_low, Sim_Struct.E_max, Sim_Struct.
 Sim_Struct.Ve_single  = 0.05; % 0.1
 Sim_Struct.Ve_vec     = linspace(Sim_Struct.Ve_low, Sim_Struct.Ve_max, Sim_Struct.num_iterations);
 
-Sim_Struct.Hct_single = 0.38;
+% Parameter just for ETM estimation
+Sim_Struct.Ktrans_ETM_single = 0.5;
+Sim_Struct.Ktrans_ETM_low    = 0.001;
+Sim_Struct.Ktrans_ETM_max    = 0.5;
+Sim_Struct.Ktrans_ETM_vec    = linspace(Sim_Struct.Ktrans_ETM_low, Sim_Struct.Ktrans_ETM_max, Sim_Struct.num_iterations); % When iterating
+Sim_Struct.Vp_ETM_single     = 0.2;
+Sim_Struct.Vp_ETM_low        = 0.01;
+Sim_Struct.Vp_ETM_max        = 0.2;
+Sim_Struct.Vp_ETM_vec        = linspace(Sim_Struct.Vp_ETM_low, Sim_Struct.Vp_ETM_max, Sim_Struct.num_iterations); % When iterating
+Sim_Struct.Ve_ETM_single     = 0.3;
+Sim_Struct.Ve_ETM_low        = 0.01;
+Sim_Struct.Ve_ETM_max        = 0.3;
+Sim_Struct.Ve_ETM_vec        = linspace(Sim_Struct.Ve_ETM_low, Sim_Struct.Ve_ETM_low, Sim_Struct.num_iterations); % When iterating
+
+Sim_Struct.Hct_single    = 0.38;
 
 % Larsson parameters boundaries for non-linear curve fitting
 % Vb -> 0 to 100 [ml/100g]
@@ -333,6 +349,9 @@ if (Sim_Struct.Simple_AIF_Delay_Correct + Sim_Struct.LQ_Model_AIF_Delay_Correct 
     error('More than one AIF delay correction method chosen!');
 end
 
+if (Sim_Struct.ETM_Model && Sim_Struct.Adjusted_Larsson_Model) || (~Sim_Struct.ETM_Model && ~Sim_Struct.Adjusted_Larsson_Model)
+    error('Choose either ETM or Adjusted Larsson Model!');
+end
 
 if strcmp(Verbosity,'Full')
     display('-I- Finished Setting simulation parameters...');

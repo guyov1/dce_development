@@ -1,7 +1,7 @@
 % WorkingP='\\fmri-t9\users\Moran\DCE\DCE_Duration\001_HAVLIN_HAIM_MORDECHAY\Study20140831_120511_day224_T4\DCE_38min\HaMo_20140831\';
 % AIFP='\\fmri-t9\users\Moran\DCE_Duration\01_HAVLIN_HAIM_MORDECHAY_3\Study20141019_100533\DCE\DCE6-3\HaMo_20141019\';
 AIFP='\\fmri-t9\users\Moran\DCE_Duration\ParamsForParkerAIF\';
-%%
+%% Creates Export.csv with selected PK parameters and CTCs
 ExportMatToCsv;
 %% Load basic stuff
 load('Export.mat');
