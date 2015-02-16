@@ -63,6 +63,9 @@ Sim_Struct.filter_type                   = 'Larss';
 Sim_Struct.Num_iterations_PCA            = 1000; % 100,000
 % Use the ETM model instead of the Larsson filter
 Sim_Struct.ETM_Model                     = true;
+% Use a manual time vector for ETM estimation
+Sim_Struct.use_manual_time_vec           = true;
+Sim_Struct.manual_time_vec_minutes       = [0.1 0.2 0.4 0.5 1];
 % Use the adjusted Larsson filter
 Sim_Struct.Adjusted_Larsson_Model        = false;
 % Choose whether to plot L curve
@@ -93,6 +96,7 @@ Sim_Struct.min_interval             = Sim_Struct.sec_interval/60;  %[min]
 Sim_Struct.num_time_stamps          = round(Sim_Struct.total_sim_time_min / Sim_Struct.min_interval);
 Sim_Struct.num_voxels               = 0; % Use it for real data only
 % Time vector for AIF and Ct(t)
+Sim_Struct.time_vec_minutes         = Sim_Struct.manual_time_vec_minutes;
 Sim_Struct.time_vec_minutes         = (0 : Sim_Struct.num_time_stamps - 1).* Sim_Struct.min_interval;
 % High resolution before downsampling to min_interval
 Sim_Struct.High_res_min             = 0.01/60;

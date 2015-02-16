@@ -38,6 +38,23 @@ Sim_Struct = Filter_AIF(Sim_Struct, Verbosity);
 % Finish here if only ETM estimation
 if Sim_Struct.ETM_Model
     Sim_Struct = Estimate_ETM(Sim_Struct, Verbosity);
+    
+    % True values
+    %Sim_Struct.Ktrans_ETM, Sim_Struct.Vp_ETM, Sim_Struct.Ve_ETM     
+    Sim_Struct.kep_ETM    = Sim_Struct.Ktrans_ETM ./ Sim_Struct.Ve_ETM;
+    
+    % Estimated values
+    %Sim_Struct.Est_Ktrans_vec, Sim_Struct.Est_Kep_vec, Sim_Struct.Est_Vp_vec, Sim_Struct.Est_Ve_vec
+  
+    % Put the results in an excel file
+    filename = 'exported_kep_simulation.csv';
+    export_header = {'True Vp','Est Vp', 'True Ve', 'Est Ve', 'True Ktrans', 'Est Ktrans', 'True Kep', 'Est Kep'};
+    Data_Matrix = [Sim_Struct.Vp_ETM' Sim_Struct.Est_Vp_vec' Sim_Struct.Ve_ETM' Sim_Struct.Est_Ve_vec' Sim_Struct.Ktrans_ETM' Sim_Struct.Est_Ktrans_vec' Sim_Struct.kep_ETM' Sim_Struct.Est_Kep_vec'];
+    csvwrite(filename,cell2mat(export_header),0,0);
+    csvwrite(filename,Data_Matrix,1,0);
+    csvwrite_with_headers(filename, Data_Matrix, export_header);
+    
+    
 else
     
     %% Using Murase to estimate kep, Vp, Ktrans according to Tofts model
