@@ -57,7 +57,12 @@ end
 
 larss_filter_HighRes       = F(iter_idx)*IRF_larss_HighRes; % [mL/100g/min]
 % Computing C(t) using the regular convolution with double exponentials
-Sim_Ct_integral_res        = filter(Sim_Struct.larss_filter(:,iter_idx)*min_interval(iter_idx),1,Sim_Struct.Sim_AIF_delayed_no_noise);
+if Sim_Struct.ignore_time_delta
+    Sim_Ct_integral_res        = filter(Sim_Struct.larss_filter(:,iter_idx),1,Sim_Struct.Sim_AIF_delayed_no_noise);
+else
+    Sim_Ct_integral_res        = filter(Sim_Struct.larss_filter(:,iter_idx)*min_interval(iter_idx),1,Sim_Struct.Sim_AIF_delayed_no_noise);
+end
+
 % Computing Ct(nT) out of Cb(nT) and Ce(nT)
 Ct_vec                     = Vb_larss(iter_idx)*Cb_vec + Ve_larss(iter_idx)*Ce_vec;
 

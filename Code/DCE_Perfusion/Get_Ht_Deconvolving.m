@@ -278,20 +278,37 @@ RMS_params_double_gauss = sqrt( sum( (fitted_double_gaussian - Est_IRF_no_Delay)
 
 % Filter the AIF with the estimated ht
 %conv_result_ht       = filter(Est_ht,1,AIF);
-conv_result_no_Delay_IRF                 = filter(AIF*min_interval,1,Est_IRF_no_Delay,[],2);
-conv_result_Larss_with_Delay             = filter(AIF*min_interval,1,fitted_larsson_with_Delay,[],2);
-conv_result_Larss_no_Delay               = filter(AIF*min_interval,1,fitted_larsson_no_Delay,[],2);
-conv_result_Larss_with_Delay_High_F      = filter(AIF*min_interval,1,fitted_larsson_with_Delay_High_F,[],2);
-conv_result_Larss_no_Delay_High_F        = filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F,[],2);
-conv_result_Larss_with_Delay_no_E        = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E,[],2);
-conv_result_Larss_no_Delay_no_E          = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E,[],2);
-conv_result_Larss_with_Delay_no_E_High_F = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E_High_F,[],2); 
-conv_result_Larss_no_Delay_no_E_High_F   = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E_High_F,[],2);
+if Sim_Struct.ignore_time_delta
+    conv_result_no_Delay_IRF                 = filter(AIF,1,Est_IRF_no_Delay,[],2);
+    conv_result_Larss_with_Delay             = filter(AIF,1,fitted_larsson_with_Delay,[],2);
+    conv_result_Larss_no_Delay               = filter(AIF,1,fitted_larsson_no_Delay,[],2);
+    conv_result_Larss_with_Delay_High_F      = filter(AIF,1,fitted_larsson_with_Delay_High_F,[],2);
+    conv_result_Larss_no_Delay_High_F        = filter(AIF,1,fitted_larsson_no_Delay_High_F,[],2);
+    conv_result_Larss_with_Delay_no_E        = filter(AIF,1,fitted_larsson_with_Delay_no_E,[],2);
+    conv_result_Larss_no_Delay_no_E          = filter(AIF,1,fitted_larsson_no_Delay_no_E,[],2);
+    conv_result_Larss_with_Delay_no_E_High_F = filter(AIF,1,fitted_larsson_with_Delay_no_E_High_F,[],2); 
+    conv_result_Larss_no_Delay_no_E_High_F   = filter(AIF,1,fitted_larsson_no_Delay_no_E_High_F,[],2);
+else
+    conv_result_no_Delay_IRF                 = filter(AIF*min_interval,1,Est_IRF_no_Delay,[],2);
+    conv_result_Larss_with_Delay             = filter(AIF*min_interval,1,fitted_larsson_with_Delay,[],2);
+    conv_result_Larss_no_Delay               = filter(AIF*min_interval,1,fitted_larsson_no_Delay,[],2);
+    conv_result_Larss_with_Delay_High_F      = filter(AIF*min_interval,1,fitted_larsson_with_Delay_High_F,[],2);
+    conv_result_Larss_no_Delay_High_F        = filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F,[],2);
+    conv_result_Larss_with_Delay_no_E        = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E,[],2);
+    conv_result_Larss_no_Delay_no_E          = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E,[],2);
+    conv_result_Larss_with_Delay_no_E_High_F = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E_High_F,[],2); 
+    conv_result_Larss_no_Delay_no_E_High_F   = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E_High_F,[],2);
+end
 
 % Filter the AIF with the gaussian kernel
 %conv_result_gaussian = filter(calculated_gaussian*min_interval,1,AIF);
-conv_result_gaussian        = filter(AIF*min_interval,1,fitted_gaussian,[],2);
-conv_result_double_gaussian = filter(AIF*min_interval,1,fitted_double_gaussian,[],2);
+if Sim_Struct.ignore_time_delta
+    conv_result_gaussian        = filter(AIF,1,fitted_gaussian,[],2);
+    conv_result_double_gaussian = filter(AIF,1,fitted_double_gaussian,[],2);
+else
+    conv_result_gaussian        = filter(AIF*min_interval,1,fitted_gaussian,[],2);
+    conv_result_double_gaussian = filter(AIF*min_interval,1,fitted_double_gaussian,[],2);
+end
 
 % Zero negative values
 conv_result_no_Delay_IRF(conv_result_no_Delay_IRF<0)                                 = 0;

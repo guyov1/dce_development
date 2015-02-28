@@ -11,18 +11,25 @@ High_res_min                     = Sim_Struct.High_res_min;
 gauss_filter_HighRes             = Sim_Struct.gauss_filter_HighRes;
 larss_filter_HighRes             = Sim_Struct.larss_filter_HighRes;
 
-
 if ~Sim_Struct.FORCE_SERIAL
     parfor i = 1:num_iterations
         for j = 1 : num_averages
             
             %% Filter in high resolution, then subsample
-            
             High_2_Low_factor          = min_interval(i) / High_res_min;
-            % Filter the delayed AIF with the gaussian kernel
-            Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
-            % Filter the delayed AIF with Larsson's kernel
-            Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+            
+            if Sim_Struct.ignore_time_delta
+                % Filter the delayed AIF with the gaussian kernel
+                Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i),1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                % Filter the delayed AIF with Larsson's kernel
+                Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i),1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+            else
+                % Filter the delayed AIF with the gaussian kernel
+                Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                % Filter the delayed AIF with Larsson's kernel
+                Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+            end
+            
             Sim_Ct_gauss_kernel(:,i,j) = downsample(Temp_Ct_gauss_kernel,High_2_Low_factor); %[mM]
             Sim_Ct_larss_kernel(:,i,j) = downsample(Temp_Ct_larss_kernel,High_2_Low_factor); %[mM]
             
@@ -50,12 +57,30 @@ else
         for j = 1 : num_averages
             
             %% Filter in high resolution, then subsample
-            
             High_2_Low_factor          = min_interval(i) / High_res_min;
-            % Filter the delayed AIF with the gaussian kernel
-            Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
-            % Filter the delayed AIF with Larsson's kernel
-            Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+            
+            if Sim_Struct.ignore_time_delta             
+                % Filter the delayed AIF with the gaussian kernel
+                Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i),1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                % Filter the delayed AIF with Larsson's kernel
+                if Sim_Struct.ETM_Model
+                    Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i),1,Sim_AIF_HighRes_delayed_no_noise(:,i,j)) + Sim_Struct.Vp_ETM_vec(i)*Sim_AIF_HighRes_delayed_no_noise(:,i,j);
+                else
+                    Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i),1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                end
+                
+            else
+                % Filter the delayed AIF with the gaussian kernel
+                Temp_Ct_gauss_kernel       = filter(gauss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                % Filter the delayed AIF with Larsson's kernel
+                if Sim_Struct.ETM_Model
+                    Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j)) + Sim_Struct.Vp_ETM_vec(i)*Sim_AIF_HighRes_delayed_no_noise(:,i,j);
+                else
+                    Temp_Ct_larss_kernel       = filter(larss_filter_HighRes(:,i)*High_res_min,1,Sim_AIF_HighRes_delayed_no_noise(:,i,j));
+                end
+                
+            end
+           
             Sim_Ct_gauss_kernel(:,i,j) = downsample(Temp_Ct_gauss_kernel,High_2_Low_factor); %[mM]
             Sim_Ct_larss_kernel(:,i,j) = downsample(Temp_Ct_larss_kernel,High_2_Low_factor); %[mM]
             

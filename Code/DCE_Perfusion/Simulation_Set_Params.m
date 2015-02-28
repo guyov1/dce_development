@@ -22,12 +22,15 @@ Sim_Struct.AIC_Correction                = true; % Use correction for AIC
 Sim_Struct.Data_Weight                   = 0.1;  % Data weight comparing to # of params (Gilad uses 0.1)
 Sim_Struct.Ignore_Delay_Model_Selection  = false; % Ignore models with delay
 
+% When using filter(), ignore the time delta
+Sim_Struct.ignore_time_delta = false;
+
 % Force serial and not parallel
 Sim_Struct.FORCE_SERIAL                  = true;
 Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = true;
 
 % Set number of iterations for simulation
-Sim_Struct.num_iterations                = 10; %1500
+Sim_Struct.num_iterations                = 5; %1500
 % Avoid memory overhead if there are too many iteratins
 if (Sim_Struct.num_iterations > 40)
     Sim_Struct.FORCE_SERIAL                  = true;
@@ -36,7 +39,7 @@ end
 % Do each iteration a few time and average results for better statistic information
 Sim_Struct.num_averages                  = 1; %5
 % Determines SNR ( noise_var = mean(signal)/SNR_base )
-Sim_Struct.SNR_single                    = 150; %15 
+Sim_Struct.SNR_single                    = 50; %15 
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 % Determine according to what parameter to check simulations
 Sim_Struct.iterate_SNR                   = 0;
@@ -87,7 +90,7 @@ Sim_Struct.Ignore_Gaussian_Calculation   = true;      % Ignores all calculations
 % Total simulation time
 Sim_Struct.total_sim_time_min       = 6; %[min]
 % Time interval between samples
-Sim_Struct.sec_interval             = 2; %[sec] . default = 2
+Sim_Struct.sec_interval             = 6; %[sec] . default = 2
 Sim_Struct.sec_vec                  = linspace(0.5,15,Sim_Struct.num_iterations); % For iterations
 % Round to the nearest 0.5
 Sim_Struct.sec_vec                  = round(Sim_Struct.sec_vec*2)/2;
@@ -100,6 +103,7 @@ Sim_Struct.time_vec_minutes         = Sim_Struct.manual_time_vec_minutes;
 Sim_Struct.time_vec_minutes         = (0 : Sim_Struct.num_time_stamps - 1).* Sim_Struct.min_interval;
 % High resolution before downsampling to min_interval
 Sim_Struct.High_res_min             = 0.01/60;
+
 % Set if derivative matrix will be divided by time
 Sim_Struct.Derivative_Time_Devision = false;
 % Knots for splines
@@ -112,7 +116,7 @@ Sim_Struct.AIF_delay_low                 = -0.0;
 Sim_Struct.AIF_delay_max                 = +20.0;
 
 % Delay parameters
-Sim_Struct.additional_AIF_delay_sec     = +-1; % Delay added to AIF before filtering
+Sim_Struct.additional_AIF_delay_sec     = 0; % Delay added to AIF before filtering
 Sim_Struct.additional_AIF_delay_sec_vec = linspace(Sim_Struct.AIF_delay_low, Sim_Struct.AIF_delay_max, Sim_Struct.num_iterations); % When iterating;;
 
 % AIF parameters - Parker's AIF
@@ -144,12 +148,11 @@ Sim_Struct.Max_Time_Delay                         = Sim_Struct.AIF_delay_max;  %
 Sim_Struct.Min_Time_Delay                         = Sim_Struct.AIF_delay_low;  % Set the minimal possible time delay in seconds for correction
 Sim_Struct.RMS_Smooth                             = true;       % When calculating RMS, smooth CTC first
 Sim_Struct.RMS_Smooth_Around_Bolus                = false;      % Calculate RMS around bolus only (to avoid noise aggregation afterwards)
-Sim_Struct.Correct_estimation_due_to_delay        = true;       % Try to correct for delay
+Sim_Struct.Correct_estimation_due_to_delay        = false;       % Try to correct for delay
 Sim_Struct.Simple_AIF_Delay_Correct               = false;       % Correct AIF by max point shift
 Sim_Struct.LQ_Model_AIF_Delay_Correct             = false;      % Correct AIF by Linear-Quadratic model (Cheong 2003)
 Sim_Struct.Diff_From_Bolus                        = 10;         % The difference in seconds from the bolus to look on
 Sim_Struct.BiExp2CTC_RMS_Ratio                    = 0;          % Sets the ratio between BiExp fit and CTC fit when estimating time delay
-
 Sim_Struct.AIF_Scaling_Factor                     = 1;
 
 %% ------------------- Gaussian Parameters ------------------------------------
@@ -210,18 +213,23 @@ Sim_Struct.Ve_single  = 0.05; % 0.1
 Sim_Struct.Ve_vec     = linspace(Sim_Struct.Ve_low, Sim_Struct.Ve_max, Sim_Struct.num_iterations);
 
 % Parameter just for ETM estimation
-Sim_Struct.Ktrans_ETM_single = 0.5;
-Sim_Struct.Ktrans_ETM_low    = 0.001;
-Sim_Struct.Ktrans_ETM_max    = 0.5;
+Sim_Struct.Ktrans_ETM_single = 0.1;
+Sim_Struct.Ktrans_ETM_low    = 0.000; % 0.001
+Sim_Struct.Ktrans_ETM_max    = 0.4; % 0.5
 Sim_Struct.Ktrans_ETM_vec    = linspace(Sim_Struct.Ktrans_ETM_low, Sim_Struct.Ktrans_ETM_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vp_ETM_single     = 0.2;
 Sim_Struct.Vp_ETM_low        = 0.01;
 Sim_Struct.Vp_ETM_max        = 0.2;
 Sim_Struct.Vp_ETM_vec        = linspace(Sim_Struct.Vp_ETM_low, Sim_Struct.Vp_ETM_max, Sim_Struct.num_iterations); % When iterating
-Sim_Struct.Ve_ETM_single     = 0.3;
-Sim_Struct.Ve_ETM_low        = 0.01;
-Sim_Struct.Ve_ETM_max        = 0.3;
-Sim_Struct.Ve_ETM_vec        = linspace(Sim_Struct.Ve_ETM_low, Sim_Struct.Ve_ETM_low, Sim_Struct.num_iterations); % When iterating
+%Sim_Struct.Ve_ETM_single     = 0.3;
+% Sim_Struct.Ve_ETM_low        = 0.01; % 0.01
+% Sim_Struct.Ve_ETM_max        = 0.3; % 0.3
+% Sim_Struct.Ve_ETM_vec        = linspace(Sim_Struct.Ve_ETM_low, Sim_Struct.Ve_ETM_low, Sim_Struct.num_iterations); % When iterating
+Sim_Struct.kep_ETM_single    = 0; % 0.01
+Sim_Struct.kep_ETM_low        = 0; % 0.01
+Sim_Struct.kep_ETM_max        = 0; % 0.3
+Sim_Struct.kep_ETM_vec        = linspace(Sim_Struct.kep_ETM_low, Sim_Struct.kep_ETM_low, Sim_Struct.num_iterations); % When iterating
+
 
 Sim_Struct.Hct_single    = 0.38;
 

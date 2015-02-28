@@ -374,15 +374,25 @@ if (plot_flag)
     
     subplot(2,1,2);
     hold on;
-    
-    AIF_filtered_by_est_larrson          = filter(est_larss_filter_Wiener_noise*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_ridge            = filter(ridge_regression_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_spline_no_deriv  = filter(b_spline_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_spline_1st_deriv = filter(b_spline_larss_result_1st_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_spline_2nd_deriv = filter(b_spline_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_PCA              = filter(b_PCA_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_PCA_1st_deriv    = filter(b_PCA_larss_result_1st_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
-    AIF_filtered_by_est_PCA_2nd_deriv    = filter(b_PCA_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+    if Sim_Struct.ignore_time_delta
+        AIF_filtered_by_est_larrson          = filter(est_larss_filter_Wiener_noise,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_ridge            = filter(ridge_regression_larss_result,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_no_deriv  = filter(b_spline_larss_result,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_1st_deriv = filter(b_spline_larss_result_1st_deriv,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_2nd_deriv = filter(b_spline_larss_result_2nd_deriv,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA              = filter(b_PCA_larss_result,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA_1st_deriv    = filter(b_PCA_larss_result_1st_deriv,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA_2nd_deriv    = filter(b_PCA_larss_result_2nd_deriv,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+    else
+        AIF_filtered_by_est_larrson          = filter(est_larss_filter_Wiener_noise*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_ridge            = filter(ridge_regression_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_no_deriv  = filter(b_spline_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_1st_deriv = filter(b_spline_larss_result_1st_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_spline_2nd_deriv = filter(b_spline_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA              = filter(b_PCA_larss_result*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA_1st_deriv    = filter(b_PCA_larss_result_1st_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+        AIF_filtered_by_est_PCA_2nd_deriv    = filter(b_PCA_larss_result_2nd_deriv*min_interval,1,Sim_AIF_with_noise(:,iter_num,avg_num));
+    end
     
     h1  = plot(time_vec_minutes,Sim_Ct_larss_kernel_noise,'g');
     h2  = plot(time_vec_minutes,Sim_Ct_larss_kernel_noise,'g*');

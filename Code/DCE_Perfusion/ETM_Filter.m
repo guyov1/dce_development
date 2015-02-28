@@ -1,4 +1,4 @@
-function Filter = ETM_Filter(time_vec_min, Vp, Ktrans, Ve)
+function Filter = ETM_Filter(time_vec_min, Vp, Ktrans, kep)
 
 %chosen_time_stamps = length(time_vec_min);
 %chosen_time_vec    = time_vec_min;
@@ -16,11 +16,16 @@ function Filter = ETM_Filter(time_vec_min, Vp, Ktrans, Ve)
 % a      = (1/2) * (theta + alpha + sqrt(theta.^2 + alpha.^2 - 2*theta.*alpha + 4*gamma.*beta) ); % [1/min]
 % b      = (1/2) * (theta + alpha - sqrt(theta.^2 + alpha.^2 - 2*theta.*alpha + 4*gamma.*beta) ); % [1/min]
 
-kep      = Ktrans ./ Ve;
+%kep      = Ktrans ./ Ve;
 %IRF    = Ktrans*exp(-kep*time_vec_min); % No units
-Vp_delta = zeros(size(time_vec_min));
-Vp_delta(1) = Vp;
-IRF      = Vp_delta + Ktrans*exp(-kep*time_vec_min); % No units
+
+% Vp_delta = zeros(size(time_vec_min));
+% Vp_delta(1) = Vp;
+% Vp_delta = Vp * dirac(time_vec_min);
+% IRF      = Vp_delta + Ktrans*exp(-kep*time_vec_min); % No units
+
+% Can't handle dirac, use just seconds part
+IRF      = Ktrans*exp(-kep*time_vec_min); % No units
 
 Filter = IRF;
 

@@ -25,6 +25,7 @@ end
 % AIF index to choose for iteration
 AIF_idx = 1;
 
+
 % Initiate parameter matrices
 Murase_params    = zeros(3,num_iterations);
 
@@ -40,18 +41,22 @@ for idx = 1 : num_iterations
     A_2 = -cumtrapz(time_vec_minutes,Sim_Ct_larss_Murase_noise(:,idx)');
     A_3 =  Sim_AIF_with_noise(:,AIF_idx)';
     A   =  [A_1' A_2' A_3'];
-    
+   
     % Create c vector
     C_vec = Sim_Ct_larss_Murase_noise(:,idx);
+    
     B     = A \ C_vec;
+    %B = pinv(A) * C_vec;
     
     K_trans_Tofts_Murase = B(1) - B(2)*B(3);
     K_ep_Tofts_Murase    = B(2);
     Vp_Tofts_Murase      = B(3);
     
+    
     Murase_params(:,idx)    = [K_trans_Tofts_Murase K_ep_Tofts_Murase Vp_Tofts_Murase];
     
 end
+
 
 display(sprintf('Finished simulation for %d voxels...',Iterate_Murase_Tofts_num_iter));
 time_finish = toc;

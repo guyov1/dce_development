@@ -77,7 +77,12 @@ for idx = 1 : Iterate_Murase_Tofts_num_iter
     larss_filter_Murase    = F_Murase*IRF_larss_Murase; % [mL/100g/min]
     
     % Filter the delayed AIF with Larsson's kernel
-    Sim_Ct_larss_Murase = filter(larss_filter_Murase*min_interval(AIF_idx),1,Sim_AIF_delayed_no_noise(:,AIF_idx,AIF_idx));
+    if Sim_Struct.ignore_time_delta
+        Sim_Ct_larss_Murase = filter(larss_filter_Murase,1,Sim_AIF_delayed_no_noise(:,AIF_idx,AIF_idx));
+    else
+        Sim_Ct_larss_Murase = filter(larss_filter_Murase*min_interval(AIF_idx),1,Sim_AIF_delayed_no_noise(:,AIF_idx,AIF_idx));
+    end
+    
     % Adding noise to simulated Ct(t) from both kernels
     noise_sigma_larss_Murase   = mean(Sim_Ct_larss_Murase)/SNR_ratio(AIF_idx);
     noise_to_add_larss_Murase  = noise_sigma_larss_Murase * randn(size(Sim_Ct_larss_Murase));
@@ -157,14 +162,25 @@ if (One_Iteration_Murase_Tofts) % Plot
     
     % Murase fit
     AIF_part                       = Est_Vp_vec*Sim_AIF_with_noise(:,AIF_idx,AIF_idx);
-    Kep_Filter_Part                = filter(Est_Ktrans_vec*exp(-Est_Kep_vec*time_vec_minutes)*min_interval(AIF_idx),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    if Sim_Struct.ignore_time_delta
+        Kep_Filter_Part                = filter(Est_Ktrans_vec*exp(-Est_Kep_vec*time_vec_minutes),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    else
+        Kep_Filter_Part                = filter(Est_Ktrans_vec*exp(-Est_Kep_vec*time_vec_minutes)*min_interval(AIF_idx),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    end
+    
     Sum_Result                     = AIF_part + Kep_Filter_Part;
     Squared_Error_vs_time          = (Sim_Ct_larss_Murase_noise - Sum_Result).^2;
     Squared_Error_vs_time_Kep_Only = (Sim_Ct_larss_Murase_noise - Kep_Filter_Part).^2;
     
     % Non linear fit
     AIF_part_NonLinear                       = Est_Vp_NonLinear_vec*Sim_AIF_with_noise(:,AIF_idx,AIF_idx);
-    Kep_Filter_Part_NonLinear                = filter(Est_Ktrans_NonLinear_vec*exp(-Est_Kep_NonLinear_vec*time_vec_minutes)*min_interval(AIF_idx),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    
+    if Sim_Struct.ignore_time_delta
+        Kep_Filter_Part_NonLinear                = filter(Est_Ktrans_NonLinear_vec*exp(-Est_Kep_NonLinear_vec*time_vec_minutes),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    else
+        Kep_Filter_Part_NonLinear                = filter(Est_Ktrans_NonLinear_vec*exp(-Est_Kep_NonLinear_vec*time_vec_minutes)*min_interval(AIF_idx),1,Sim_AIF_with_noise(:,AIF_idx,AIF_idx));
+    end
+    
     Sum_Result_NonLinear                     = AIF_part_NonLinear + Kep_Filter_Part_NonLinear;
     Squared_Error_vs_time_NonLinear          = (Sim_Ct_larss_Murase_noise - Sum_Result_NonLinear).^2;
     Squared_Error_vs_time_Kep_Only_NonLinear = (Sim_Ct_larss_Murase_noise - Kep_Filter_Part_NonLinear).^2;

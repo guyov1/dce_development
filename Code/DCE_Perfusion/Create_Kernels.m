@@ -30,8 +30,10 @@ E_max                     = Sim_Struct.E_max;
 
 Vp_ETM_low                = Sim_Struct.Vp_ETM_low;
 Vp_ETM_max                = Sim_Struct.Vp_ETM_max;
-Ve_ETM_low                = Sim_Struct.Ve_ETM_low;
-Ve_ETM_max                = Sim_Struct.Ve_ETM_max;
+% Ve_ETM_low                = Sim_Struct.Ve_ETM_low;
+% Ve_ETM_max                = Sim_Struct.Ve_ETM_max;
+kep_ETM_low               = Sim_Struct.kep_ETM_low;
+kep_ETM_max               = Sim_Struct.kep_ETM_max;
 Ktrans_ETM_low            = Sim_Struct.Ktrans_ETM_low;
 Ktrans_ETM_max            = Sim_Struct.Ktrans_ETM_max;
 
@@ -82,7 +84,8 @@ if (Sim_Struct.iterate_uniformly)
     Sim_Struct.Ve_larss = Ve_low + (Ve_max - Ve_low) * rand(1, num_iterations);
     
     Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
-    Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
+    %Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
+    Sim_Struct.kep_ETM    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, num_iterations);
     Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
     
 end
@@ -94,8 +97,8 @@ Sim_Struct.IRF_larss         = zeros(size(time_vec_minutes,2),num_iterations);
 Sim_Struct.IRF_larss_HighRes = zeros(size(time_vec_minutes_high_res,2),num_iterations);
 for i=1:num_iterations
     if Sim_Struct.ETM_Model
-        Sim_Struct.IRF_larss(:,i)         = ETM_Filter(time_vec_minutes, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.Ve_ETM(i));  % No units
-        Sim_Struct.IRF_larss_HighRes(:,i) = ETM_Filter(time_vec_minutes_high_res, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.Ve_ETM(i));  % No units
+        Sim_Struct.IRF_larss(:,i)         = ETM_Filter(time_vec_minutes, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.kep_ETM(i));  % No units
+        Sim_Struct.IRF_larss_HighRes(:,i) = ETM_Filter(time_vec_minutes_high_res, Sim_Struct.Vp_ETM(i), Sim_Struct.Ktrans_ETM(i), Sim_Struct.kep_ETM(i));  % No units
     elseif (adjusted_larsson)
         Sim_Struct.IRF_larss(:,i)         = Adjusted_Larsson_Filter(time_vec_minutes, Sim_Struct.F(i), Sim_Struct.Vb_larss(i), Sim_Struct.E(i),...
             Sim_Struct.Ve_larss(i));  % No units
@@ -113,6 +116,8 @@ end
 if Sim_Struct.ETM_Model
     Sim_Struct.larss_filter           = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
     Sim_Struct.larss_filter_HighRes   = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
+%     Sim_Struct.larss_filter = Sim_Struct.IRF_larss;
+%     Sim_Struct.larss_filter_HighRes = Sim_Struct.IRF_larss_HighRes;
 else
     Sim_Struct.larss_filter           = repmat(Sim_Struct.F,[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
     Sim_Struct.larss_filter_HighRes   = repmat(Sim_Struct.F,[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
