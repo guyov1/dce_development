@@ -45,12 +45,14 @@ if Sim_Struct.ETM_Model
     %Sim_Struct.kep_ETM    = Sim_Struct.Ktrans_ETM ./ Sim_Struct.Ve_ETM;
     Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM ;
    
-    % Test if estimation makes sens
-    tmp1 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Vp_ETM(1), Sim_Struct.Ktrans_ETM(1), Sim_Struct.kep_ETM(1));
-    tmp3 = filter(tmp1*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,1)) + Sim_Struct.Vp_ETM(1)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,1);
-    tmp2 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Est_Vp_vec(1), Sim_Struct.Est_Ktrans_vec(1), Sim_Struct.Est_Kep_vec(1));
-    tmp4 = filter(tmp2*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,1)) + Sim_Struct.Est_Vp_vec(1)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,1);  
-    figure;plot(tmp3,'b'); hold on; plot(tmp4,'r');hold off;
+    % Test if estimation makes sense
+    iter_num = 1;
+    tmp1 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Vp_ETM(iter_num), Sim_Struct.Ktrans_ETM(iter_num), Sim_Struct.kep_ETM(iter_num));
+    tmp3 = filter(tmp1*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Vp_ETM(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);
+    tmp2 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Est_Vp_vec(1), Sim_Struct.Est_Ktrans_vec(iter_num), Sim_Struct.Est_Kep_vec(iter_num));
+    tmp4 = filter(tmp2*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Est_Vp_vec(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);  
+    figure;h1 = plot(tmp3,'b'); hold on; h2 = plot(tmp4,'r');hold off;
+    legend([h1 h2], 'True', 'Estimated');
     % Estimated values
     %Sim_Struct.Est_Ktrans_vec, Sim_Struct.Est_Kep_vec, Sim_Struct.Est_Vp_vec, Sim_Struct.Est_Ve_vec
     

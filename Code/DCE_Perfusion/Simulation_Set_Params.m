@@ -88,7 +88,7 @@ Sim_Struct.Ignore_Gaussian_Calculation   = true;      % Ignores all calculations
 
 %% ------------------- Time Parameters ------------------------------------
 % Total simulation time
-Sim_Struct.total_sim_time_min       = 6; %[min]
+Sim_Struct.total_sim_time_min       = 25; %[min]
 % Time interval between samples
 Sim_Struct.sec_interval             = 6; %[sec] . default = 2
 Sim_Struct.sec_vec                  = linspace(0.5,15,Sim_Struct.num_iterations); % For iterations
@@ -214,8 +214,8 @@ Sim_Struct.Ve_vec     = linspace(Sim_Struct.Ve_low, Sim_Struct.Ve_max, Sim_Struc
 
 % Parameter just for ETM estimation
 Sim_Struct.Ktrans_ETM_single = 0.1;
-Sim_Struct.Ktrans_ETM_low    = 0.000; % 0.001
-Sim_Struct.Ktrans_ETM_max    = 0.4; % 0.5
+Sim_Struct.Ktrans_ETM_low    = 0.001; % 0.001
+Sim_Struct.Ktrans_ETM_max    = 0.5; % 0.5
 Sim_Struct.Ktrans_ETM_vec    = linspace(Sim_Struct.Ktrans_ETM_low, Sim_Struct.Ktrans_ETM_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vp_ETM_single     = 0.2;
 Sim_Struct.Vp_ETM_low        = 0.01;
@@ -226,8 +226,8 @@ Sim_Struct.Vp_ETM_vec        = linspace(Sim_Struct.Vp_ETM_low, Sim_Struct.Vp_ETM
 % Sim_Struct.Ve_ETM_max        = 0.3; % 0.3
 % Sim_Struct.Ve_ETM_vec        = linspace(Sim_Struct.Ve_ETM_low, Sim_Struct.Ve_ETM_low, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.kep_ETM_single    = 0; % 0.01
-Sim_Struct.kep_ETM_low        = 0; % 0.01
-Sim_Struct.kep_ETM_max        = 0; % 0.3
+Sim_Struct.kep_ETM_low        = 0.01; % 0.01
+Sim_Struct.kep_ETM_max        = 0.2; % 0.3
 Sim_Struct.kep_ETM_vec        = linspace(Sim_Struct.kep_ETM_low, Sim_Struct.kep_ETM_low, Sim_Struct.num_iterations); % When iterating
 
 
