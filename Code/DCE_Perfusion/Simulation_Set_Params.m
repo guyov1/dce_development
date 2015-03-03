@@ -30,7 +30,7 @@ Sim_Struct.FORCE_SERIAL                  = true;
 Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = true;
 
 % Set number of iterations for simulation
-Sim_Struct.num_iterations                = 5; %1500
+Sim_Struct.num_iterations                = 1500; %1500
 % Avoid memory overhead if there are too many iteratins
 if (Sim_Struct.num_iterations > 40)
     Sim_Struct.FORCE_SERIAL                  = true;
@@ -227,7 +227,7 @@ Sim_Struct.Vp_ETM_vec        = linspace(Sim_Struct.Vp_ETM_low, Sim_Struct.Vp_ETM
 % Sim_Struct.Ve_ETM_vec        = linspace(Sim_Struct.Ve_ETM_low, Sim_Struct.Ve_ETM_low, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.kep_ETM_single    = 0; % 0.01
 Sim_Struct.kep_ETM_low        = 0.01; % 0.01
-Sim_Struct.kep_ETM_max        = 0.2; % 0.3
+Sim_Struct.kep_ETM_max        = 0.3; % 0.3
 Sim_Struct.kep_ETM_vec        = linspace(Sim_Struct.kep_ETM_low, Sim_Struct.kep_ETM_low, Sim_Struct.num_iterations); % When iterating
 
 

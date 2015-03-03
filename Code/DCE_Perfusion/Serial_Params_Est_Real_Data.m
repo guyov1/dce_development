@@ -40,6 +40,7 @@ num_time_stamps                       = Sim_Struct.num_time_stamps;
 Adjusted_Larsson_Model                = Sim_Struct.Adjusted_Larsson_Model;
 min_interval                          = Sim_Struct.min_interval;
 init_Ve_guess                         = Sim_Struct.init_Ve_guess;
+Hct                                   = Sim_Struct.Hct_single;
 
 % Gaussian parameters
 t_delay_single_gauss_min_vec          = zeros(1,num_voxels);
