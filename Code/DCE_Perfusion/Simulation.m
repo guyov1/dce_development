@@ -32,7 +32,6 @@ if (Sim_Struct.Drive_Diff_Eq)
     Sim_Struct = Driving_Differential_Eq(Sim_Struct, Verbosity);
 end
 
-
 %% Filter AIF through kernels
 Sim_Struct = Filter_AIF(Sim_Struct, Verbosity);
 
@@ -46,25 +45,55 @@ if Sim_Struct.ETM_Model
     Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM ;
    
     % Test if estimation makes sense
-    iter_num = 2;
-    tmp1 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Vp_ETM(iter_num), Sim_Struct.Ktrans_ETM(iter_num), Sim_Struct.kep_ETM(iter_num));
-    tmp3 = filter(tmp1*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Vp_ETM(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);
-    tmp2 = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Est_Vp_vec(1), Sim_Struct.Est_Ktrans_vec(iter_num), Sim_Struct.Est_Kep_vec(iter_num));
-    tmp4 = filter(tmp2*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Est_Vp_vec(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);  
-    figure;h1 = plot(tmp3,'b'); hold on; h2 = plot(tmp4,'r');hold off;
-    legend([h1 h2], 'True', 'Estimated');
+    iter_num = Sim_Struct.ETM_idx_to_plot;
+    
+    filtered_true_ETM = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Vp_ETM(iter_num), Sim_Struct.Ktrans_ETM(iter_num), Sim_Struct.kep_ETM(iter_num));
+    CTC_true_ETM      = filter(filtered_true_ETM*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Vp_ETM(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);
+    
+    filtered_est_ETM = ETM_Filter(Sim_Struct.time_vec_minutes_high_res, Sim_Struct.Est_Vp_vec(iter_num), Sim_Struct.Est_Ktrans_vec(iter_num), Sim_Struct.Est_Kep_vec(iter_num));
+    CTC_est_ETM      = filter(filtered_est_ETM*Sim_Struct.High_res_min,1,Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num)) + Sim_Struct.Est_Vp_vec(iter_num)*Sim_Struct.Sim_AIF_HighRes_delayed_no_noise(:,iter_num);  
+    figure;
+    h1 = plot(CTC_true_ETM,'bo'); 
+    hold on; 
+    h2 = plot(CTC_est_ETM,'rx');
+    h3 = plot(Sim_Struct.Sim_Ct_larss_kernel_noise_high_res(:,iter_num),'gd');
+    hold off;
+    legend([h1 h3 h2], 'True - Model', 'True - Data', 'Estimated');
+    
+    title(['True (Vp,Kt,Kep): ' num2str([Sim_Struct.Vp_ETM(iter_num) Sim_Struct.Ktrans_ETM(iter_num) Sim_Struct.kep_ETM(iter_num)]) ...
+        ' . Estimated: ' num2str([Sim_Struct.Est_Vp_vec(iter_num) Sim_Struct.Est_Ktrans_vec(iter_num) Sim_Struct.Est_Kep_vec(iter_num)])]);
     % Estimated values
     %Sim_Struct.Est_Ktrans_vec, Sim_Struct.Est_Kep_vec, Sim_Struct.Est_Vp_vec, Sim_Struct.Est_Ve_vec
     
+    figure;
+    time_vec_minutes_high_res_to_plot                                        = interp( Sim_Struct.time_vec_minutes_to_plot, Sim_Struct.Upsamp_factor(1) ); % Interpolate time vector for highter resolution
+    time_vec_minutes_high_res_to_plot(time_vec_minutes_high_res_to_plot < 0) = 0;
+    
+    relevant_filter_true = ETM_Filter(time_vec_minutes_high_res_to_plot, Sim_Struct.Vp_ETM(iter_num), Sim_Struct.Ktrans_ETM(iter_num), Sim_Struct.kep_ETM(iter_num));
+    relevant_filter_est  = ETM_Filter(time_vec_minutes_high_res_to_plot, Sim_Struct.Est_Vp_vec(iter_num), Sim_Struct.Est_Ktrans_vec(iter_num), Sim_Struct.Est_Kep_vec(iter_num));
+    
+    [ relevant_AIF_true, ~, ~, ~] = Create_Wanted_AIFs(0, time_vec_minutes_high_res_to_plot,Sim_Struct.A1,Sim_Struct.sig1,Sim_Struct.T1,...
+        Sim_Struct.A2,Sim_Struct.sig2,Sim_Struct.T2,Sim_Struct.alpha,Sim_Struct.beta,Sim_Struct.s,Sim_Struct.tau, ...
+        Sim_Struct.r_factor, Sim_Struct.Upsamp_factor(1) );
+    
+    extended_CTC_true   = filter(relevant_filter_true*Sim_Struct.High_res_min,1,relevant_AIF_true) + Sim_Struct.Vp_ETM(iter_num)*relevant_AIF_true;
+    extended_CTC_est    = filter(relevant_filter_est*Sim_Struct.High_res_min,1,relevant_AIF_true) + Sim_Struct.Est_Vp_vec(iter_num)*relevant_AIF_true;
+    
+    h1 = plot(time_vec_minutes_high_res_to_plot,extended_CTC_true,'go'); 
+    hold on;
+    h2 = plot(time_vec_minutes_high_res_to_plot,extended_CTC_est,'b*'); 
+    h3 = plot(Sim_Struct.time_vec_minutes_high_res, CTC_est_ETM,'rx');
+    hold off;
+    legend([h1 h2 h3], ['CTC ' num2str(Sim_Struct.total_sim_time_min_to_plot) 'Minutes'], ['Est. CTC :' num2str(Sim_Struct.total_sim_time_min_to_plot) ' mins est.'],['Est. CTC :' num2str(Sim_Struct.total_sim_time_min) ' mins est.']);
+    
+    
     % Put the results in an excel file
-    filename = 'exported_kep_simulation.csv';
     export_header = {'True Vp','Est Vp', 'True Ve', 'Est Ve', 'True Ktrans', 'Est Ktrans', 'True Kep', 'Est Kep'};
     Data_Matrix = [Sim_Struct.Vp_ETM' Sim_Struct.Est_Vp_vec' Sim_Struct.Ve_ETM' Sim_Struct.Est_Ve_vec' Sim_Struct.Ktrans_ETM' Sim_Struct.Est_Ktrans_vec' Sim_Struct.kep_ETM' Sim_Struct.Est_Kep_vec'];
-    csvwrite(filename,cell2mat(export_header),0,0);
-    csvwrite(filename,Data_Matrix,1,0);
-    csvwrite_with_headers(filename, Data_Matrix, export_header);
-    
-    
+    csvwrite(Sim_Struct.ETM_filename,cell2mat(export_header),0,0);
+    csvwrite(Sim_Struct.ETM_filename,Data_Matrix,1,0);
+    csvwrite_with_headers(Sim_Struct.ETM_filename, Data_Matrix, export_header);
+
 else
     
     %% Using Murase to estimate kep, Vp, Ktrans according to Tofts model

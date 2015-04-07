@@ -46,8 +46,8 @@ Upsamp_factor = Sim_Struct.Upsamp_factor(1);
 Sim_AIF_high_res         = zeros(num_time_points*Upsamp_factor,num_iterations);
 Sim_AIF_delayed_high_res = zeros(num_time_points*Upsamp_factor,num_iterations);
 
-time_vec_minutes_high_res = interp( time_vec_minutes, Upsamp_factor ); % Interpolate time vector for highter resolution
-
+time_vec_minutes_high_res                                = interp( time_vec_minutes, Upsamp_factor ); % Interpolate time vector for highter resolution
+time_vec_minutes_high_res(time_vec_minutes_high_res < 0) = 0;
 %Sim_Struct.time_vec_minutes_high_res = interp(time_vec_minutes,Sim_Struct.Upsamp_factor(iter_num)); % Interpolate time vector for highter resolution
 
 if ~Sim_Struct.FORCE_SERIAL   

@@ -83,10 +83,49 @@ if (Sim_Struct.iterate_uniformly)
     Sim_Struct.Vb_larss = Vb_low + (Vb_max - Vb_low) * rand(1, num_iterations);
     Sim_Struct.Ve_larss = Ve_low + (Ve_max - Ve_low) * rand(1, num_iterations);
     
-    Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
-    %Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
-    Sim_Struct.kep_ETM    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, num_iterations);
-    Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
+    % Read from previouslt written excel file
+    if Sim_Struct.readLatestData
+        excel_matrix          = xlsread(Sim_Struct.ETM_filename);
+        Sim_Struct.Vp_ETM     = excel_matrix(:,1)';
+        Sim_Struct.kep_ETM    = excel_matrix(:,7)';
+        Sim_Struct.Ktrans_ETM = excel_matrix(:,5)';
+        Sim_Struct.Ve_ETM     = excel_matrix(:,3)';
+    else
+        Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
+        %Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
+        Sim_Struct.kep_ETM    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, num_iterations);
+        Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
+        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
+    end
+    
+    display('-I- Checking that ETM parameters satisfying constraints...');
+    % Add the constraint that (Ve + Vp = 1) and (Vp > Ve)
+    %     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
+%     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );    
+    eval(Sim_Struct.constraint);
+    
+    tries                 = 0;
+    while any(Rcheck) %replace any row whose sum is > rowlim
+        
+        if tries > 10^6
+            error('-I- ETM parameters did not satisfy constraints after trying 10^6 times...');
+        end
+        
+        % Indices where Vp+Ve > 1
+        I = find(Rcheck);
+        
+        Sim_Struct.kep_ETM(I)    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, length(I));
+        Sim_Struct.Ktrans_ETM(I) = Ktrans_ETM_low  + (Ktrans_ETM_max - Ktrans_ETM_low)   * rand(1, length(I));
+        
+        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
+        %         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
+%         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );
+        eval(Sim_Struct.constraint);
+        tries                 = tries + 1;
+    end
+    
+    
+    
     
 end
 
@@ -116,8 +155,8 @@ end
 if Sim_Struct.ETM_Model
     Sim_Struct.larss_filter           = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
     Sim_Struct.larss_filter_HighRes   = repmat(ones(size(Sim_Struct.F)),[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]
-%     Sim_Struct.larss_filter = Sim_Struct.IRF_larss;
-%     Sim_Struct.larss_filter_HighRes = Sim_Struct.IRF_larss_HighRes;
+    %     Sim_Struct.larss_filter = Sim_Struct.IRF_larss;
+    %     Sim_Struct.larss_filter_HighRes = Sim_Struct.IRF_larss_HighRes;
 else
     Sim_Struct.larss_filter           = repmat(Sim_Struct.F,[size(time_vec_minutes,2) 1]) .* Sim_Struct.IRF_larss; % [mL/100g/min]
     Sim_Struct.larss_filter_HighRes   = repmat(Sim_Struct.F,[size(time_vec_minutes_high_res,2) 1]) .* Sim_Struct.IRF_larss_HighRes; % [mL/100g/min]

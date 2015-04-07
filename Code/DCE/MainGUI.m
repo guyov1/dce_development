@@ -270,19 +270,7 @@ function handles = Process4D(hObject, eventdata, handles)
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 
 % The following is used to get the DCE over time data
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Tmp(Tmp==25)=2500; % For PHILIPS now
-Tmp(Tmp==55)=2500; % For Verona PHILIPS now
-DCEMainI=find(Tmp>50); % For Siemens
-% If we got more than 1 main, return an error
-if(numel(DCEMainI)~=1)
-    if(isfield(handles,'ListMode') && handles.ListMode)
-        error('Choose DCE Main problem');
-    else
-        errordlg('Choose DCE Main','DCE main');
-    end
-    return;
-end
+DCEMainI=getDCEMainI(handles,GoodS);
 
 f = helpdlg([handles.ShortSeriesName ': Preprocess...']);
 
@@ -312,7 +300,7 @@ function handles=ProcessT1(hObject, eventdata, handles)
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 
 % Find the Main Data
-DCEMainI=find([handles.ShortInfos(GoodS).ImagesInAcquisition]>100);
+DCEMainI=getDCEMainI(handles,GoodS);
 
 % Remove the Main from the rest
 GoodS2=GoodS(setdiff(1:numel(GoodS),DCEMainI));
@@ -342,9 +330,7 @@ CrgTo=CrgToS{get(handles.t1coregto,'Value')};
 
 % Find the main data file
 GoodS=get(handles.DCE_Data_ListBox,'Value');
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainI=getDCEMainI(handles,GoodS);
 MainInfo=handles.ShortInfos(GoodS(DCEMainI));
 
 % Starting T1 calculation
@@ -394,10 +380,7 @@ CalcForce=get(handles.forcectc,'Value');
 GoodS=get(handles.DCE_Data_ListBox,'Value');
 
 % Find the main data file
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
-
+DCEMainI=getDCEMainI(handles,GoodS);
 
 % Remove the Main from the rest
 GoodS2=GoodS(setdiff(1:numel(GoodS),DCEMainI));
@@ -408,11 +391,15 @@ Additional_T1_Maps_Time_Stamps = {handles.ShortInfos(GoodS2(ismember({handles.Sh
 % Allowing to sub-sample  the original data and then use super resolution
 UnderSampling=handles.Options.SubSampling;
 
+% Get from GUI to what to co-register T1 maps
+CrgToS=get(handles.t1coregto,'String');
+CrgTo=CrgToS{get(handles.t1coregto,'Value')};
+
 % Calculate CTC
 f = helpdlg([handles.ShortSeriesName ': CTCs calculation...']);
 % Check for additional DESPOT1 maps for 4D data
 DCET1_CTCf(handles.ShortInfos(GoodS(DCEMainI)),...
-           Additional_T1_Maps_Time_Stamps,handles.destFolder,DoN3,DoGlobal,DoDeviations,CalcForce,handles.Options);
+           Additional_T1_Maps_Time_Stamps,handles.destFolder,DoN3,DoGlobal,DoDeviations,CalcForce,CrgTo,handles.Options);
 
 % If help dialog is still open, close it
 if ( exist('f','var') && ishandle(f) )
@@ -446,10 +433,7 @@ load(CTCFN);
 Options=handles.Options;
 
 GoodS=get(handles.DCE_Data_ListBox,'Value');
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Philips=Tmp(end)==25;
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainI=getDCEMainI(handles,GoodS);
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 f = helpdlg([handles.ShortSeriesName ': Finding represntative voxels...']);
@@ -483,10 +467,7 @@ load(CTCFN);
 Options=handles.Options;
 
 GoodS=get(handles.DCE_Data_ListBox,'Value');
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Philips=Tmp(end)==25;
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainI=getDCEMainI(handles,GoodS);
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 f = helpdlg([handles.ShortSeriesName ': AIF extraction...']);
@@ -518,9 +499,7 @@ load(CTCFN);
 Options=handles.Options;
 
 GoodS=get(handles.DCE_Data_ListBox,'Value');
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainI=getDCEMainI(handles,GoodS);
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 
@@ -816,9 +795,9 @@ Descriptions=strrep(Descriptions,'_',' ');
 GoodS=intersect(get(handles.DCE_Data_ListBox,'Value'),1:numel(handles.ShortInfos));
 Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
 Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainIs=find(Tmp>50); % Siemens
 
-for i=DCEMainI
+for i=DCEMainIs
     Descriptions{i}=[Descriptions{i} ' ' num2str(handles.ShortInfos(i).FlipAngle) ' ' num2str(handles.ShortInfos(i).ImagesInAcquisition)];
 end
 
@@ -831,13 +810,6 @@ set(handles.Dest_Folder_TextBox,'String',handles.destFolder);
 handles.GoodSers=find(ismember({handles.ShortInfos.Class},{'T1MAP','DCE'})); % 'FIESTA'
 
 % GUYN - DATA CHANGE - commented to select all T1 data and not just up to Main data
-
-% % Get the index of the DCE Main data
-% DCEMainI=find([handles.ShortInfos(handles.GoodSers).ImagesInAcquisition]>100);
-% % If we have DCE Main acquisition, mark all data up to it.
-% if(~isempty(DCEMainI))
-%     handles.GoodSers=[handles.GoodSers(1:(DCEMainI(1)-1)) handles.GoodSers(DCEMainI(end))];
-% end
 
 % Select just the data we need
 set(handles.DCE_Data_ListBox,'Value',handles.GoodSers);
@@ -1171,9 +1143,7 @@ disp('Loading..');
 load(CTCFN);
 
 GoodS=get(handles.DCE_Data_ListBox,'Value');
-Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-Tmp(Tmp==25)=2500; % For PHILIPS now
-DCEMainI=find(Tmp>50); % Siemens
+DCEMainI=getDCEMainI(handles,GoodS);
 
 CurMainDCEInfo=handles.ShortInfos(GoodS(DCEMainI));
 disp('DCET1_PKf..');
@@ -1346,10 +1316,8 @@ for i=1:numel(CurPs)
         save(MatFN,'ShortInfos');
     end
     
-    Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
-    Tmp(Tmp==25)=2500; % For PHILIPS now
-    DCEMainI=find(Tmp>50); % Siemens
-
+    DCEMainI=getDCEMainI(handles,GoodS);
+    
     if(isempty(DCEMainI))
         continue;
     end
@@ -1760,3 +1728,21 @@ end
 
 set(handles.Dest_Folder_TextBox,'String',handles.destFolderBase);
 guidata(hObject, handles);
+
+function DCEMainI=getDCEMainI(handles,GoodS)
+Tmp=[handles.ShortInfos(GoodS).ImagesInAcquisition];
+Tmp(Tmp==25)=2500; % For PHILIPS now
+Tmp(Tmp==55)=2500; % For Verona PHILIPS now
+DCEMainI=find(Tmp>50); % For Siemens
+if(numel(handles.ShortInfos(1).R1)==1)
+    DCEMainI=DCEMainI(1);
+end
+% If we got more than 1 main, return an error
+if(numel(DCEMainI)~=1)
+    if(isfield(handles,'ListMode') && handles.ListMode)
+        error('Choose DCE Main problem');
+    else
+        errordlg('Choose DCE Main','DCE main');
+    end
+    return;
+end

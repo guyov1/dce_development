@@ -1,3 +1,4 @@
+
 function DCET1_Prepare4Df(CurMainDCEInfo,WorkingP,Force, Options)
 
 % Fix Path according to windows/unix 
@@ -141,6 +142,7 @@ else
         TimeBetweenDCEVolsPerSlice=double(min(CurFullInfo.AcquisitionMatrix(CurFullInfo.AcquisitionMatrix>0))*CurFullInfo.RepetitionTime)/(1000*max(CurFullInfo.EchoTrainLength,1))*CurFullInfo.PercentPhaseFieldOfView/100.;
         TimeBetweenDCEVols=TimeBetweenDCEVolsPerSlice*SDCE(3);
         AddToLog(WorkingP,'a_2b3','Used old time calculation');
+        AddToLog(WorkingP,'a_2b3b',['Old time calc: ' num2str(TimeBetweenDCEVols)]');
     end
 end
 
@@ -160,7 +162,7 @@ disp('Calculate mutual information');
 
 %%  Step 4 - Show movements -> 	Create a montage of all middle slices during time.
 
-disp('Disply coreged');
+disp('Display coreged');
 % if(false)
     % Middle Slice
     MidSli=floor(SDCE(3)/2);

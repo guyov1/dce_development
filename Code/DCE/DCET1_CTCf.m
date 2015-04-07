@@ -6,7 +6,7 @@
 % 1/T1(t) = 1/(T1base)+C(t)
 % So given T1base, we can get from T1(t) the Concentration Time Curve C(t)
 
-function DCET1_CTCf(DCEInfo, Additional_T1_Maps_Time_Stamps, WorkingP,DoN3,DoGlobal,DoDeviations,CalcForce,Options)
+function DCET1_CTCf(DCEInfo, Additional_T1_Maps_Time_Stamps, WorkingP,DoN3,DoGlobal,DoDeviations,CalcForce,WhichMean,Options)
 
 % If using super-resolution, get the relevant parameters value
 UnderSampling=Options.SubSampling;
@@ -645,7 +645,11 @@ if (Num_Of_T1_Maps>1)
     load(RelaxFNx,'TRsBySet');
     
     for qq=[WhichSetForBase SingleAngleIdxs]
-        dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Core*.nii']);
+        if(strcmp(WhichMean,'No coreg') && ~ismember(qq,SingleAngleIdxs) )
+            dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Orig*.nii']);
+        else
+            dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Core*.nii']);
+        end
         TmpFN=[WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep dir_to_look_name(1).name];
         FullVol=loadniidata(TmpFN);
         FullVol4D(:,:,:,qq)=FullVol;
@@ -659,9 +663,15 @@ if (Num_Of_T1_Maps>1)
     
     DESPOT1Idxs=setdiff(1:Num_Of_T1_Maps,SingleAngleIdxs);
     for qq=DESPOT1Idxs
-        dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Core*.nii']);
-        Tmp=cell2mat({dir_to_look_name.name}');
-        TmpFAs=str2num(Tmp(:,16:17));
+        if(strcmp(WhichMean,'No coreg'))
+            dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Orig*.nii']);
+            Tmp=cell2mat({dir_to_look_name.name}');
+            TmpFAs=str2num(Tmp(:,8:9));
+        else
+            dir_to_look_name = dir([WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep 'Core*.nii']);
+            Tmp=cell2mat({dir_to_look_name.name}');
+            TmpFAs=str2num(Tmp(:,16:17));
+        end
         [AA,Chosen]=min(abs(TmpFAs-DCEFA));
         TmpFN=[WorkingP 'Relaxometry' filesep 'Set_Num_' num2str(qq) filesep dir_to_look_name(Chosen).name];
         FullVol=loadniidata(TmpFN);

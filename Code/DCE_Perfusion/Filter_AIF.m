@@ -33,29 +33,33 @@ larss_filter_HighRes             = Sim_Struct.larss_filter_HighRes;
 % "filter" works for vectors only, hence, loop for each iteration
 
 % Initiate matrices
-Sim_Ct_gauss_kernel = zeros(size(Sim_AIF_delayed_no_noise));
-Sim_Ct_larss_kernel = zeros(size(Sim_AIF_delayed_no_noise));
-noise_to_add_gauss  = zeros(size(Sim_AIF_delayed_no_noise));
-noise_to_add_larss  = zeros(size(Sim_AIF_delayed_no_noise));
+Sim_Ct_gauss_kernel          = zeros(size(Sim_AIF_delayed_no_noise));
+Sim_Ct_larss_kernel          = zeros(size(Sim_AIF_delayed_no_noise));
+noise_to_add_gauss           = zeros(size(Sim_AIF_delayed_no_noise));
+noise_to_add_larss           = zeros(size(Sim_AIF_delayed_no_noise));
+Sim_Ct_larss_kernel_high_res = zeros(size(Sim_AIF_HighRes_delayed_no_noise));
+noise_to_add_larss_high_res  = zeros(size(Sim_AIF_HighRes_delayed_no_noise));
 
 % Filter each Ca(t) and add noise
-[Sim_Ct_gauss_kernel, Sim_Ct_larss_kernel, noise_to_add_gauss, noise_to_add_larss] = Filter_AIF_Process(Sim_Struct, Sim_Ct_gauss_kernel, Sim_Ct_larss_kernel, noise_to_add_gauss, noise_to_add_larss);
+[Sim_Ct_gauss_kernel, Sim_Ct_larss_kernel, Sim_Ct_larss_kernel_high_res, noise_to_add_gauss, noise_to_add_larss, noise_to_add_larss_high_res] = Filter_AIF_Process(Sim_Struct, Sim_Ct_gauss_kernel, Sim_Ct_larss_kernel, Sim_Ct_larss_kernel_high_res, noise_to_add_gauss, noise_to_add_larss, noise_to_add_larss_high_res);
 
-Sim_Ct_gauss_kernel_noise = Sim_Ct_gauss_kernel + noise_to_add_gauss;
-Sim_Ct_larss_kernel_noise = Sim_Ct_larss_kernel + noise_to_add_larss;
+Sim_Ct_gauss_kernel_noise          = Sim_Ct_gauss_kernel          + noise_to_add_gauss;
+Sim_Ct_larss_kernel_noise          = Sim_Ct_larss_kernel          + noise_to_add_larss;
+Sim_Ct_larss_kernel_noise_high_res = Sim_Ct_larss_kernel_high_res + noise_to_add_larss_high_res;
 
 % Zero negative values (non realistic)
 Sim_Ct_gauss_kernel_noise(Sim_Ct_gauss_kernel_noise<0) = 0;
 Sim_Ct_larss_kernel_noise(Sim_Ct_larss_kernel_noise<0) = 0;
 
 % Put result in struct
-Sim_Struct.noise_to_add_gauss        = noise_to_add_gauss;
-Sim_Struct.noise_to_add_larss        = noise_to_add_larss;
-Sim_Struct.Sim_Ct_gauss_kernel_noise = Sim_Ct_gauss_kernel_noise;
-Sim_Struct.Sim_Ct_larss_kernel_noise = Sim_Ct_larss_kernel_noise;
-Sim_Struct.Sim_Ct_gauss_kernel       = Sim_Ct_gauss_kernel;
-Sim_Struct.Sim_Ct_larss_kernel       = Sim_Ct_larss_kernel;
-
+Sim_Struct.noise_to_add_gauss                 = noise_to_add_gauss;
+Sim_Struct.noise_to_add_larss                 = noise_to_add_larss;
+Sim_Struct.Sim_Ct_gauss_kernel_noise          = Sim_Ct_gauss_kernel_noise;
+Sim_Struct.Sim_Ct_larss_kernel_noise          = Sim_Ct_larss_kernel_noise;
+Sim_Struct.Sim_Ct_larss_kernel_noise_high_res = Sim_Ct_larss_kernel_noise_high_res;
+Sim_Struct.Sim_Ct_gauss_kernel                = Sim_Ct_gauss_kernel;
+Sim_Struct.Sim_Ct_larss_kernel                = Sim_Ct_larss_kernel;
+Sim_Struct.Sim_Ct_larss_kernel_high_res       = Sim_Ct_larss_kernel_high_res;
 
 % Iteration to display
 iter_display = 1;

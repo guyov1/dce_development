@@ -231,14 +231,14 @@ for j=1:num_voxels
         Larsson_function_with_Delay_no_E_High_F = @(x,t) Adjusted_Larsson_Filter_no_E_High_F( t,                         x(1)            );
         Larsson_function_no_Delay_no_E_High_F   = @(x,t) Adjusted_Larsson_Filter_no_E_High_F( t,                         x(1)            );
     else
-        Larsson_function_with_Delay             = @(x,t) Larsson_Filter( t, est_F_with_Delay             , x(1), x(2), x(3), Hct);
-        Larsson_function_no_Delay               = @(x,t) Larsson_Filter( t, est_F_no_Delay               , x(1), x(2), x(3), Hct);
-        Larsson_function_with_Delay_High_F      = @(x,t) Larsson_Filter( t, est_F_with_Delay_High_F      , x(1), x(2), x(3), Hct);
-        Larsson_function_no_Delay_High_F        = @(x,t) Larsson_Filter( t, est_F_no_Delay_High_F        , x(1), x(2), x(3), Hct);
-        Larsson_function_with_Delay_no_E        = @(x,t) Larsson_Filter( t, est_F_with_Delay             , x(1), 0   , x(3), Hct);
-        Larsson_function_no_Delay_no_E          = @(x,t) Larsson_Filter( t, est_F_no_Delay               , x(1), 0   , x(3), Hct);
-        Larsson_function_with_Delay_no_E_High_F = @(x,t) Larsson_Filter( t, est_F_with_Delay_no_E_High_F , x(1), 0   , x(3), Hct);
-        Larsson_function_no_Delay_no_E_High_F   = @(x,t) Larsson_Filter( t, est_F_no_Delay_no_E_High_F   , x(1), 0   , x(3), Hct);
+        Larsson_function_with_Delay             = @(x,t) Larsson_Filter                     ( t, est_F_with_Delay             , x(1), x(2), x(3), Hct);
+        Larsson_function_no_Delay               = @(x,t) Larsson_Filter                     ( t, est_F_no_Delay               , x(1), x(2), x(3), Hct);
+        Larsson_function_with_Delay_High_F      = @(x,t) Larsson_Filter_High_F              ( t,                                x(1), x(2), x(3), Hct);
+        Larsson_function_no_Delay_High_F        = @(x,t) Larsson_Filter_High_F              ( t,                                x(1), x(2), x(3), Hct);
+        Larsson_function_with_Delay_no_E        = @(x,t) Larsson_Filter_no_E                ( t, est_F_with_Delay_no_E        , x(1)            , Hct);
+        Larsson_function_no_Delay_no_E          = @(x,t) Larsson_Filter_no_E                ( t, est_F_no_Delay_no_E          , x(1)            , Hct);
+        Larsson_function_with_Delay_no_E_High_F = @(x,t) Larsson_Filter_no_E_High_F         ( t,                                x(1)            , Hct);
+        Larsson_function_no_Delay_no_E_High_F   = @(x,t) Larsson_Filter_no_E_High_F         ( t,                                x(1)            , Hct);
     end
     
     
