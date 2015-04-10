@@ -39,7 +39,7 @@ end
 % Do each iteration a few time and average results for better statistic information
 Sim_Struct.num_averages                  = 1; %5
 % Determines SNR ( noise_var = mean(signal)/SNR_base )
-Sim_Struct.SNR_single                    = 150; %15 
+Sim_Struct.SNR_single                    = 100; %15 
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 % Determine according to what parameter to check simulations
 Sim_Struct.iterate_SNR                   = 0;

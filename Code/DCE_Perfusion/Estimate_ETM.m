@@ -49,6 +49,11 @@ for idx = 1 : num_iterations
     K_ep_Tofts_Murase    = B(2);
     Vp_Tofts_Murase      = B(3);
     
+    % Make sure result is not negative
+    K_trans_Tofts_Murase = max(0,K_trans_Tofts_Murase);
+    K_ep_Tofts_Murase    = max(0,K_ep_Tofts_Murase);
+    Vp_Tofts_Murase      = max(0,Vp_Tofts_Murase);
+    
     Murase_params(:,idx)    = [K_trans_Tofts_Murase K_ep_Tofts_Murase Vp_Tofts_Murase];
 
 end
