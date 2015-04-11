@@ -45,6 +45,8 @@ Flow_no_Delay             = 0;
 Vb_with_Delay             = 0;
 Vb_no_Delay               = 0;
 E_with_Delay              = 0;
+E_no_Delay_no_Ve          = 0;
+E_with_Delay_no_Ve        = 0;
 E_no_Delay                = 0;
 Ktrans_with_Delay         = 0;
 Ktrans_no_Delay           = 0;
@@ -56,14 +58,18 @@ fitted_larsson_with_Delay = zeros(size(time_vec_minutes));
 fitted_larsson_no_Delay   = zeros(size(time_vec_minutes));
 
 Vb_with_Delay_High_F             = 0;
+Vb_with_Delay_no_Ve              = 0;
 Ktrans_with_Delay_High_F         = 0;
 Ve_with_Delay_High_F             = 0;
 fitted_larsson_with_Delay_High_F = zeros(size(time_vec_minutes));
+fitted_larsson_with_Delay_no_Ve  = zeros(size(time_vec_minutes));
 
 Vb_no_Delay_High_F             = 0;
+Vb_no_Delay_no_Ve              = 0;
 Ktrans_no_Delay_High_F         = 0;
 Ve_no_Delay_High_F             = 0;
 fitted_larsson_no_Delay_High_F = zeros(size(time_vec_minutes));
+fitted_larsson_no_Delay_no_Ve  = zeros(size(time_vec_minutes));
 
 Vb_with_Delay_no_E             = 0;
 fitted_larsson_with_Delay_no_E = zeros(size(time_vec_minutes));
