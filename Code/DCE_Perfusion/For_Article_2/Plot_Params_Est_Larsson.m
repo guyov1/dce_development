@@ -47,7 +47,7 @@ graph_format_4      = '-ro';
 Base_Path           = './Old_Runs/';
 
 idx_fig             = 1;
-create_PDF          = false;
+create_PDF          = true;
 error_type          = 'rel' ; % Choose 'abs' or 'rel'
 std_or_sem          = 'sem'; % Choose standard deviation or standard error of the mean
 param_list_cells    = {'Flow' 'Ktrans' 'Vb' 'Ve' 'E' 'BAT'};
@@ -55,6 +55,12 @@ param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g
 
 % ------------------------------------- Different Analysis Techniques -------------------------------------------
 
+DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
+DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_1st.mat'];
+DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA.mat'];
+Legend_1            = 'PCA 2nd';
+Legend_2            = 'PCA 1st';
+Legend_3            = 'PCA';
 % DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
@@ -63,31 +69,31 @@ param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g
 % Legend_2            = 'Spline 2nd';
 % Legend_3            = 'PCA 2nd';
 % Legend_4            = 'Wiener';
-% E_y_scale           = 0.9/max_E_display;
-% BAT_y_scale         = 1;
-% num_data            = 4;
-% Delay_Methods_flag  = false;
+E_y_scale           = 0.9/max_E_display;
+BAT_y_scale         = 1;
+num_data            = 3;
+Delay_Methods_flag  = false;
 
 % ------------------------------------- with Delay -------------------------------------------
 
-%DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
-%DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.05_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-%DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
-DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-%DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
-Legend_1            = 'ACoPeD';
-Legend_2            = 'Cyclic Deconv. MVT';
-%Legend_3            = 'MVT';
-%Legend_2            = 'MVT';
-Legend_3            = 'LQ';
-Legend_4            = 'No Correct';
-E_y_scale           = 1/max_E_display;
-BAT_y_scale         = 1.4;
-num_data            = 4;
-Delay_Methods_flag  = true;
+% %DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
+% %DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.05_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
+% DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% %DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
+% Legend_1            = 'ACoPeD';
+% Legend_2            = 'Cyclic Deconv. MVT';
+% %Legend_3            = 'MVT';
+% %Legend_2            = 'MVT';
+% Legend_3            = 'LQ';
+% Legend_4            = 'No Correct';
+% E_y_scale           = 1/max_E_display;
+% BAT_y_scale         = 1.4;
+% num_data            = 4;
+% Delay_Methods_flag  = true;
 
 % ------------------------------------- Temproal Res. -------------------------------------------
 
@@ -149,34 +155,59 @@ for idx = 1:num_data
     %eval(['AIF_delay_max_' num2str(idx) ' = AIF_delay_max;     ']);
     eval(['results_' num2str(idx) ' = results;    ']);
     eval(['results = results_' num2str(idx) ' ;      ']);
+
+    % 15-18. Larsson filter:  original Flow,       estimated Flow, error percent and standard deviation
     eval(['real_larsson_F_vec_' num2str(idx) ' = results(15,:);  ']);
     eval(['est_larsson_F_vec_' num2str(idx) ' = results(16,:);  ']);
     eval(['error_percent_F_' num2str(idx) ' = results(17,:);  ']);
     eval(['std_F_' num2str(idx) ' = results(18,:);  ']);
+    % 19-22. AIF:             original delay,      estimated delay, error percent and standard deviation
     eval(['real_t_d_Larss_vec_sec_' num2str(idx) ' = results(19,:);  ']);
     eval(['est_t_d_Larss_vec_sec_' num2str(idx) ' = results(20,:);  ']);
     eval(['error_percent_t_d_Larss_' num2str(idx) ' = results(21,:);  ']);
     eval(['std_t_d_Larss_sec_' num2str(idx) ' = results(22,:);  ']);
+    % 27-30. Larsson filter:  original Ktrans,     estimated Ktrans using 2CXM, error percent and standard deviation
     eval(['real_larsson_Ktrans_2CXM_vec_' num2str(idx) ' = results(27,:);  ']);
     eval(['est_larsson_Ktrans_2CXM_vec_' num2str(idx) ' = results(28,:);  ']);
     eval(['error_percent_Ktrans_2CXM_' num2str(idx) ' = results(29,:);  ']);
     eval(['std_Ktrans_2CXM_' num2str(idx) ' = results(30,:);  ']);
+    
+
+% 43-46. Larsson filter:  original Vd,         estimated Vd, error percent and standard deviation
+% 47-50. Larsson filter:  original Vd,         estimated Vd using normal tissue assumption, error percent and standard deviation
+% 51-54. Larsson filter:  original MTT,        estimated Vd, error percent and standard deviation
+% 55-58. Larsson filter:  original MTT,        estimated MTT using normal tissue assumption, error percent and standard deviation
+% 63-66. Gaussian filter: original AIF delay,  estimated AIF delay using Gaussian, error percent and standard deviation
+% 67-70. Sourbron method: original Flow,       estimated Flow, error percent and standard deviation
+% 71-74. Sourbron method: original Ktrans,     estimated Ktrans using 2CXM, error percent and standard deviation
+% 75-78. Sourbron method: original E,          estimated E using 2CXM, error percent and standard deviation
+% 79-82. Sourbron method: original Vb,         estimated Vb using 2CXM, error percent and standard deviation
+
+% 83-86. Sourbron method: original Ve,         estimated Ve using 2CXM, error percent and standard deviation
+% 87-90. Larsson filter : original Ve,         estimated Ve using 2CXM, error percent and standard deviation
+% 91-103. Absolute error for all larsson paramters
+
+    % 35-38. Larsson filter:  original Vb,         estimated Vb using Patlak, error percent and standard deviation
     eval(['real_larsson_Vb_Patlak_vec_' num2str(idx) ' = results(35,:);  ']);
     eval(['est_larsson_Vb_Patlak_vec_' num2str(idx) ' = results(36,:);  ']);
     eval(['error_percent_Vb_Patlak_' num2str(idx) ' = results(37,:);  ']);
     eval(['std_Vb_Patlak_' num2str(idx) ' = results(38,:);  ']);
+    % 39-42. Larsson filter:  original Vb,         estimated Vb using 2CXM, error percent and standard deviation
     eval(['real_larsson_Vb_2CXM_vec_' num2str(idx) ' = results(39,:);  ']);
     eval(['est_larsson_Vb_2CXM_vec_' num2str(idx) ' = results(40,:);  ']);
     eval(['error_percent_Vb_2CXM_' num2str(idx) ' = results(41,:);  ']);
     eval(['std_Vb_2CXM_' num2str(idx) ' = results(42,:);  ']);
+    % 59-62. Larsson filter:  original E,          estimated E, error percent and standard deviation
     eval(['real_larsson_E_vec_' num2str(idx) ' = results(59,:);  ']);
     eval(['est_larsson_E_vec_' num2str(idx) ' = results(60,:);  ']);
     eval(['error_percent_E_' num2str(idx) ' = results(61,:);  ']);
     eval(['std_E_' num2str(idx) ' = results(62,:);  ']);
+    
     eval(['real_larsson_Ve_2CXM_vec_' num2str(idx) ' = results(83,:);  ']);
     eval(['est_larsson_Ve_2CXM_vec_' num2str(idx) ' = results(84,:);  ']);
     eval(['error_percent_Ve_2CXM_' num2str(idx) ' = results(85,:);  ']);
     eval(['std_Ve_2CXM_' num2str(idx) ' = results(86,:);  ']);
+    
     eval(['real_F_' num2str(idx) '                            = real_larsson_F_vec_' num2str(idx) ';  ']);
     eval(['est_F_' num2str(idx) '                             = est_larsson_F_vec_' num2str(idx) ';  ']);
     eval(['real_Ktrans_' num2str(idx) '                       = real_larsson_Ktrans_2CXM_vec_' num2str(idx) ';  ']);

@@ -23,8 +23,8 @@ Sim_Struct.Data_Weight                   = 0.1;  % Data weight comparing to # of
 Sim_Struct.Ignore_Delay_Model_Selection  = false; % Ignore models with delay
 
 %% Simulation parameters
-Sim_Struct.num_iterations                = 20; %1500
-Sim_Struct.num_averages                  = 3;  % Do each iteration a few time and average results for better statistic information
+Sim_Struct.num_iterations                = 100; %1500
+Sim_Struct.num_averages                  = 1;  % Do each iteration a few time and average results for better statistic information
 Sim_Struct.SNR_single                    = 15; % Determines SNR ( noise_var = mean(signal)/SNR_base )
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 
@@ -34,12 +34,12 @@ Sim_Struct.iterate_sec_interval          = 0; % Problematic (different array siz
 Sim_Struct.iterate_gaussian_sigma        = 0;
 Sim_Struct.iterate_gaussian_time_delay   = 0;
 Sim_Struct.iterate_gaussian_amplitude    = 0;
-Sim_Struct.iterate_F_larsson             = 1;
+Sim_Struct.iterate_F_larsson             = 0;
 Sim_Struct.iterate_Vb_larsson            = 0;
 Sim_Struct.iterate_E_larsson             = 0;
 Sim_Struct.iterate_Ve_larsson            = 0;
 Sim_Struct.iterate_AIF_delay             = 0;
-Sim_Struct.iterate_uniformly             = 0; % Uniformly generate parameters data
+Sim_Struct.iterate_uniformly             = 1; % Uniformly generate parameters data
 Sim_Struct.Add_Randomly_AIF_Delay        = 0;
 
 %% ------------------- Time Parameters ------------------------------------
@@ -199,7 +199,7 @@ Sim_Struct.Vb_max     = 20;%100
 Sim_Struct.Ve_low     = 3; % Must be smaller than Vtis
 Sim_Struct.Ve_max     = 20;
 Sim_Struct.E_low      = 0;
-Sim_Struct.E_max      = 0.5;
+Sim_Struct.E_max      = 0.99;
 Sim_Struct.F_single   = 60;                                         % When a single iteration
 Sim_Struct.F_vec      = linspace(Sim_Struct.F_low, Sim_Struct.F_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vb_single  = 18;
@@ -249,7 +249,7 @@ Sim_Struct.One_Iteration_Murase_Tofts     = 0;
 
 % Sourbron 4 parameters estimation
 Sim_Struct.Check_Sourbron_Estimate        = false;
-Sim_Struct.Random_init_F_guess_4_Sourbron = true; % If false, take larsson F estimation
+Sim_Struct.Random_init_F_guess_4_Sourbron = false; % If false, take larsson F estimation
 
 % Drive differential equation
 Sim_Struct.Drive_Diff_Eq                 = false;
