@@ -200,12 +200,12 @@ if(exist(Mat_File_Perfusion_Parameters,'file') && ~Force_RealData_Calc)
     load(Mat_File_Perfusion_Parameters);
 else
     [   Flow_with_Delay, Flow_no_Delay, Delay_sec_by_Max_Val_with_Delay, Delay_sec_by_Max_Val_no_Delay, ...
-        fitted_larsson_with_Delay, fitted_larsson_no_Delay, fitted_larsson_with_Delay_High_F, fitted_larsson_no_Delay_High_F, ...
+        fitted_larsson_with_Delay, fitted_larsson_no_Delay, fitted_larsson_with_Delay_High_F, fitted_larsson_no_Delay_High_F, fitted_larsson_with_Delay_no_Ve, fitted_larsson_no_Delay_no_Ve,...
         fitted_larsson_with_Delay_no_E, fitted_larsson_no_Delay_no_E, fitted_larsson_with_Delay_no_E_High_F, fitted_larsson_no_Delay_no_E_High_F, ...
         fitted_gaussian, fitted_double_gaussian, gaussian_param, double_gauss_param, ...
         Ktrans_with_Delay, Ktrans_no_Delay, ...
-        E_with_Delay, E_no_Delay, Ktrans_with_Delay_High_F, Ktrans_no_Delay_High_F,  ...
-        Vb_with_Delay, Vb_no_Delay, Vb_with_Delay_High_F, Vb_no_Delay_High_F, ...
+        E_with_Delay, E_no_Delay, E_with_Delay_no_Ve, E_no_Delay_no_Ve, Ktrans_with_Delay_High_F, Ktrans_no_Delay_High_F,  ...
+        Vb_with_Delay, Vb_no_Delay, Vb_with_Delay_High_F, Vb_no_Delay_High_F, Vb_with_Delay_no_Ve, Vb_no_Delay_no_Ve,...
         Vb_with_Delay_no_E, Vb_no_Delay_no_E, Vb_with_Delay_no_E_High_F, Vb_no_Delay_no_E_High_F, ...
         Ve_with_Delay, Ve_no_Delay, Ve_with_Delay_High_F, Ve_no_Delay_High_F, MTT_with_Delay, MTT_no_Delay, ...
         Ktrans_Patlak_with_Delay, Ktrans_Patlak_no_Delay, Vb_Patlak_with_Delay, Vb_Patlak_no_Delay, ...
@@ -213,13 +213,13 @@ else
         = nonLinParamEst(Sim_Struct, Est_IRF_with_Delay', Est_IRF_no_Delay', Ct, AIF_delay_corrected', AIF', idx_fig, Parallel_Real_Data_Est );
     
     save(Mat_File_Perfusion_Parameters,'Flow_with_Delay','Flow_no_Delay',...
-        'Ktrans_with_Delay','Ktrans_no_Delay', 'E_with_Delay', 'E_no_Delay', 'Ktrans_with_Delay_High_F', 'Ktrans_no_Delay_High_F', ...
-        'Vb_with_Delay', 'Vb_no_Delay', 'Vb_with_Delay_High_F', 'Vb_no_Delay_High_F', 'Vb_with_Delay_no_E', 'Vb_no_Delay_no_E', 'Vb_with_Delay_no_E_High_F', 'Vb_no_Delay_no_E_High_F', ...
+        'Ktrans_with_Delay','Ktrans_no_Delay', 'E_with_Delay', 'E_no_Delay', 'E_with_Delay_no_Ve', 'E_no_Delay_no_Ve', 'Ktrans_with_Delay_High_F', 'Ktrans_no_Delay_High_F', ...
+        'Vb_with_Delay', 'Vb_no_Delay', 'Vb_with_Delay_High_F', 'Vb_no_Delay_High_F', 'Vb_with_Delay_no_Ve', 'Vb_no_Delay_no_Ve', 'Vb_with_Delay_no_E', 'Vb_no_Delay_no_E', 'Vb_with_Delay_no_E_High_F', 'Vb_no_Delay_no_E_High_F', ...
         'Ve_with_Delay', 'Ve_no_Delay', 'Ve_with_Delay_High_F', 'Ve_no_Delay_High_F', 'MTT_with_Delay', 'MTT_no_Delay',...
         'Ktrans_Patlak_with_Delay','Ktrans_Patlak_no_Delay', 'Vb_Patlak_with_Delay','Vb_Patlak_no_Delay',...
         'MTT_Patlak_with_Delay','MTT_Patlak_no_Delay','Delay_sec_by_Max_Val_with_Delay',...
         'Delay_sec_by_Max_Val_no_Delay','gaussian_param', 'double_gauss_param','fitted_gaussian','fitted_double_gaussian', ...
-        'fitted_larsson_with_Delay','fitted_larsson_no_Delay', 'fitted_larsson_with_Delay_High_F', 'fitted_larsson_no_Delay_High_F', 'fitted_larsson_no_Delay_no_E', 'fitted_larsson_with_Delay_no_E', 'fitted_larsson_with_Delay_no_E_High_F', 'fitted_larsson_no_Delay_no_E_High_F');
+        'fitted_larsson_with_Delay','fitted_larsson_no_Delay', 'fitted_larsson_with_Delay_High_F', 'fitted_larsson_no_Delay_High_F', 'fitted_larsson_with_Delay_no_Ve', 'fitted_larsson_no_Delay_no_Ve',  'fitted_larsson_no_Delay_no_E', 'fitted_larsson_with_Delay_no_E', 'fitted_larsson_with_Delay_no_E_High_F', 'fitted_larsson_no_Delay_no_E_High_F');
     
 end
 
@@ -238,6 +238,8 @@ conv_result_Larss_with_Delay             = filter(AIF*min_interval,1,fitted_lars
 conv_result_Larss_no_Delay               = filter(AIF*min_interval,1,fitted_larsson_no_Delay,[],2);
 conv_result_Larss_with_Delay_High_F      = filter(AIF*min_interval,1,fitted_larsson_with_Delay_High_F,[],2);
 conv_result_Larss_no_Delay_High_F        = filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F,[],2);
+conv_result_Larss_with_Delay_no_Ve       = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_Ve,[],2);
+conv_result_Larss_no_Delay_no_Ve         = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_Ve,[],2);
 conv_result_Larss_with_Delay_no_E        = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E,[],2);
 conv_result_Larss_no_Delay_no_E          = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E,[],2);
 conv_result_Larss_with_Delay_no_E_High_F = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E_High_F,[],2);
@@ -251,6 +253,8 @@ conv_result_Larss_with_Delay(conv_result_Larss_with_Delay<0)                    
 conv_result_Larss_no_Delay(conv_result_Larss_no_Delay<0)                             = 0;
 conv_result_Larss_with_Delay_High_F(conv_result_Larss_with_Delay_High_F<0)           = 0;
 conv_result_Larss_no_Delay_High_F(conv_result_Larss_no_Delay_High_F<0)               = 0;
+conv_result_Larss_with_Delay_no_Ve(conv_result_Larss_with_Delay_no_Ve<0)             = 0;
+conv_result_Larss_no_Delay_no_Ve(conv_result_Larss_no_Delay_no_Ve<0)                 = 0;
 conv_result_Larss_with_Delay_no_E(conv_result_Larss_with_Delay_no_E<0)               = 0;
 conv_result_Larss_no_Delay_no_E(conv_result_Larss_no_Delay_no_E<0)                   = 0;
 conv_result_Larss_with_Delay_no_E_High_F(conv_result_Larss_with_Delay_no_E_High_F<0) = 0;
@@ -264,6 +268,8 @@ RMS_Larss_with_Delay             = sqrt( sum( (Ct - conv_result_Larss_with_Delay
 RMS_Larss_no_Delay               = sqrt( sum( (Ct - conv_result_Larss_no_Delay              ).^2 , 2) );
 RMS_Larss_with_Delay_High_F      = sqrt( sum( (Ct - conv_result_Larss_with_Delay_High_F     ).^2 , 2) );
 RMS_Larss_no_Delay_High_F        = sqrt( sum( (Ct - conv_result_Larss_no_Delay_High_F       ).^2 , 2) );
+RMS_Larss_with_Delay_no_Ve       = sqrt( sum( (Ct - conv_result_Larss_with_Delay_no_Ve      ).^2 , 2) );
+RMS_Larss_no_Delay_no_Ve         = sqrt( sum( (Ct - conv_result_Larss_no_Delay_no_Ve        ).^2 , 2) );
 RMS_Larss_with_Delay_no_E        = sqrt( sum( (Ct - conv_result_Larss_with_Delay_no_E       ).^2 , 2) );
 RMS_Larss_no_Delay_no_E          = sqrt( sum( (Ct - conv_result_Larss_no_Delay_no_E         ).^2 , 2) );
 RMS_Larss_with_Delay_no_E_High_F = sqrt( sum( (Ct - conv_result_Larss_with_Delay_no_E_High_F).^2 , 2) );
@@ -274,65 +280,76 @@ RMS_double_gauss                 = sqrt( sum( (Ct - conv_result_double_gaussian 
 
 %% Put all results in return struct
 returnStruct = struct();
-returnStruct.Flow_with_Delay                        = Flow_with_Delay;
-returnStruct.Flow_no_Delay                          = Flow_no_Delay;
-returnStruct.Delay_sec_by_Max_Val_with_Delay        = Delay_sec_by_Max_Val_with_Delay;
-returnStruct.Delay_sec_by_Max_Val_no_Delay          = Delay_sec_by_Max_Val_no_Delay;
-returnStruct.est_delay_by_AIF_correct               = est_delay_by_AIF_correct;
-returnStruct.Est_IRF_with_Delay                     = Est_IRF_with_Delay;
-returnStruct.Est_IRF_no_Delay                       = Est_IRF_no_Delay;
-returnStruct.fitted_gaussian                        = fitted_gaussian;
-returnStruct.conv_result_Larss_with_Delay           = conv_result_Larss_with_Delay;
-returnStruct.conv_result_Larss_no_Delay             = conv_result_Larss_no_Delay;
-returnStruct.conv_result_Larss_no_Delay_High_F      = conv_result_Larss_no_Delay_High_F;
-returnStruct.conv_result_Larss_no_Delay_no_E        = conv_result_Larss_no_Delay_no_E;
-returnStruct.conv_result_Larss_no_Delay_no_E_High_F = conv_result_Larss_no_Delay_no_E_High_F;
-returnStruct.conv_result_no_Delay_IRF               = conv_result_no_Delay_IRF;
-returnStruct.conv_result_gaussian                   = conv_result_gaussian;
-returnStruct.RMS_Larss_with_Delay                   = RMS_Larss_with_Delay;
-returnStruct.RMS_Larss_no_Delay                     = RMS_Larss_no_Delay;
-returnStruct.RMS_Larss_with_Delay_High_F            = RMS_Larss_with_Delay_High_F;
-returnStruct.RMS_Larss_no_Delay_High_F              = RMS_Larss_no_Delay_High_F;
-returnStruct.RMS_Larss_with_Delay_no_E              = RMS_Larss_with_Delay_no_E;
-returnStruct.RMS_Larss_no_Delay_no_E                = RMS_Larss_no_Delay_no_E;
-returnStruct.RMS_Larss_with_Delay_no_E_High_F       = RMS_Larss_with_Delay_no_E_High_F;
-returnStruct.RMS_Larss_no_Delay_no_E_High_F         = RMS_Larss_no_Delay_no_E_High_F;
-returnStruct.RMS_Larss_no_Delay_zero_params         = RMS_Larss_no_Delay_zero_params;
-returnStruct.RMS_ht_no_Delay                        = RMS_ht_no_Delay;
-returnStruct.RMS_gauss                              = RMS_gauss;
-returnStruct.RMS_params_Gauss                       = RMS_params_Gauss;
-returnStruct.gaussian_param                         = gaussian_param;
-returnStruct.fitted_double_gaussian                 = fitted_double_gaussian;
-returnStruct.conv_result_double_gaussian            = conv_result_double_gaussian;
-returnStruct.double_gauss_param                     = double_gauss_param;
-returnStruct.RMS_double_gauss                       = RMS_double_gauss;
-returnStruct.RMS_params_double_gauss                = RMS_params_double_gauss;
-returnStruct.Ktrans_with_Delay                      = Ktrans_with_Delay;
-returnStruct.Ktrans_no_Delay                        = Ktrans_no_Delay;
-returnStruct.E_with_Delay                           = E_with_Delay;
-returnStruct.E_no_Delay                             = E_no_Delay;
-returnStruct.Ktrans_with_Delay_High_F               = Ktrans_with_Delay_High_F;
-returnStruct.Ktrans_no_Delay_High_F                 = Ktrans_no_Delay_High_F;
-returnStruct.Vb_with_Delay                          = Vb_with_Delay;
-returnStruct.Vb_no_Delay                            = Vb_no_Delay;
-returnStruct.Vb_with_Delay_High_F                   = Vb_with_Delay_High_F;
-returnStruct.Vb_no_Delay_High_F                     = Vb_no_Delay_High_F;
-returnStruct.Vb_with_Delay_no_E                     = Vb_with_Delay_no_E;
-returnStruct.Vb_no_Delay_no_E                       = Vb_no_Delay_no_E;
-returnStruct.Vb_with_Delay_no_E_High_F              = Vb_with_Delay_no_E_High_F;
-returnStruct.Vb_no_Delay_no_E_High_F                = Vb_no_Delay_no_E_High_F;
-returnStruct.Ve_with_Delay                          = Ve_with_Delay;
-returnStruct.Ve_no_Delay                            = Ve_no_Delay;
-returnStruct.Ve_with_Delay_High_F                   = Ve_with_Delay_High_F;
-returnStruct.Ve_no_Delay_High_F                     = Ve_no_Delay_High_F;
-returnStruct.MTT_with_Delay                         = MTT_with_Delay;
-returnStruct.MTT_no_Delay                           = MTT_no_Delay;
-returnStruct.Ktrans_Patlak_with_Delay               = Ktrans_Patlak_with_Delay;
-returnStruct.Ktrans_Patlak_no_Delay                 = Ktrans_Patlak_no_Delay;
-returnStruct.Vb_Patlak_with_Delay                   = Vb_Patlak_with_Delay;
-returnStruct.Vb_Patlak_no_Delay                     = Vb_Patlak_no_Delay;
-returnStruct.MTT_Patlak_with_Delay                  = MTT_Patlak_with_Delay;
-returnStruct.MTT_Patlak_no_Delay                    = MTT_Patlak_no_Delay;
+returnStruct.Flow_with_Delay                          = Flow_with_Delay;
+returnStruct.Flow_no_Delay                            = Flow_no_Delay;
+returnStruct.Delay_sec_by_Max_Val_with_Delay          = Delay_sec_by_Max_Val_with_Delay;
+returnStruct.Delay_sec_by_Max_Val_no_Delay            = Delay_sec_by_Max_Val_no_Delay;
+returnStruct.est_delay_by_AIF_correct                 = est_delay_by_AIF_correct;
+returnStruct.Est_IRF_with_Delay                       = Est_IRF_with_Delay;
+returnStruct.Est_IRF_no_Delay                         = Est_IRF_no_Delay;
+returnStruct.fitted_gaussian                          = fitted_gaussian;
+returnStruct.conv_result_Larss_with_Delay             = conv_result_Larss_with_Delay;
+returnStruct.conv_result_Larss_no_Delay               = conv_result_Larss_no_Delay;
+returnStruct.conv_result_Larss_with_Delay_High_F      = conv_result_Larss_with_Delay_High_F;
+returnStruct.conv_result_Larss_no_Delay_High_F        = conv_result_Larss_no_Delay_High_F;
+returnStruct.conv_result_Larss_with_Delay_no_Ve       = conv_result_Larss_with_Delay_no_Ve;
+returnStruct.conv_result_Larss_no_Delay_no_Ve         = conv_result_Larss_no_Delay_no_Ve;
+returnStruct.conv_result_Larss_with_Delay_no_E        = conv_result_Larss_with_Delay_no_E;
+returnStruct.conv_result_Larss_no_Delay_no_E          = conv_result_Larss_no_Delay_no_E;
+returnStruct.conv_result_Larss_with_Delay_no_E_High_F = conv_result_Larss_with_Delay_no_E_High_F;
+returnStruct.conv_result_Larss_no_Delay_no_E_High_F   = conv_result_Larss_no_Delay_no_E_High_F;
+returnStruct.conv_result_no_Delay_IRF                 = conv_result_no_Delay_IRF;
+returnStruct.conv_result_gaussian                     = conv_result_gaussian;
+returnStruct.RMS_Larss_with_Delay                     = RMS_Larss_with_Delay;
+returnStruct.RMS_Larss_no_Delay                       = RMS_Larss_no_Delay;
+returnStruct.RMS_Larss_with_Delay_High_F              = RMS_Larss_with_Delay_High_F;
+returnStruct.RMS_Larss_no_Delay_High_F                = RMS_Larss_no_Delay_High_F;
+returnStruct.RMS_Larss_with_Delay_no_Ve               = RMS_Larss_with_Delay_no_Ve;
+returnStruct.RMS_Larss_no_Delay_no_Ve                 = RMS_Larss_no_Delay_no_Ve;
+returnStruct.RMS_Larss_with_Delay_no_E                = RMS_Larss_with_Delay_no_E;
+returnStruct.RMS_Larss_no_Delay_no_E                  = RMS_Larss_no_Delay_no_E;
+returnStruct.RMS_Larss_with_Delay_no_E_High_F         = RMS_Larss_with_Delay_no_E_High_F;
+returnStruct.RMS_Larss_no_Delay_no_E_High_F           = RMS_Larss_no_Delay_no_E_High_F;
+returnStruct.RMS_Larss_no_Delay_zero_params           = RMS_Larss_no_Delay_zero_params;
+returnStruct.RMS_ht_no_Delay                          = RMS_ht_no_Delay;
+returnStruct.RMS_gauss                                = RMS_gauss;
+returnStruct.RMS_params_Gauss                         = RMS_params_Gauss;
+returnStruct.gaussian_param                           = gaussian_param;
+returnStruct.fitted_double_gaussian                   = fitted_double_gaussian;
+returnStruct.conv_result_double_gaussian              = conv_result_double_gaussian;
+returnStruct.double_gauss_param                       = double_gauss_param;
+returnStruct.RMS_double_gauss                         = RMS_double_gauss;
+returnStruct.RMS_params_double_gauss                  = RMS_params_double_gauss;
+returnStruct.Ktrans_with_Delay                        = Ktrans_with_Delay;
+returnStruct.Ktrans_no_Delay                          = Ktrans_no_Delay;
+returnStruct.E_with_Delay                             = E_with_Delay;
+returnStruct.E_no_Delay                               = E_no_Delay;
+returnStruct.E_with_Delay_no_Ve                       = E_with_Delay_no_Ve;
+returnStruct.E_no_Delay_no_Ve                         = E_no_Delay_no_Ve;
+returnStruct.Ktrans_with_Delay_High_F                 = Ktrans_with_Delay_High_F;
+returnStruct.Ktrans_no_Delay_High_F                   = Ktrans_no_Delay_High_F;
+returnStruct.Vb_with_Delay                            = Vb_with_Delay;
+returnStruct.Vb_no_Delay                              = Vb_no_Delay;
+returnStruct.Vb_with_Delay_High_F                     = Vb_with_Delay_High_F;
+returnStruct.Vb_no_Delay_High_F                       = Vb_no_Delay_High_F;
+returnStruct.Vb_with_Delay_no_Ve                      = Vb_with_Delay_no_Ve;
+returnStruct.Vb_no_Delay_no_Ve                        = Vb_no_Delay_no_Ve;
+returnStruct.Vb_with_Delay_no_E                       = Vb_with_Delay_no_E;
+returnStruct.Vb_no_Delay_no_E                         = Vb_no_Delay_no_E;
+returnStruct.Vb_with_Delay_no_E_High_F                = Vb_with_Delay_no_E_High_F;
+returnStruct.Vb_no_Delay_no_E_High_F                  = Vb_no_Delay_no_E_High_F;
+returnStruct.Ve_with_Delay                            = Ve_with_Delay;
+returnStruct.Ve_no_Delay                              = Ve_no_Delay;
+returnStruct.Ve_with_Delay_High_F                     = Ve_with_Delay_High_F;
+returnStruct.Ve_no_Delay_High_F                       = Ve_no_Delay_High_F;
+returnStruct.MTT_with_Delay                           = MTT_with_Delay;
+returnStruct.MTT_no_Delay                             = MTT_no_Delay;
+returnStruct.Ktrans_Patlak_with_Delay                 = Ktrans_Patlak_with_Delay;
+returnStruct.Ktrans_Patlak_no_Delay                   = Ktrans_Patlak_no_Delay;
+returnStruct.Vb_Patlak_with_Delay                     = Vb_Patlak_with_Delay;
+returnStruct.Vb_Patlak_no_Delay                       = Vb_Patlak_no_Delay;
+returnStruct.MTT_Patlak_with_Delay                    = MTT_Patlak_with_Delay;
+returnStruct.MTT_Patlak_no_Delay                      = MTT_Patlak_no_Delay;
 
 end
 

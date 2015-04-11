@@ -2,7 +2,19 @@ function [ ] = resultToNiiAndReport(resultStruct, time_vec_minutes, CTC2D, Chose
 %resultToNiiAndReport Summary of this function goes here
 
 
-%% Take all results from return struct
+
+
+%% Take all results from Sim and return struct
+
+useUptakeNoETM                         = Sim_Struct.useUptakeNoETM;
+USE_ONE_GAUSSIAN                       = Sim_Struct.USE_ONE_GAUSSIAN;
+USE_DOUBLE_GAUSSIAN                    = Sim_Struct.USE_DOUBLE_GAUSSIAN;
+Ignore_Delay_Model_Selection           = Sim_Struct.Ignore_Delay_Model_Selection;
+Data_Weight                            = Sim_Struct.Data_Weight;
+AIC_Correction                         = Sim_Struct.AIC_Correction;
+Threshold_Norm_Maps                    = Sim_Struct.Threshold_Norm_Maps;
+Threshold_Val                          = Sim_Struct.Threshold_Val;
+
 Flow_with_Delay                        = resultStruct.Flow_with_Delay;
 Flow_no_Delay                          = resultStruct.Flow_no_Delay;
 Delay_sec_by_Max_Val_with_Delay        = resultStruct.Delay_sec_by_Max_Val_with_Delay;
@@ -23,6 +35,8 @@ RMS_Larss_with_Delay                   = resultStruct.RMS_Larss_with_Delay;
 RMS_Larss_no_Delay                     = resultStruct.RMS_Larss_no_Delay;
 RMS_Larss_with_Delay_High_F            = resultStruct.RMS_Larss_with_Delay_High_F;
 RMS_Larss_no_Delay_High_F              = resultStruct.RMS_Larss_no_Delay_High_F;
+RMS_Larss_with_Delay_no_Ve             = resultStruct.RMS_Larss_with_Delay_no_Ve;
+RMS_Larss_no_Delay_no_Ve               = resultStruct.RMS_Larss_no_Delay_no_Ve;
 RMS_Larss_with_Delay_no_E              = resultStruct.RMS_Larss_with_Delay_no_E;
 RMS_Larss_no_Delay_no_E                = resultStruct.RMS_Larss_no_Delay_no_E;
 RMS_Larss_with_Delay_no_E_High_F       = resultStruct.RMS_Larss_with_Delay_no_E_High_F;
@@ -39,12 +53,16 @@ Ktrans_with_Delay                      = resultStruct.Ktrans_with_Delay;
 Ktrans_no_Delay                        = resultStruct.Ktrans_no_Delay;
 E_with_Delay                           = resultStruct.E_with_Delay;
 E_no_Delay                             = resultStruct.E_no_Delay;
+E_with_Delay_no_Ve                     = resultStruct.E_with_Delay_no_Ve;
+E_no_Delay_no_Ve                       = resultStruct.E_no_Delay_no_Ve;
 Ktrans_with_Delay_High_F               = resultStruct.Ktrans_with_Delay_High_F;
 Ktrans_no_Delay_High_F                 = resultStruct.Ktrans_no_Delay_High_F;
 Vb_with_Delay                          = resultStruct.Vb_with_Delay;
 Vb_no_Delay                            = resultStruct.Vb_no_Delay;
 Vb_with_Delay_High_F                   = resultStruct.Vb_with_Delay_High_F;
 Vb_no_Delay_High_F                     = resultStruct.Vb_no_Delay_High_F;
+Vb_with_Delay_no_Ve                    = resultStruct.Vb_with_Delay_no_Ve;
+Vb_no_Delay_no_Ve                      = resultStruct.Vb_no_Delay_no_Ve;
 Vb_with_Delay_no_E                     = resultStruct.Vb_with_Delay_no_E;
 Vb_no_Delay_no_E                       = resultStruct.Vb_no_Delay_no_E;
 Vb_with_Delay_no_E_High_F              = resultStruct.Vb_with_Delay_no_E_High_F;
@@ -83,6 +101,8 @@ RMS_Larss_with_Delay_3D              = Reshape2DCto4D(RMS_Larss_with_Delay,Msk2)
 RMS_Larss_no_Delay_3D                = Reshape2DCto4D(RMS_Larss_no_Delay,Msk2);
 RMS_Larss_with_Delay_High_F_3D       = Reshape2DCto4D(RMS_Larss_with_Delay_High_F,Msk2);
 RMS_Larss_no_Delay_High_F_3D         = Reshape2DCto4D(RMS_Larss_no_Delay_High_F,Msk2);
+RMS_Larss_with_Delay_no_Ve_3D        = Reshape2DCto4D(RMS_Larss_with_Delay_no_Ve,Msk2);
+RMS_Larss_no_Delay_no_Ve_3D          = Reshape2DCto4D(RMS_Larss_no_Delay_no_Ve,Msk2);
 RMS_Larss_with_Delay_no_E_3D         = Reshape2DCto4D(RMS_Larss_with_Delay_no_E,Msk2);
 RMS_Larss_no_Delay_no_E_3D           = Reshape2DCto4D(RMS_Larss_no_Delay_no_E,Msk2);
 RMS_Larss_with_Delay_no_E_High_F_3D  = Reshape2DCto4D(RMS_Larss_with_Delay_no_E_High_F,Msk2);
@@ -121,10 +141,18 @@ Ktrans_no_Delay_High_F_3D            = Reshape2DCto4D(Ktrans_no_Delay_High_F,Msk
 E_with_Delay_3D                      = Reshape2DCto4D(E_with_Delay,Msk2);
 E_no_Delay_3D                        = Reshape2DCto4D(E_no_Delay,Msk2);
 
+E_with_Delay_no_Ve_3D                = Reshape2DCto4D(E_with_Delay_no_Ve,Msk2);
+E_no_Delay_no_Ve_3D                  = Reshape2DCto4D(E_no_Delay_no_Ve,Msk2);
+
 Vb_with_Delay_3D                     = Reshape2DCto4D(Vb_with_Delay,Msk2);
 Vb_no_Delay_3D                       = Reshape2DCto4D(Vb_no_Delay,Msk2);
 Vb_no_Delay_High_F_3D                = Reshape2DCto4D(Vb_no_Delay_High_F,Msk2);
 Vb_with_Delay_High_F_3D              = Reshape2DCto4D(Vb_with_Delay_High_F,Msk2);
+
+Vb_with_Delay_no_Ve_3D               = Reshape2DCto4D(Vb_with_Delay_no_Ve,Msk2);
+Vb_no_Delay_no_Ve_3D                 = Reshape2DCto4D(Vb_no_Delay_no_Ve,Msk2);
+
+
 Vb_no_Delay_no_E_3D                  = Reshape2DCto4D(Vb_no_Delay_no_E,Msk2);
 Vb_with_Delay_no_E_3D                = Reshape2DCto4D(Vb_with_Delay_no_E,Msk2);
 Vb_no_Delay_no_E_High_F_3D           = Reshape2DCto4D(Vb_no_Delay_no_E_High_F,Msk2);
@@ -231,7 +259,7 @@ nDataPoints      = length(time_vec_minutes);
 zeros_map        = zeros(size(Flow_with_Delay_3D));
 % Inf_map          = exp(100) * ones(size(Flow_Larsson_with_Delay_3D));
 
-if Sim_Struct.Ignore_Delay_Model_Selection
+if Ignore_Delay_Model_Selection
     
     NParams          = [0 1 2 3 4];
     num_maps         = length(NParams);
@@ -240,7 +268,12 @@ if Sim_Struct.Ignore_Delay_Model_Selection
     
     RMSmaps(:,:,:,5) = RMS_Larss_with_Delay_3D;             % 5 Params
     %RMSmaps(:,:,:,8) = RMS_Larss_no_Delay_3D;               % 4 Params
-    RMSmaps(:,:,:,4) = RMS_Larss_with_Delay_High_F_3D;      % 4 Params -----
+    if useUptakeNoETM
+        RMSmaps(:,:,:,4) = RMS_Larss_with_Delay_no_Ve_3D;      % 4 Params -----
+    else
+        RMSmaps(:,:,:,4) = RMS_Larss_with_Delay_High_F_3D;      % 4 Params -----
+    end
+
     %RMSmaps(:,:,:,6) = RMS_Larss_no_Delay_High_F_3D;        % 3 Params
     RMSmaps(:,:,:,3) = RMS_Larss_with_Delay_no_E_3D;        % 3 Params -----
     %RMSmaps(:,:,:,4) = RMS_Larss_no_Delay_no_E_3D;          % 2 Params
@@ -248,40 +281,61 @@ if Sim_Struct.Ignore_Delay_Model_Selection
     %RMSmaps(:,:,:,2) = RMS_Larss_no_Delay_no_E_High_F_3D;   % 1 Params
     RMSmaps(:,:,:,1) = RMS_Larss_no_Delay_zero_params_3D;   % 0 Params
     
-    [ ChosenByAIC_3D ]                      = Model_Selection( nDataPoints, RMSmaps, NParams, Sim_Struct.Data_Weight, Sim_Struct.AIC_Correction);
+    [ ChosenByAIC_3D ]                      = Model_Selection( nDataPoints, RMSmaps, NParams, Data_Weight, AIC_Correction);
     
     % F
     F_Model_Selected_3D                     = zeros(size(Flow_with_Delay_3D));
-    F_Model_Selected_3D (ChosenByAIC_3D==5) = Flow_with_Delay_3D   (ChosenByAIC_3D==5);
-    F_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4); % Put zero although its Inf
+    F_Model_Selected_3D (ChosenByAIC_3D==5) = Flow_with_Delay_3D     (ChosenByAIC_3D==5);
+    if useUptakeNoETM
+        F_Model_Selected_3D (ChosenByAIC_3D==4) = Flow_with_Delay_3D (ChosenByAIC_3D==4); % Put zero although its Inf
+    else
+        F_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map          (ChosenByAIC_3D==4); % Put zero although its Inf
+    end
     F_Model_Selected_3D (ChosenByAIC_3D==3) = Flow_with_Delay_3D   (ChosenByAIC_3D==3);
     F_Model_Selected_3D (ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2); % Put zero although its Inf
     F_Model_Selected_3D (ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
     % Vb
     Vb_Model_Selected_3D                    = zeros(size(Vb_no_Delay_3D));
     Vb_Model_Selected_3D(ChosenByAIC_3D==5) = Vb_with_Delay_3D             (ChosenByAIC_3D==5);
-    Vb_Model_Selected_3D(ChosenByAIC_3D==4) = Vb_with_Delay_High_F_3D      (ChosenByAIC_3D==4);
+    if useUptakeNoETM
+        Vb_Model_Selected_3D(ChosenByAIC_3D==4) = Vb_with_Delay_no_Ve_3D      (ChosenByAIC_3D==4);
+    else
+        Vb_Model_Selected_3D(ChosenByAIC_3D==4) = Vb_with_Delay_High_F_3D      (ChosenByAIC_3D==4);
+    end
     Vb_Model_Selected_3D(ChosenByAIC_3D==3) = Vb_with_Delay_no_E_3D        (ChosenByAIC_3D==3);
     Vb_Model_Selected_3D(ChosenByAIC_3D==2) = Vb_with_Delay_no_E_High_F_3D (ChosenByAIC_3D==2);
     Vb_Model_Selected_3D(ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
     % Ve
     Ve_Model_Selected_3D                    = zeros(size(Ve_no_Delay_3D));
     Ve_Model_Selected_3D(ChosenByAIC_3D==5) = Ve_with_Delay_3D             (ChosenByAIC_3D==5);
-    Ve_Model_Selected_3D(ChosenByAIC_3D==4) = Ve_with_Delay_High_F_3D      (ChosenByAIC_3D==4);
+    if useUptakeNoETM
+        Ve_Model_Selected_3D(ChosenByAIC_3D==4) = zeros_map                (ChosenByAIC_3D==4);
+    else
+        Ve_Model_Selected_3D(ChosenByAIC_3D==4) = Ve_with_Delay_High_F_3D  (ChosenByAIC_3D==4);
+    end
+    
     Ve_Model_Selected_3D(ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
     Ve_Model_Selected_3D(ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2);
     Ve_Model_Selected_3D(ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
     % E
     E_Model_Selected_3D                     = zeros(size(E_no_Delay_3D));
     E_Model_Selected_3D (ChosenByAIC_3D==5) = E_with_Delay_3D              (ChosenByAIC_3D==5);
-    E_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4); % Ktrans is not E
+    if useUptakeNoETM
+        E_Model_Selected_3D (ChosenByAIC_3D==4) = E_with_Delay_no_Ve_3D    (ChosenByAIC_3D==4); % Ktrans is not E
+    else
+        E_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4); % Ktrans is not E
+    end
     E_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
     E_Model_Selected_3D (ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2);
     E_Model_Selected_3D (ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
     % Ktrans
     Ktrans_Model_Selected_3D                     = zeros(size(Ktrans_no_Delay_3D));
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==5) = Ktrans_with_Delay_3D         (ChosenByAIC_3D==5);
-    Ktrans_Model_Selected_3D (ChosenByAIC_3D==4) = Ktrans_with_Delay_High_F_3D  (ChosenByAIC_3D==4);
+    if useUptakeNoETM
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==4) = E_with_Delay_no_Ve_3D  (ChosenByAIC_3D==4) .* Flow_with_Delay_3D  (ChosenByAIC_3D==4);
+    else
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==4) = Ktrans_with_Delay_High_F_3D  (ChosenByAIC_3D==4);
+    end
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
@@ -295,15 +349,20 @@ else % Include Delay
     
     RMSmaps(:,:,:,9) = RMS_Larss_with_Delay_3D;             % 5 Params
     RMSmaps(:,:,:,8) = RMS_Larss_no_Delay_3D;               % 4 Params
-    RMSmaps(:,:,:,7) = RMS_Larss_with_Delay_High_F_3D;      % 4 Params -----
-    RMSmaps(:,:,:,6) = RMS_Larss_no_Delay_High_F_3D;        % 3 Params
+    if useUptakeNoETM
+        RMSmaps(:,:,:,7) = RMS_Larss_with_Delay_no_Ve_3D;      % 4 Params -----
+        RMSmaps(:,:,:,6) = RMS_Larss_no_Delay_no_Ve_3D;        % 3 Params
+    else
+        RMSmaps(:,:,:,7) = RMS_Larss_with_Delay_High_F_3D;      % 4 Params -----
+        RMSmaps(:,:,:,6) = RMS_Larss_no_Delay_High_F_3D;        % 3 Params
+    end
     RMSmaps(:,:,:,5) = RMS_Larss_with_Delay_no_E_3D;        % 3 Params -----
     RMSmaps(:,:,:,4) = RMS_Larss_no_Delay_no_E_3D;          % 2 Params
     RMSmaps(:,:,:,3) = RMS_Larss_with_Delay_no_E_High_F_3D; % 2 Params -----
     RMSmaps(:,:,:,2) = RMS_Larss_no_Delay_no_E_High_F_3D;   % 1 Params
     RMSmaps(:,:,:,1) = RMS_Larss_no_Delay_zero_params_3D;   % 0 Params
     
-    [ ChosenByAIC_3D ]                      = Model_Selection( nDataPoints, RMSmaps, NParams, Sim_Struct.Data_Weight, Sim_Struct.AIC_Correction);
+    [ ChosenByAIC_3D ]                      = Model_Selection( nDataPoints, RMSmaps, NParams, Data_Weight, AIC_Correction);
     
     % Delay
     AIF_Delay_Model_Selected_3D                    = zeros(size(est_delay_by_AIF_correct_3D));
@@ -316,8 +375,13 @@ else % Include Delay
     F_Model_Selected_3D                     = zeros(size(Flow_with_Delay_3D));
     F_Model_Selected_3D (ChosenByAIC_3D==9) = Flow_with_Delay_3D   (ChosenByAIC_3D==9);
     F_Model_Selected_3D (ChosenByAIC_3D==8) = Flow_no_Delay_3D     (ChosenByAIC_3D==8);
-    F_Model_Selected_3D (ChosenByAIC_3D==7) = zeros_map                    (ChosenByAIC_3D==7); % Put zero although its Inf
-    F_Model_Selected_3D (ChosenByAIC_3D==6) = zeros_map                    (ChosenByAIC_3D==6); % Put zero although its Inf
+    if useUptakeNoETM
+        F_Model_Selected_3D (ChosenByAIC_3D==7) = Flow_with_Delay_3D           (ChosenByAIC_3D==7); % Put zero although its Inf
+        F_Model_Selected_3D (ChosenByAIC_3D==6) = Flow_no_Delay_3D             (ChosenByAIC_3D==6); % Put zero although its Inf
+    else
+        F_Model_Selected_3D (ChosenByAIC_3D==7) = zeros_map                    (ChosenByAIC_3D==7); % Put zero although its Inf
+        F_Model_Selected_3D (ChosenByAIC_3D==6) = zeros_map                    (ChosenByAIC_3D==6); % Put zero although its Inf
+    end
     F_Model_Selected_3D (ChosenByAIC_3D==5) = Flow_with_Delay_3D   (ChosenByAIC_3D==5);
     F_Model_Selected_3D (ChosenByAIC_3D==4) = Flow_no_Delay_3D     (ChosenByAIC_3D==4);
     F_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3); % Put zero although its Inf
@@ -328,8 +392,13 @@ else % Include Delay
     Vb_Model_Selected_3D                    = zeros(size(Vb_no_Delay_3D));
     Vb_Model_Selected_3D(ChosenByAIC_3D==9) = Vb_with_Delay_3D             (ChosenByAIC_3D==9);
     Vb_Model_Selected_3D(ChosenByAIC_3D==8) = Vb_no_Delay_3D               (ChosenByAIC_3D==8);
-    Vb_Model_Selected_3D(ChosenByAIC_3D==7) = Vb_with_Delay_High_F_3D      (ChosenByAIC_3D==7);
-    Vb_Model_Selected_3D(ChosenByAIC_3D==6) = Vb_no_Delay_High_F_3D        (ChosenByAIC_3D==6);
+    if useUptakeNoETM
+        Vb_Model_Selected_3D(ChosenByAIC_3D==7) = Vb_with_Delay_no_Ve_3D   (ChosenByAIC_3D==7);
+        Vb_Model_Selected_3D(ChosenByAIC_3D==6) = Vb_no_Delay_no_Ve_3D     (ChosenByAIC_3D==6);
+    else
+        Vb_Model_Selected_3D(ChosenByAIC_3D==7) = Vb_with_Delay_High_F_3D  (ChosenByAIC_3D==7);
+        Vb_Model_Selected_3D(ChosenByAIC_3D==6) = Vb_no_Delay_High_F_3D    (ChosenByAIC_3D==6);
+    end
     Vb_Model_Selected_3D(ChosenByAIC_3D==5) = Vb_with_Delay_no_E_3D        (ChosenByAIC_3D==5);
     Vb_Model_Selected_3D(ChosenByAIC_3D==4) = Vb_no_Delay_no_E_3D          (ChosenByAIC_3D==4);
     Vb_Model_Selected_3D(ChosenByAIC_3D==3) = Vb_with_Delay_no_E_High_F_3D (ChosenByAIC_3D==3);
@@ -339,8 +408,13 @@ else % Include Delay
     Ve_Model_Selected_3D                    = zeros(size(Ve_no_Delay_3D));
     Ve_Model_Selected_3D(ChosenByAIC_3D==9) = Ve_with_Delay_3D             (ChosenByAIC_3D==9);
     Ve_Model_Selected_3D(ChosenByAIC_3D==8) = Ve_no_Delay_3D               (ChosenByAIC_3D==8);
-    Ve_Model_Selected_3D(ChosenByAIC_3D==7) = Ve_with_Delay_High_F_3D      (ChosenByAIC_3D==7);
-    Ve_Model_Selected_3D(ChosenByAIC_3D==6) = Ve_no_Delay_High_F_3D        (ChosenByAIC_3D==6);
+    if useUptakeNoETM
+        Ve_Model_Selected_3D(ChosenByAIC_3D==7) = zeros_map      (ChosenByAIC_3D==7);
+        Ve_Model_Selected_3D(ChosenByAIC_3D==6) = zeros_map        (ChosenByAIC_3D==6);
+    else
+        Ve_Model_Selected_3D(ChosenByAIC_3D==7) = Ve_with_Delay_High_F_3D      (ChosenByAIC_3D==7);
+        Ve_Model_Selected_3D(ChosenByAIC_3D==6) = Ve_no_Delay_High_F_3D        (ChosenByAIC_3D==6);
+    end
     Ve_Model_Selected_3D(ChosenByAIC_3D==5) = zeros_map                    (ChosenByAIC_3D==5);
     Ve_Model_Selected_3D(ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4);
     Ve_Model_Selected_3D(ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
@@ -350,8 +424,13 @@ else % Include Delay
     E_Model_Selected_3D                     = zeros(size(E_no_Delay_3D));
     E_Model_Selected_3D (ChosenByAIC_3D==9) = E_with_Delay_3D              (ChosenByAIC_3D==9);
     E_Model_Selected_3D (ChosenByAIC_3D==8) = E_no_Delay_3D                (ChosenByAIC_3D==8);
-    E_Model_Selected_3D (ChosenByAIC_3D==7) = zeros_map                    (ChosenByAIC_3D==7); % Ktrans is not E
-    E_Model_Selected_3D (ChosenByAIC_3D==6) = zeros_map                    (ChosenByAIC_3D==6); % Ktrans is not E
+    if useUptakeNoETM
+        E_Model_Selected_3D (ChosenByAIC_3D==7) = E_with_Delay_no_Ve_3D    (ChosenByAIC_3D==7); % Ktrans is not E
+        E_Model_Selected_3D (ChosenByAIC_3D==6) = E_no_Delay_no_Ve_3D      (ChosenByAIC_3D==6); % Ktrans is not E
+    else
+        E_Model_Selected_3D (ChosenByAIC_3D==7) = zeros_map                    (ChosenByAIC_3D==7); % Ktrans is not E
+        E_Model_Selected_3D (ChosenByAIC_3D==6) = zeros_map                    (ChosenByAIC_3D==6); % Ktrans is not E
+    end
     E_Model_Selected_3D (ChosenByAIC_3D==5) = zeros_map                    (ChosenByAIC_3D==5);
     E_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4);
     E_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
@@ -362,8 +441,13 @@ else % Include Delay
     Ktrans_Model_Selected_3D                     = zeros(size(Ktrans_no_Delay_3D));
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==9) = Ktrans_with_Delay_3D         (ChosenByAIC_3D==9);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==8) = Ktrans_no_Delay_3D           (ChosenByAIC_3D==8);
-    Ktrans_Model_Selected_3D (ChosenByAIC_3D==7) = Ktrans_with_Delay_High_F_3D  (ChosenByAIC_3D==7);
-    Ktrans_Model_Selected_3D (ChosenByAIC_3D==6) = Ktrans_no_Delay_High_F_3D    (ChosenByAIC_3D==6);
+    if useUptakeNoETM
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==7) = E_with_Delay_no_Ve_3D  (ChosenByAIC_3D==7) .*  Flow_with_Delay_3D  (ChosenByAIC_3D==7);
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==6) = E_no_Delay_no_Ve_3D    (ChosenByAIC_3D==6) .*  Flow_no_Delay_3D    (ChosenByAIC_3D==6);
+    else
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==7) = Ktrans_with_Delay_High_F_3D  (ChosenByAIC_3D==7);
+        Ktrans_Model_Selected_3D (ChosenByAIC_3D==6) = Ktrans_no_Delay_High_F_3D    (ChosenByAIC_3D==6);
+    end
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==5) = zeros_map                    (ChosenByAIC_3D==5);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==4) = zeros_map                    (ChosenByAIC_3D==4);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
@@ -378,7 +462,7 @@ Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
 
 %% Maps
 
-if (Sim_Struct.USE_ONE_GAUSSIAN)
+if (USE_ONE_GAUSSIAN)
     MeanFN=[Output_directory 'Delay_Single_Gaussian.nii'];
     Raw2Nii(t_delay_single_gauss_sec_3D,MeanFN,'float32',DCEFNs{1});
     
@@ -402,7 +486,7 @@ if (Sim_Struct.USE_ONE_GAUSSIAN)
     
 end
 
-if (Sim_Struct.USE_DOUBLE_GAUSSIAN)
+if (USE_DOUBLE_GAUSSIAN)
     
     MeanFN=[Output_directory 'Time_Delay_1_double_gaussian.nii'];
     Raw2Nii(t_delay_1_double_gauss_seconds_3D,MeanFN,'float32',DCEFNs{1});
@@ -440,7 +524,7 @@ end
 MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct.nii'];
 Raw2Nii(est_delay_by_AIF_correct_3D,MeanFN,'float32',DCEFNs{1});
 
-if ~Sim_Struct.Ignore_Delay_Model_Selection
+if ~Ignore_Delay_Model_Selection
     MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct_Model_Selection.nii'];
     Raw2Nii(AIF_Delay_Model_Selected_3D,MeanFN,'float32',DCEFNs{1});
 end
@@ -668,15 +752,14 @@ Raw2Nii(Est_IRF_no_Delay_4D,MeanFN,'float32',DCEFNs{1});
 MeanFN=[Output_directory 'Conv_Res_with_IRF.nii'];
 Raw2Nii(conv_result_no_Delay_IRF_4D,MeanFN,'float32',DCEFNs{1});
 
-
 % Normalized 0-1 maps
 Flow_no_Delay_3D          = loadniidata([Output_directory 'Flow_Larsson_no_Delay.nii']);
 Ktrans_no_Delay_3D                = loadniidata([Output_directory 'Ktrans_no_Delay.nii']);
 Vb_no_Delay_3D                    = loadniidata([Output_directory 'Vb_no_Delay.nii']);
 Ve_no_Delay_3D                    = loadniidata([Output_directory 'Ve_no_Delay.nii']);
 
-if Sim_Struct.Threshold_Norm_Maps
-    max_val                                                            = Sim_Struct.Threshold_Val;
+if Threshold_Norm_Maps
+    max_val                                                            = Threshold_Val;
     Flow_Larsson_3D_Thresholded                                        = Flow_no_Delay_3D;
     Flow_Larsson_3D_Thresholded(Flow_Larsson_3D_Thresholded > max_val) = max_val;
     Flow_Larsson_3D_Norm_0_1                                           = Flow_Larsson_3D_Thresholded ./ max(max(max(Flow_Larsson_3D_Thresholded)));

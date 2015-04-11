@@ -18,10 +18,10 @@ Sim_Struct.Threshold_Val                 = 0.026768 * 242.9221;
 
 %% Model selection parameters
 Sim_Struct.Use_Model_Selection           = false;
-Sim_Struct.AIC_Correction                = true; % Use correction for AIC
-Sim_Struct.Data_Weight                   = 0.1;  % Data weight comparing to # of params (Gilad uses 0.1)
-Sim_Struct.Ignore_Delay_Model_Selection  = false; % Ignore models with delay
-
+Sim_Struct.AIC_Correction                = true;  % Use correction for AIC
+Sim_Struct.Data_Weight                   = 0.1;   % Data weight comparing to # of params (Gilad uses 0.1)
+Sim_Struct.Ignore_Delay_Model_Selection  = true;  % Ignore models with delay
+Sim_Struct.useUptakeNoETM                = true;  % Use the uptake model for 3 parameters instead of ETM
 %% Simulation parameters
 Sim_Struct.num_iterations                = 100; %1500
 Sim_Struct.num_averages                  = 1;  % Do each iteration a few time and average results for better statistic information
