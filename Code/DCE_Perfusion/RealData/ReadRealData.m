@@ -4,7 +4,9 @@ function [Subject_name, Subject_Path, WM_mask_absolute_path, Art_Mask, Vein_Mask
 
 Subject_name          = 'PeNe';
 %Subject_Path          = '\\fmri-t9\users\Moran\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE6min';
-Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study20140615_114415\DCE-HTR';
+% Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\Study20140615_114415\DCE-HTR';
+Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_GB\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE\PeNe_20140902';
+
 %Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\KOCHAV_ZAFRIRA\Study20141022_134250\DCE';
 
 WM_mask_absolute_path = [Subject_Path  '\RefT1_WM_830.nii'];

@@ -142,13 +142,14 @@ else
     
     %% Results plotting and saving
     
-    % Plot simulation results
-    [ idx_fig ] = Plot_Simulation_Results( Sim_Struct,Verbosity, idx_fig);
-    
-    % Create PDF Report
+    % Set paths
     Local_Path = [pwd filesep 'Run_Output'];
     Log_Path   = [pwd filesep 'Run_Output' filesep 'Log.mat'];
-    %MakeReport_func(Local_Path, LogFN);
+    
+    % Plot simulation results
+    [ idx_fig ] = Plot_Simulation_Results( Sim_Struct,Verbosity, idx_fig, Local_Path);
+    
+    % Create PDF Report
     MakeReport_func(Local_Path, Log_Path);
     
     % In case we used only 1 iteration, close all the open figures (we have PDF instead)

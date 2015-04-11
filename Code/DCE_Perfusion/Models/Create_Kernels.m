@@ -28,14 +28,57 @@ Ve_max                    = Sim_Struct.Ve_max;
 E_low                     = Sim_Struct.E_low;
 E_max                     = Sim_Struct.E_max;
 
-Vp_ETM_low                = Sim_Struct.Vp_ETM_low;
-Vp_ETM_max                = Sim_Struct.Vp_ETM_max;
-% Ve_ETM_low                = Sim_Struct.Ve_ETM_low;
-% Ve_ETM_max                = Sim_Struct.Ve_ETM_max;
-kep_ETM_low               = Sim_Struct.kep_ETM_low;
-kep_ETM_max               = Sim_Struct.kep_ETM_max;
-Ktrans_ETM_low            = Sim_Struct.Ktrans_ETM_low;
-Ktrans_ETM_max            = Sim_Struct.Ktrans_ETM_max;
+%% ETM parameters (if needed)
+if Sim_Struct.ETM_Model
+    Vp_ETM_low                = Sim_Struct.Vp_ETM_low;
+    Vp_ETM_max                = Sim_Struct.Vp_ETM_max;
+    % Ve_ETM_low                = Sim_Struct.Ve_ETM_low;
+    % Ve_ETM_max                = Sim_Struct.Ve_ETM_max;
+    kep_ETM_low               = Sim_Struct.kep_ETM_low;
+    kep_ETM_max               = Sim_Struct.kep_ETM_max;
+    Ktrans_ETM_low            = Sim_Struct.Ktrans_ETM_low;
+    Ktrans_ETM_max            = Sim_Struct.Ktrans_ETM_max;
+    % Read from previously written excel file
+    if Sim_Struct.readLatestData
+        excel_matrix          = xlsread(Sim_Struct.ETM_filename);
+        Sim_Struct.Vp_ETM     = excel_matrix(:,1)';
+        Sim_Struct.kep_ETM    = excel_matrix(:,7)';
+        Sim_Struct.Ktrans_ETM = excel_matrix(:,5)';
+        Sim_Struct.Ve_ETM     = excel_matrix(:,3)';
+    else
+        Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
+        %Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
+        Sim_Struct.kep_ETM    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, num_iterations);
+        Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
+        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
+    end
+    
+    display('-I- Checking that ETM parameters satisfying constraints...');
+    % Add the constraint that (Ve + Vp = 1) and (Vp > Ve)
+    %     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
+    %     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );
+    eval(Sim_Struct.constraint);
+    
+    tries                 = 0;
+    while any(Rcheck) %replace any row whose sum is > rowlim
+        
+        if tries > 10^6
+            error('-I- ETM parameters did not satisfy constraints after trying 10^6 times...');
+        end
+        
+        % Indices where Vp+Ve > 1
+        I = find(Rcheck);
+        
+        Sim_Struct.kep_ETM(I)    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, length(I));
+        Sim_Struct.Ktrans_ETM(I) = Ktrans_ETM_low  + (Ktrans_ETM_max - Ktrans_ETM_low)   * rand(1, length(I));
+        
+        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
+        %         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
+        %         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );
+        eval(Sim_Struct.constraint);
+        tries                 = tries + 1;
+    end
+end
 
 % ------------------------
 % Gaussian filter
@@ -82,51 +125,6 @@ if (Sim_Struct.iterate_uniformly)
     Sim_Struct.E        = E_low  + (E_max  - E_low)  * rand(1, num_iterations);
     Sim_Struct.Vb_larss = Vb_low + (Vb_max - Vb_low) * rand(1, num_iterations);
     Sim_Struct.Ve_larss = Ve_low + (Ve_max - Ve_low) * rand(1, num_iterations);
-    
-    % Read from previouslt written excel file
-    if Sim_Struct.readLatestData
-        excel_matrix          = xlsread(Sim_Struct.ETM_filename);
-        Sim_Struct.Vp_ETM     = excel_matrix(:,1)';
-        Sim_Struct.kep_ETM    = excel_matrix(:,7)';
-        Sim_Struct.Ktrans_ETM = excel_matrix(:,5)';
-        Sim_Struct.Ve_ETM     = excel_matrix(:,3)';
-    else
-        Sim_Struct.Vp_ETM     = Vp_ETM_low     + (Vp_ETM_max     - Vp_ETM_low)     * rand(1, num_iterations);
-        %Sim_Struct.Ve_ETM     = Ve_ETM_low     + (Ve_ETM_max     - Ve_ETM_low)     * rand(1, num_iterations);
-        Sim_Struct.kep_ETM    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, num_iterations);
-        Sim_Struct.Ktrans_ETM = Ktrans_ETM_low + (Ktrans_ETM_max - Ktrans_ETM_low) * rand(1, num_iterations);
-        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
-    end
-    
-    display('-I- Checking that ETM parameters satisfying constraints...');
-    % Add the constraint that (Ve + Vp = 1) and (Vp > Ve)
-    %     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
-%     Rcheck                = ( (Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );    
-    eval(Sim_Struct.constraint);
-    
-    tries                 = 0;
-    while any(Rcheck) %replace any row whose sum is > rowlim
-        
-        if tries > 10^6
-            error('-I- ETM parameters did not satisfy constraints after trying 10^6 times...');
-        end
-        
-        % Indices where Vp+Ve > 1
-        I = find(Rcheck);
-        
-        Sim_Struct.kep_ETM(I)    = kep_ETM_low     + (kep_ETM_max     - kep_ETM_low)     * rand(1, length(I));
-        Sim_Struct.Ktrans_ETM(I) = Ktrans_ETM_low  + (Ktrans_ETM_max - Ktrans_ETM_low)   * rand(1, length(I));
-        
-        Sim_Struct.Ve_ETM     = Sim_Struct.Ktrans_ETM ./ Sim_Struct.kep_ETM;
-        %         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > Sim_Struct.Vp_ETM );
-%         Rcheck                = ((Sim_Struct.Ve_ETM + Sim_Struct.Vp_ETM) > 1 ) | ( Sim_Struct.Ve_ETM > 1 ) | ( Sim_Struct.Vp_ETM > 1 );
-        eval(Sim_Struct.constraint);
-        tries                 = tries + 1;
-    end
-    
-    
-    
-    
 end
 
 % Hematocrit according to Larsson's article

@@ -52,7 +52,8 @@ for iter_num = 1 : num_iterations
         
         if (Sim_Struct_Replicated(iter_num).Check_Sourbron_Estimate)
             Sim_Struct_Replicated(iter_num).est_F_Sourbron_noise_vec(avg_num)               = Larss_Struct.est_F_Two_Comp_Sourbron_noise;
-            Sim_Struct_Replicated(iter_num).est_Ktrans_Sourbron_Two_Comp_noise_vec(avg_num)     = Larss_Struct.est_Ktrans_Two_Comp_Sourbron_noise;
+            Sim_Struct_Replicated(iter_num).est_Ktrans_Sourbron_Two_Comp_noise_vec(avg_num) = Larss_Struct.est_Ktrans_Two_Comp_Sourbron_noise;
+            Sim_Struct_Replicated(iter_num).est_E_Sourbron_Two_Comp_noise_vec(avg_num)      = Larss_Struct.est_E_Two_Comp_Sourbron_est;
             Sim_Struct_Replicated(iter_num).est_Vb_Sourbron_Two_Comp_noise_vec(avg_num)     = Larss_Struct.est_Vb_Two_Comp_Sourbron_noise;
             Sim_Struct_Replicated(iter_num).est_Ve_Sourbron_Two_Comp_noise_vec(avg_num)     = Larss_Struct.Ve_Two_Comp_Sourbron_est;
         end

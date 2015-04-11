@@ -1,7 +1,7 @@
 function [ results ] = Summarize_Iteration( Sim_Struct, Verbosity, iter_num, avg_num)
 
 % Take from struct variables used in local function
-Ktrans                                      = Sim_Struct.Ktrans;
+Ktrans                                  = Sim_Struct.Ktrans;
 Vb_larss                                = Sim_Struct.Vb_larss;
 Ve_larss                                = Sim_Struct.Ve_larss;
 additional_AIF_delay_sec                = Sim_Struct.additional_AIF_delay_sec;
@@ -11,8 +11,8 @@ est_amp_noise_vec                       = Sim_Struct.est_amp_noise_vec;
 est_F_noise_vec                         = Sim_Struct.est_F_noise_vec;
 est_Delay_sec_noise_vec                 = Sim_Struct.est_Delay_sec_noise_vec;
 est_Delay_sec_using_Gaussian_noise_vec  = Sim_Struct.est_Delay_sec_using_Gaussian_noise_vec;
-est_Ktrans_Patlak_noise_vec                 = Sim_Struct.est_Ktrans_Patlak_noise_vec;
-est_Ktrans_Two_Comp_noise_vec               = Sim_Struct.est_Ktrans_Two_Comp_noise_vec;
+est_Ktrans_Patlak_noise_vec             = Sim_Struct.est_Ktrans_Patlak_noise_vec;
+est_Ktrans_Two_Comp_noise_vec           = Sim_Struct.est_Ktrans_Two_Comp_noise_vec;
 est_E_noise_vec                         = Sim_Struct.est_E_noise_vec;
 est_PS_noise_vec                        = Sim_Struct.est_PS_noise_vec;
 est_Vb_Patlak_noise_vec                 = Sim_Struct.est_Vb_Patlak_noise_vec;
@@ -36,7 +36,8 @@ num_averages                            = Sim_Struct.num_averages;
 num_results_parameters                  = Sim_Struct.num_results_parameters;
 
 est_F_Sourbron_noise_vec                = Sim_Struct.est_F_Sourbron_noise_vec;
-est_Ktrans_Sourbron_Two_Comp_noise_vec      = Sim_Struct.est_Ktrans_Sourbron_Two_Comp_noise_vec;
+est_Ktrans_Sourbron_Two_Comp_noise_vec  = Sim_Struct.est_Ktrans_Sourbron_Two_Comp_noise_vec;
+est_E_Sourbron_Two_Comp_noise_vec       = Sim_Struct.est_E_Sourbron_Two_Comp_noise_vec;
 est_Vb_Sourbron_Two_Comp_noise_vec      = Sim_Struct.est_Vb_Sourbron_Two_Comp_noise_vec;
 est_Ve_Sourbron_Two_Comp_noise_vec      = Sim_Struct.est_Ve_Sourbron_Two_Comp_noise_vec;
 
@@ -54,20 +55,21 @@ est_F_noise_avg                        = mean(est_F_noise_vec);
 est_Delay_sec_noise_avg                = mean(est_Delay_sec_noise_vec);
 est_Delay_sec_using_Gaussian_noise_avg = mean(est_Delay_sec_using_Gaussian_noise_vec);
 
-est_Ktrans_Patlak_noise_avg      = mean(est_Ktrans_Patlak_noise_vec);
-est_Ktrans_Two_Comp_noise_avg    = mean(est_Ktrans_Two_Comp_noise_vec);
-est_E_noise_avg              = mean(est_E_noise_vec);
-est_PS_noise_avg             = mean(est_PS_noise_vec);
-est_Vb_Patlak_noise_avg      = mean(est_Vb_Patlak_noise_vec);
-est_Vb_Two_Comp_noise_avg    = mean(est_Vb_Two_Comp_noise_vec);
-est_Vd_noise_avg             = mean(est_Vd_noise_vec);
-est_Vd_normal_tis_noise_avg  = mean(est_Vd_normal_tis_noise_vec);
-est_MTT_noise_avg            = mean(est_MTT_noise_vec);
-est_MTT_normal_tis_noise_avg = mean(est_MTT_normal_tis_noise_vec);
-est_Ve_Two_Comp_noise_avg    = mean(est_Ve_Two_Comp_noise_vec);
+est_Ktrans_Patlak_noise_avg     = mean(est_Ktrans_Patlak_noise_vec);
+est_Ktrans_Two_Comp_noise_avg   = mean(est_Ktrans_Two_Comp_noise_vec);
+est_E_noise_avg                 = mean(est_E_noise_vec);
+est_PS_noise_avg                = mean(est_PS_noise_vec);
+est_Vb_Patlak_noise_avg         = mean(est_Vb_Patlak_noise_vec);
+est_Vb_Two_Comp_noise_avg       = mean(est_Vb_Two_Comp_noise_vec);
+est_Vd_noise_avg                = mean(est_Vd_noise_vec);
+est_Vd_normal_tis_noise_avg     = mean(est_Vd_normal_tis_noise_vec);
+est_MTT_noise_avg               = mean(est_MTT_noise_vec);
+est_MTT_normal_tis_noise_avg    = mean(est_MTT_normal_tis_noise_vec);
+est_Ve_Two_Comp_noise_avg       = mean(est_Ve_Two_Comp_noise_vec);
 
 est_F_Sourbron_noise_avg                = mean(est_F_Sourbron_noise_vec);
-est_Ktrans_Sourbron_Two_Comp_noise_avg      = mean(est_Ktrans_Sourbron_Two_Comp_noise_vec);
+est_Ktrans_Sourbron_Two_Comp_noise_avg  = mean(est_Ktrans_Sourbron_Two_Comp_noise_vec);
+est_E_Sourbron_Two_Comp_noise_avg       = mean(est_E_Sourbron_Two_Comp_noise_vec);
 est_Vb_Sourbron_Two_Comp_noise_avg      = mean(est_Vb_Sourbron_Two_Comp_noise_vec);
 est_Ve_Sourbron_Two_Comp_noise_avg      = mean(est_Ve_Sourbron_Two_Comp_noise_vec);
 
@@ -82,8 +84,8 @@ std_est_F                    = std(est_F_noise_vec);
 std_est_Delay                = std(est_Delay_sec_noise_vec);
 std_est_Delay_using_Gaussian = std(est_Delay_sec_using_Gaussian_noise_vec);
 
-std_Ktrans_Patlak                = std(est_Ktrans_Patlak_noise_vec);
-std_Ktrans_Two_Comp              = std(est_Ktrans_Two_Comp_noise_vec);
+std_Ktrans_Patlak            = std(est_Ktrans_Patlak_noise_vec);
+std_Ktrans_Two_Comp          = std(est_Ktrans_Two_Comp_noise_vec);
 std_E                        = std(est_E_noise_vec);
 std_PS                       = std(est_PS_noise_vec);
 std_Vb_Patlak                = std(est_Vb_Patlak_noise_vec);
@@ -96,7 +98,8 @@ std_Ve_Two_Comp              = std(est_Ve_Two_Comp_noise_vec);
 
 % Sourbron
 std_F_Sourbron               = std(est_F_Sourbron_noise_vec);
-std_Ktrans_Sourbron              = std(est_Ktrans_Sourbron_Two_Comp_noise_vec);
+std_Ktrans_Sourbron          = std(est_Ktrans_Sourbron_Two_Comp_noise_vec);
+std_E_Sourbron               = std(est_E_Sourbron_Two_Comp_noise_vec);
 std_Vb_Sourbron              = std(est_Vb_Sourbron_Two_Comp_noise_vec);
 std_Ve_Sourbron              = std(est_Ve_Sourbron_Two_Comp_noise_vec);
 
@@ -208,37 +211,42 @@ results(72)    = est_Ktrans_Sourbron_Two_Comp_noise_avg;
 results(73)    = ( abs(Ktrans(iter_num) - est_Ktrans_Sourbron_Two_Comp_noise_avg) / Ktrans(iter_num) ) * 100;
 results(74)    = std_Ktrans_Sourbron;
 
-results(75)    = Vb_larss(iter_num);
-results(76)    = est_Vb_Sourbron_Two_Comp_noise_avg;
-results(77)    = ( abs(Vb_larss(iter_num) - est_Vb_Sourbron_Two_Comp_noise_avg) / Vb_larss(iter_num) ) * 100;
-results(78)    = std_Vb_Sourbron;
+results(75)    = E(iter_num);
+results(76)    = est_E_Sourbron_Two_Comp_noise_avg;
+results(77)    = ( abs(E(iter_num) - est_E_Sourbron_Two_Comp_noise_avg) / E(iter_num) ) * 100;
+results(78)    = std_E_Sourbron;
 
-results(79)    = Ve_larss(iter_num);
-results(80)    = est_Ve_Sourbron_Two_Comp_noise_avg;
-results(81)    = ( abs(Ve_larss(iter_num) - est_Ve_Sourbron_Two_Comp_noise_avg) / Ve_larss(iter_num) ) * 100;
-results(82)    = std_Ve_Sourbron;
+results(79)    = Vb_larss(iter_num);
+results(80)    = est_Vb_Sourbron_Two_Comp_noise_avg;
+results(81)    = ( abs(Vb_larss(iter_num) - est_Vb_Sourbron_Two_Comp_noise_avg) / Vb_larss(iter_num) ) * 100;
+results(82)    = std_Vb_Sourbron;
+
+results(83)    = Ve_larss(iter_num);
+results(84)    = est_Ve_Sourbron_Two_Comp_noise_avg;
+results(85)    = ( abs(Ve_larss(iter_num) - est_Ve_Sourbron_Two_Comp_noise_avg) / Ve_larss(iter_num) ) * 100;
+results(86)    = std_Ve_Sourbron;
 
 % Continued Larsson paramters (Ve + absolute error
 
-results(83)    = Ve_larss(iter_num);
-results(84)    = est_Ve_Two_Comp_noise_avg;
-results(85)    = ( abs(Ve_larss(iter_num) - est_Ve_Two_Comp_noise_avg) / Ve_larss(iter_num) ) * 100;
-results(86)    = std_Ve_Two_Comp;
+results(87)    = Ve_larss(iter_num);
+results(88)    = est_Ve_Two_Comp_noise_avg;
+results(89)    = ( abs(Ve_larss(iter_num) - est_Ve_Two_Comp_noise_avg) / Ve_larss(iter_num) ) * 100;
+results(90)    = std_Ve_Two_Comp;
 
 
-results(87)    = abs(F(iter_num)                        - est_F_noise_avg              );
-results(88)    = abs(additional_AIF_delay_sec(iter_num) - est_Delay_sec_noise_avg      );
-results(89)    = abs(Ktrans(iter_num)                       - est_Ktrans_Patlak_noise_avg      );
-results(90)    = abs(Ktrans(iter_num)                       - est_Ktrans_Two_Comp_noise_avg    );
-results(91)    = abs(PS(iter_num)                       - est_PS_noise_avg             );
-results(92)    = abs(Vb_larss(iter_num)                 - est_Vb_Patlak_noise_avg      );
-results(93)    = abs(Vb_larss(iter_num)                 - est_Vb_Two_Comp_noise_avg    );
-results(94)    = abs(Vd(iter_num)                       - est_Vd_noise_avg             );
-results(95)    = abs(Vd(iter_num)                       - est_Vd_normal_tis_noise_avg  );
-results(96)    = abs(MTT(iter_num)                      - est_MTT_noise_avg            );
-results(97)    = abs(MTT(iter_num)                      - est_MTT_normal_tis_noise_avg );
-results(98)    = abs(E(iter_num)                        - est_E_noise_avg              );
-results(99)    = abs(Ve_larss(iter_num)                 - est_Ve_Two_Comp_noise_avg    );
+results(91)    = abs(F(iter_num)                        - est_F_noise_avg              );
+results(92)    = abs(additional_AIF_delay_sec(iter_num) - est_Delay_sec_noise_avg      );
+results(93)    = abs(Ktrans(iter_num)                       - est_Ktrans_Patlak_noise_avg      );
+results(94)    = abs(Ktrans(iter_num)                       - est_Ktrans_Two_Comp_noise_avg    );
+results(95)    = abs(PS(iter_num)                       - est_PS_noise_avg             );
+results(96)    = abs(Vb_larss(iter_num)                 - est_Vb_Patlak_noise_avg      );
+results(97)    = abs(Vb_larss(iter_num)                 - est_Vb_Two_Comp_noise_avg    );
+results(98)    = abs(Vd(iter_num)                       - est_Vd_noise_avg             );
+results(99)    = abs(Vd(iter_num)                       - est_Vd_normal_tis_noise_avg  );
+results(100)   = abs(MTT(iter_num)                      - est_MTT_noise_avg            );
+results(101)   = abs(MTT(iter_num)                      - est_MTT_normal_tis_noise_avg );
+results(102)   = abs(E(iter_num)                        - est_E_noise_avg              );
+results(103)   = abs(Ve_larss(iter_num)                 - est_Ve_Two_Comp_noise_avg    );
 
 % Calculate iteration time
 iter_finish = toc;

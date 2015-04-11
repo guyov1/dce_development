@@ -7,7 +7,7 @@ try
     
     num_processes = getenv('NUMBER_OF_PROCESSORS');
     % Maximum allowed processes are 12 in matlab 2012
-    if (num_processes > 12)
+    if (str2double(num_processes) > 12)
         num_processes = 12;
     end
     

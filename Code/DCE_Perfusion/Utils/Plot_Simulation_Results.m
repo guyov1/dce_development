@@ -1,4 +1,4 @@
-function [ idx_fig ] = Plot_Simulation_Results( Sim_Struct,Verbosity, idx_fig)
+function [ idx_fig ] = Plot_Simulation_Results( Sim_Struct,Verbosity, idx_fig, Local_Path)
 
 
 % Take from struct variables used in local function
@@ -85,7 +85,7 @@ Mat_File_Name = ['Results_' num2str(num_iterations) '_Iterations_' Delay_String 
                  '_' Correction_Type '_Correction_' num2str(sec_interval(1)) ...
                  '_sec_interval_' num2str(total_sim_time_min) '_min_total_' Filter_Est_Chosen '.mat'];
 
-save(Mat_File_Name,'plot_error_results_flag',...
+save([Local_Path filesep Mat_File_Name],'plot_error_results_flag',...
      'iterate_SNR','iterate_sec_interval','Ignore_Gaussian_Calculation','iterate_gaussian_sigma',...
      'iterate_gaussian_time_delay','iterate_gaussian_amplitude','iterate_F_larsson',...
      'iterate_Vb_larsson','iterate_E_larsson','Vb_single','E_single',...
@@ -180,10 +180,10 @@ if (plot_error_results_flag)
     std_MTT_Normal              = results(58,:);
     
     % E
-    real_larsson_E_vec          = results(59,:);
-    est_larsson_E_vec           = results(60,:);
-    error_percent_E             = results(61,:);
-    std_E                       = results(62,:);
+    real_larsson_2CXM_E_vec     = results(59,:);
+    est_larsson_2CXM_E_vec      = results(60,:);
+    error_percent_E_2CXM        = results(61,:);
+    std_E2CXM                   = results(62,:);
     
     % AIF delay with Larss filter using Gaussian de-convolution
     real_t_d_Larss_vec_sec_using_Gauss      = results(63,:);
@@ -203,38 +203,44 @@ if (plot_error_results_flag)
     error_percent_Ktrans_Sourbron_2CXM       = results(73,:);
     std_Ktrans_Sourbron_2CXM                 = results(74,:);
     
+    % Sourbron - E
+    real_larsson_E_Sourbron_2CXM_vec    = results(75,:);
+    est_larsson_E_Sourbron_2CXM_vec     = results(76,:);
+    error_percent_E_Sourbron_2CXM       = results(77,:);
+    std_E_Sourbron_2CXM                 = results(78,:);
+    
     % Sourbron - Vb
-    real_larsson_Vb_Sourbron_2CXM_vec    = results(75,:);
-    est_larsson_Vb_Sourbron_2CXM_vec     = results(76,:);
-    error_percent_Vb_Sourbron_2CXM       = results(77,:);
-    std_Vb_Sourbron_2CXM                 = results(78,:);
+    real_larsson_Vb_Sourbron_2CXM_vec    = results(79,:);
+    est_larsson_Vb_Sourbron_2CXM_vec     = results(80,:);
+    error_percent_Vb_Sourbron_2CXM       = results(81,:);
+    std_Vb_Sourbron_2CXM                 = results(82,:);
     
     % Sourbron - Ve
-    real_larsson_Ve_Sourbron_2CXM_vec    = results(79,:);
-    est_larsson_Ve_Sourbron_2CXM_vec     = results(80,:);
-    error_percent_Ve_Sourbron_2CXM       = results(81,:);
-    std_Ve_Sourbron_2CXM                 = results(82,:);
+    real_larsson_Ve_Sourbron_2CXM_vec    = results(83,:);
+    est_larsson_Ve_Sourbron_2CXM_vec     = results(84,:);
+    error_percent_Ve_Sourbron_2CXM       = results(85,:);
+    std_Ve_Sourbron_2CXM                 = results(86,:);
     
     % Larsson - Ve
-    real_larsson_Ve_2CXM_vec    = results(83,:);
-    est_larsson_Ve_2CXM_vec     = results(84,:);
-    error_percent_Ve_2CXM       = results(85,:);
-    std_Ve_2CXM                 = results(86,:);
+    real_larsson_Ve_2CXM_vec    = results(87,:);
+    est_larsson_Ve_2CXM_vec     = results(88,:);
+    error_percent_Ve_2CXM       = results(89,:);
+    std_Ve_2CXM                 = results(90,:);
     
     % Larsson - absolute error vectors
-    abs_larss_error_F               = results(87,:);
-    abs_larss_error_AIF_delay       = results(88,:);
-    abs_larss_error_Ktrans_Patlak   = results(89,:);
-    abs_larss_error_Ktrans_2CXM     = results(90,:);
-    abs_larss_error_PS              = results(91,:);
-    abs_larss_error_Vb_Patlak       = results(92,:);
-    abs_larss_error_Vb_2CXM         = results(93,:);
-    abs_larss_error_Vd_Patlak       = results(94,:);
-    abs_larss_error_Vd_2CXM         = results(95,:);
-    abs_larss_error_MTT_normal_tis  = results(96,:);
-    abs_larss_error_MTT_2CXM        = results(97,:);
-    abs_larss_error_E               = results(98,:);
-    abs_larss_error_Ve_larss        = results(99,:);
+    abs_larss_error_F               = results(91,:);
+    abs_larss_error_AIF_delay       = results(92,:);
+    abs_larss_error_Ktrans_Patlak   = results(93,:);
+    abs_larss_error_Ktrans_2CXM     = results(94,:);
+    abs_larss_error_PS              = results(95,:);
+    abs_larss_error_Vb_Patlak       = results(96,:);
+    abs_larss_error_Vb_2CXM         = results(97,:);
+    abs_larss_error_Vd_Patlak       = results(98,:);
+    abs_larss_error_Vd_2CXM         = results(99,:);
+    abs_larss_error_MTT_normal_tis  = results(100,:);
+    abs_larss_error_MTT_2CXM        = results(101,:);
+    abs_larss_error_E               = results(102,:);
+    abs_larss_error_Ve_larss        = results(103,:);
     
     
     if (iterate_SNR)
@@ -282,8 +288,8 @@ if (plot_error_results_flag)
         set(gca,'fontsize',font_size_axis,'FontWeight','bold');
         
         subplot(3,2,2);
-        plot(SNR_vec,error_percent_E);
-        title(['est. E vs. SNR. E = ' num2str(real_larsson_E_vec(1))],'FontSize',font_size,'FontWeight','bold');
+        plot(SNR_vec,error_percent_E_2CXM);
+        title(['est. E vs. SNR. E = ' num2str(real_larsson_2CXM_E_vec(1))],'FontSize',font_size,'FontWeight','bold');
         xlabel('SNR');
         ylabel('Error percent');
         set(gca,'fontsize',font_size_axis,'FontWeight','bold');
@@ -600,14 +606,14 @@ if (plot_error_results_flag)
         
         subplot(2,1,1);
         %plot(real_sigma_vec,error_percent_sigma);
-        errorbar(real_larsson_E_vec,error_percent_E,std_E);
+        errorbar(real_larsson_2CXM_E_vec,error_percent_E_2CXM,std_E2CXM);
         title_string = sprintf('est. error vs. original E. F=%d, Vb=%.2f',F_single,Vb_single);
         title(title_string,'FontSize',font_size,'FontWeight','bold');
         xlabel('True E');
         ylabel('Error percent');
         
         subplot(2,1,2);
-        errorbar(real_larsson_E_vec,est_larsson_E_vec,std_E);
+        errorbar(real_larsson_2CXM_E_vec,est_larsson_2CXM_E_vec,std_E2CXM);
         hr = refline(1); % y=x reference line
         set(hr,'Color','k','LineStyle','--','LineWidth',1.5);
         
@@ -707,10 +713,12 @@ if (plot_error_results_flag)
             ['Estimation Error Using ' Filter_Est_Chosen ' :'],...
             '',...
             ['F                   - Err. %         = ' num2str(mean(error_percent_F               ),'%5.2f') ' +- ' num2str(std(error_percent_F                ),'%5.2f') '        [mL/100g/min]'],...
+            ['E               - Err. %         = ' num2str(mean(error_percent_E_2CXM     ),'%5.2f') ' +- ' num2str(std(error_percent_E_2CXM                ),'%5.2f') '        []'],...
             ['Ktrans           - Err. %         = ' num2str(mean(error_percent_Ktrans_2CXM     ),'%5.2f') ' +- ' num2str(std(error_percent_Ktrans_2CXM                ),'%5.2f') '        [mL/100g/min]'],...
             ['Vp                 - Err. %         = ' num2str(mean(error_percent_Vb_2CXM          ),'%5.2f') ' +- ' num2str(std(error_percent_Vb_2CXM          ),'%5.2f') '        [mL/100g]'],...
             ['Ve                 - Err. %         = ' num2str(mean(error_percent_Ve_2CXM          ),'%5.2f') ' +- ' num2str(std(error_percent_Ve_2CXM          ),'%5.2f') '        [mL/100g]'],...
             ['F Sourbron   - Err. %         = ' num2str(mean(error_percent_Sourbron_F      ),'%5.2f') ' +- ' num2str(std(error_percent_Sourbron_F       ),'%5.2f') '        [mL/100g/min]'],...
+            ['E Sourbron   - Err. %         = ' num2str(mean(error_percent_E_Sourbron_2CXM      ),'%5.2f') ' +- ' num2str(std(error_percent_E_Sourbron_2CXM       ),'%5.2f') '        []'],...
             ['Vp Sourbron - Err. %         = ' num2str(mean(error_percent_Vb_Sourbron_2CXM),'%5.2f') ' +- ' num2str(std(error_percent_Vb_Sourbron_2CXM ),'%5.2f') '        [mL/100g]'],...
             ['Ve Sourbron - Err. %         = ' num2str(mean(error_percent_Ve_Sourbron_2CXM),'%5.2f') ' +- ' num2str(std(error_percent_Ve_Sourbron_2CXM ),'%5.2f') '        [mL/100g]']},...
             'FontSize',8,...
@@ -754,8 +762,8 @@ if (plot_error_results_flag)
         est_Vb                           = est_larsson_Vb_2CXM_vec;
         real_Ve                          = real_larsson_Ve_2CXM_vec;
         est_Ve                           = est_larsson_Ve_2CXM_vec;
-        real_E                           = real_larsson_E_vec;
-        est_E                            = est_larsson_E_vec;
+        real_E                           = real_larsson_2CXM_E_vec;
+        est_E                            = est_larsson_2CXM_E_vec;
         
         minVec                           = [minRealF minRealKtrans minRealVb minRealVe minRealE];
         maxVec                           = [maxRealF maxRealKtrans maxRealVb maxRealVe maxRealE];

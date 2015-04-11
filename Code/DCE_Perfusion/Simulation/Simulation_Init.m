@@ -109,7 +109,8 @@ Sim_Struct.est_MTT_normal_tis_noise_vec           = zeros(1,num_averages);
 
 % Sourbron's parameters
 Sim_Struct.est_F_Sourbron_noise_vec               = zeros(1,num_averages);
-Sim_Struct.est_Ktrans_Sourbron_Two_Comp_noise_vec     = zeros(1,num_averages);
+Sim_Struct.est_Ktrans_Sourbron_Two_Comp_noise_vec = zeros(1,num_averages);
+Sim_Struct.est_E_Sourbron_Two_Comp_noise_vec      = zeros(1,num_averages);
 Sim_Struct.est_Vb_Sourbron_Two_Comp_noise_vec     = zeros(1,num_averages);
 Sim_Struct.est_Ve_Sourbron_Two_Comp_noise_vec     = zeros(1,num_averages);
 

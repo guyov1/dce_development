@@ -74,7 +74,6 @@ else
     est_Delay_sec_noise =  time_vec_minutes(max_index) * 60;
 end
 
-
 %% Patalk Estimation
 [est_Ktrans_Patlak_noise, est_Vb_Patlak_noise ,est_E_Patlak_noise, est_MTT_Patlak_noise, idx_fig] = Patlak_Estimation(Sim_Struct, Sim_AIF_with_noise, Sim_Ct_larss_kernel_noise, est_F_noise, Verbosity, iter_num, avg_num, idx_fig);
 
@@ -293,8 +292,8 @@ est_Ve_Two_Comp_noise           = est_params_Larsson_noise(3);
 if Check_Sourbron_Estimate
     est_F_Two_Comp_Sourbron_noise               = est_params_Sourbron_noise(1);
     est_Vb_Two_Comp_Sourbron_noise              = est_params_Sourbron_noise(2);
-    E_Two_Comp_Sourbron_est                     = est_params_Sourbron_noise(3);
-    est_Ktrans_Two_Comp_Sourbron_noise              = E_Two_Comp_Sourbron_est * est_F_Two_Comp_Sourbron_noise;
+    est_E_Two_Comp_Sourbron_est                 = est_params_Sourbron_noise(3);
+    est_Ktrans_Two_Comp_Sourbron_noise          = est_E_Two_Comp_Sourbron_est * est_F_Two_Comp_Sourbron_noise;
     Ve_Two_Comp_Sourbron_est                    = est_params_Sourbron_noise(4);
 end
 
@@ -494,10 +493,10 @@ end
 Return_Struct.est_F_noise                        = est_F_noise;
 Return_Struct.est_Vb_Patlak_noise                = est_Vb_Patlak_noise;
 Return_Struct.E_Patlak_est                       = est_E_Patlak_noise;
-Return_Struct.est_Ktrans_Patlak_noise                = est_Ktrans_Patlak_noise;
+Return_Struct.est_Ktrans_Patlak_noise            = est_Ktrans_Patlak_noise;
 Return_Struct.est_Delay_sec_using_Gaussian_noise = est_Delay_sec_using_Gaussian_noise;
 Return_Struct.est_Delay_sec_noise                = est_Delay_sec_noise;
-Return_Struct.est_Ktrans_Two_Comp_noise              = est_Ktrans_Two_Comp_noise;
+Return_Struct.est_Ktrans_Two_Comp_noise          = est_Ktrans_Two_Comp_noise;
 Return_Struct.est_E_noise                        = est_E_noise;
 Return_Struct.est_PS_noise                       = est_PS_noise;
 Return_Struct.est_Vb_Two_Comp_noise              = est_Vb_Two_Comp_noise;
@@ -508,10 +507,11 @@ Return_Struct.est_MTT_noise                      = est_MTT_noise;
 Return_Struct.est_MTT_normal_tis_noise           = est_MTT_normal_tis_noise;
 
 if Check_Sourbron_Estimate
-    Return_Struct.est_F_Two_Comp_Sourbron_noise  = est_F_Two_Comp_Sourbron_noise;
-    Return_Struct.est_Vb_Two_Comp_Sourbron_noise = est_Vb_Two_Comp_Sourbron_noise;
+    Return_Struct.est_F_Two_Comp_Sourbron_noise      = est_F_Two_Comp_Sourbron_noise;
+    Return_Struct.est_Vb_Two_Comp_Sourbron_noise     = est_Vb_Two_Comp_Sourbron_noise;
     Return_Struct.est_Ktrans_Two_Comp_Sourbron_noise = est_Ktrans_Two_Comp_Sourbron_noise;
-    Return_Struct.Ve_Two_Comp_Sourbron_est       = Ve_Two_Comp_Sourbron_est;
+    Return_Struct.est_E_Two_Comp_Sourbron_est        = est_E_Two_Comp_Sourbron_est;
+    Return_Struct.Ve_Two_Comp_Sourbron_est           = Ve_Two_Comp_Sourbron_est;
 end
 
 end

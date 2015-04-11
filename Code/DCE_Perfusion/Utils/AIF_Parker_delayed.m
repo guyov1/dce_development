@@ -1,4 +1,4 @@
-function Ca = AIF_Parker(t,A1,sig1,T1,A2,sig2,T2,alpha,beta,s,tau,additional_time_shift)
+function Ca = AIF_Parker_delayed(t,A1,sig1,T1,A2,sig2,T2,alpha,beta,s,tau,additional_time_shift)
 
 % http://dx.doi.org/10.1002/mrm.21066
 % A1=0.809;A2=0.330;T1=0.17046;T2=0.365;

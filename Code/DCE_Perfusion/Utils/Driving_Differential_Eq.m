@@ -38,7 +38,7 @@ num_time_stamps_test       = round(total_sim_time_min ./ min_interval_HighRes);
 time_vec_minutes_HighRes   = (0:num_time_stamps_test-1).* min_interval_HighRes;
 
 % Creating high resolution AIF
-Sim_AIF_HighRes            = AIF_Parker(time_vec_minutes_HighRes,A1,sig1,T1,A2,sig2,T2,alpha,beta,s,tau,0); %[mM]
+Sim_AIF_HighRes            = AIF_Parker_delayed(time_vec_minutes_HighRes,A1,sig1,T1,A2,sig2,T2,alpha,beta,s,tau,0); %[mM]
 Sim_AIF_HighRes            = Sim_AIF_HighRes / max(Sim_AIF_HighRes);
 Sim_AIF_HighRes            = Sim_AIF_HighRes * r_factor;
 
