@@ -6,7 +6,7 @@ if(~exist('R','var'))
 end
 if(isempty(R))
     R=150;
-    print(FN,['-f' num2str(Handle)],'-dpng');    
+    print(FN,['-f' num2str(Handle.Number)],'-dpng');    
 else
-    print(FN,['-f' num2str(Handle)],'-djpeg',['-r' num2str(R)]);
+    print(FN,['-f' num2str(Handle.Number)],'-djpeg',['-r' num2str(R)]);
 end

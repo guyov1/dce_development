@@ -63,6 +63,17 @@ BiExp2CTC_RMS_Ratio             = Sim_Struct.BiExp2CTC_RMS_Ratio;
 Filter_Est_Chosen               = Sim_Struct.Filter_Est_Chosen;
 USE_WIENER                      = Sim_Struct.USE_WIENER;
 USE_TICHONOV                    = Sim_Struct.USE_TICHONOV;
+RealData_Flag                   = Sim_Struct.RealData_Flag;
+plot_flag                       = Sim_Struct.plot_flag;
+filter_type                     = Sim_Struct.filter_type;
+
+% Put dummy values that are used in simulation
+Sim_Ct_T                 = NaN;
+Conv_Matrix_no_noise     = NaN;
+B_PCA                    = NaN;
+idx_fig                  = 1;
+% filter_type              = 'Larss';
+
 
 %% Estimating h(t) by Wiener filter / Tikhonov Regularization
 Est_IRF_with_Delay              = zeros(num_voxels,num_time_stamps);
@@ -84,14 +95,6 @@ elseif USE_TICHONOV
     
     % Check if already calculated Ht
     Mat_File_Ht = [Output_directory 'Estimated_Tichonov_Ht_' Subject_name '.mat'];
-    
-    Sim_Ct_T                 = NaN;
-    Conv_Matrix_no_noise     = NaN;
-    B_PCA                    = NaN;
-    idx_fig                  = 1;
-    filter_type              = 'Larss';
-    plot_flag                = false;
-    RealData_Flag            = Sim_Struct.RealData_Flag;
     
     % --------------- AIF delay correction parameters ------------------
     Delay_Correct_Struct                                    = struct;

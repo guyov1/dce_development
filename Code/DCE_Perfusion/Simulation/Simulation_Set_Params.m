@@ -17,14 +17,14 @@ Sim_Struct.Threshold_Norm_Maps           = false;  % Threshold maps before norma
 Sim_Struct.Threshold_Val                 = 0.026768 * 242.9221;
 
 %% Model selection parameters
-Sim_Struct.Use_Model_Selection           = true;
+Sim_Struct.Use_Model_Selection           = false;
 Sim_Struct.AIC_Correction                = true; % Use correction for AIC
 Sim_Struct.Data_Weight                   = 0.1;  % Data weight comparing to # of params (Gilad uses 0.1)
 Sim_Struct.Ignore_Delay_Model_Selection  = false; % Ignore models with delay
 
 %% Simulation parameters
 Sim_Struct.num_iterations                = 20; %1500
-Sim_Struct.num_averages                  = 1;  % Do each iteration a few time and average results for better statistic information
+Sim_Struct.num_averages                  = 3;  % Do each iteration a few time and average results for better statistic information
 Sim_Struct.SNR_single                    = 15; % Determines SNR ( noise_var = mean(signal)/SNR_base )
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 
@@ -34,19 +34,19 @@ Sim_Struct.iterate_sec_interval          = 0; % Problematic (different array siz
 Sim_Struct.iterate_gaussian_sigma        = 0;
 Sim_Struct.iterate_gaussian_time_delay   = 0;
 Sim_Struct.iterate_gaussian_amplitude    = 0;
-Sim_Struct.iterate_F_larsson             = 0;
+Sim_Struct.iterate_F_larsson             = 1;
 Sim_Struct.iterate_Vb_larsson            = 0;
 Sim_Struct.iterate_E_larsson             = 0;
 Sim_Struct.iterate_Ve_larsson            = 0;
 Sim_Struct.iterate_AIF_delay             = 0;
-Sim_Struct.iterate_uniformly             = 1; % Uniformly generate parameters data
+Sim_Struct.iterate_uniformly             = 0; % Uniformly generate parameters data
 Sim_Struct.Add_Randomly_AIF_Delay        = 0;
 
 %% ------------------- Time Parameters ------------------------------------
 % Total simulation time
-Sim_Struct.total_sim_time_min       = 2; %[min]
+Sim_Struct.total_sim_time_min       = 6; %[min]
 % Time interval between samples
-Sim_Struct.sec_interval             = 6; %[sec] . default = 2
+Sim_Struct.sec_interval             = 2; %[sec] . default = 2
 Sim_Struct.sec_vec                  = linspace(0.5,15,Sim_Struct.num_iterations); % For iterations
 % Round to the nearest 0.5
 Sim_Struct.sec_vec                  = round(Sim_Struct.sec_vec*2)/2;
@@ -67,8 +67,7 @@ Sim_Struct.ETM_Model                     = false;
 if Sim_Struct.ETM_Model
     Sim_Struct = setETMParams(Sim_Struct);
 end
-
-Sim_Struct.Hct_single    = 0.38;
+Sim_Struct.Hct_single                    = 0.38;
 
 
 %% ------------------- AIF Parameters ------------------------------------
@@ -78,7 +77,7 @@ Sim_Struct.Correct_PVE                   = true;
 
 % Add randomly delay to the AIF
 Sim_Struct.AIF_delay_low                 = -0.0;
-Sim_Struct.AIF_delay_max                 = +20.0;
+Sim_Struct.AIF_delay_max                 = +1.0;
 
 % Delay parameters
 Sim_Struct.additional_AIF_delay_sec     = 0; % Delay added to AIF before filtering
@@ -103,6 +102,7 @@ Sim_Struct.s        = 38.078;
 Sim_Struct.tau      = 0.483;
 
 % Apply cyclic convolution to compensate for AIF delay
+Sim_Struct.Correct_estimation_due_to_delay        = false;       % Try to correct for delay
 Sim_Struct.Use_Cyclic_Conv_4_ht_est               = false;       % Use cyclic de-convolution to correct for delay
 Sim_Struct.Cyclic_End_Padding                     = true;       % Pad at the beginning or end
 Sim_Struct.Use_Upsampling_and_Cyclic              = false;      % Use cyclic de-convolution to correct for delay + upsampling
@@ -113,7 +113,6 @@ Sim_Struct.Max_Time_Delay                         = Sim_Struct.AIF_delay_max;  %
 Sim_Struct.Min_Time_Delay                         = Sim_Struct.AIF_delay_low;  % Set the minimal possible time delay in seconds for correction
 Sim_Struct.RMS_Smooth                             = true;       % When calculating RMS, smooth CTC first
 Sim_Struct.RMS_Smooth_Around_Bolus                = false;      % Calculate RMS around bolus only (to avoid noise aggregation afterwards)
-Sim_Struct.Correct_estimation_due_to_delay        = false;       % Try to correct for delay
 Sim_Struct.Simple_AIF_Delay_Correct               = false;       % Correct AIF by max point shift
 Sim_Struct.LQ_Model_AIF_Delay_Correct             = false;      % Correct AIF by Linear-Quadratic model (Cheong 2003)
 Sim_Struct.Diff_From_Bolus                        = 10;         % The difference in seconds from the bolus to look on
@@ -121,7 +120,6 @@ Sim_Struct.BiExp2CTC_RMS_Ratio                    = 0;          % Sets the ratio
 Sim_Struct.AIF_Scaling_Factor                     = 1;
 
 %% Estimation parameters
-
 Sim_Struct.USE_ONE_GAUSSIAN              = false;
 Sim_Struct.USE_DOUBLE_GAUSSIAN           = false;
 Sim_Struct.USE_WIENER                    = false;
@@ -145,7 +143,7 @@ Sim_Struct.poly_deg                      = 4;
 % Choose knots for splines (currently takes every 1 out of 2 points)
 Sim_Struct.knot_interval                 = 5; % knots         = time_vec_minutes(1:knot_interval:end)
 % Knots for splines
-Sim_Struct.knots                    = Sim_Struct.time_vec_minutes(1:Sim_Struct.knot_interval:end);
+Sim_Struct.knots                         = Sim_Struct.time_vec_minutes(1:Sim_Struct.knot_interval:end);
 % Lambda for regularization
 % Best Lambdas so far:  1. Ridge      = 33.51     2. Spline     = 13             3. Spline 1st = 0.6     4. Spline 2nd = 13.9
 %                       5. PCA        = 16.7      6. PCA 1st    = 13.5  Or 9.8   7. PCA 2nd    = 2.4
@@ -201,7 +199,7 @@ Sim_Struct.Vb_max     = 20;%100
 Sim_Struct.Ve_low     = 3; % Must be smaller than Vtis
 Sim_Struct.Ve_max     = 20;
 Sim_Struct.E_low      = 0;
-Sim_Struct.E_max      = 0.99;
+Sim_Struct.E_max      = 0.5;
 Sim_Struct.F_single   = 60;                                         % When a single iteration
 Sim_Struct.F_vec      = linspace(Sim_Struct.F_low, Sim_Struct.F_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vb_single  = 18;
@@ -250,7 +248,7 @@ Sim_Struct.Iterate_Murase_Tofts_num_iter  = 100000; % number of iterations for M
 Sim_Struct.One_Iteration_Murase_Tofts     = 0;
 
 % Sourbron 4 parameters estimation
-Sim_Struct.Check_Sourbron_Estimate        = true;
+Sim_Struct.Check_Sourbron_Estimate        = false;
 Sim_Struct.Random_init_F_guess_4_Sourbron = true; % If false, take larsson F estimation
 
 % Drive differential equation
