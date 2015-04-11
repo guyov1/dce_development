@@ -1,4 +1,4 @@
-function [ ] = resultToNiiAndReport(resultStruct)
+function [ ] = resultToNiiAndReport(resultStruct, time_vec_minutes, CTC2D, Chosen_AIF, Msk2, Brain_Mask_3D, Output_directory, DCECoregP, Sim_Struct, WM_mask_absolute_path)
 %resultToNiiAndReport Summary of this function goes here
 
 
@@ -10,7 +10,7 @@ Delay_sec_by_Max_Val_no_Delay          = resultStruct.Delay_sec_by_Max_Val_no_De
 est_delay_by_AIF_correct               = resultStruct.est_delay_by_AIF_correct;
 Est_IRF_with_Delay                     = resultStruct.Est_IRF_with_Delay;
 Est_IRF_no_Delay                       = resultStruct.Est_IRF_no_Delay;
-gauss_params                           = resultStruct.gauss_params;
+gaussian_param                         = resultStruct.gaussian_param;
 fitted_gaussian                        = resultStruct.fitted_gaussian;
 conv_result_Larss_with_Delay           = resultStruct.conv_result_Larss_with_Delay;
 conv_result_Larss_no_Delay             = resultStruct.conv_result_Larss_no_Delay;
@@ -61,15 +61,15 @@ Vb_Patlak_with_Delay                   = resultStruct.Vb_Patlak_with_Delay;
 Vb_Patlak_no_Delay                     = resultStruct.Vb_Patlak_no_Delay;
 MTT_Patlak_with_Delay                  = resultStruct.MTT_Patlak_with_Delay;
 MTT_Patlak_no_Delay                    = resultStruct.MTT_Patlak_no_Delay;
-double_gauss_params                    = resultStruct.double_gauss_params;
+double_gauss_param                    = resultStruct.double_gauss_param;
 
 %% Reshape 2D to 3D and 4D
 
 est_delay_by_AIF_correct_3D          = Reshape2DCto4D(est_delay_by_AIF_correct,Msk2);
 
-t_delay_single_gauss_sec_3D          = Reshape2DCto4D(gauss_params(1,:),Msk2);
-sigma_seconds_single_gauss_3D        = Reshape2DCto4D(gauss_params(2,:),Msk2);
-Amp_single_gauss_3D                  = Reshape2DCto4D(gauss_params(3,:),Msk2);
+t_delay_single_gauss_sec_3D          = Reshape2DCto4D(gaussian_param(1,:),Msk2);
+sigma_seconds_single_gauss_3D        = Reshape2DCto4D(gaussian_param(2,:),Msk2);
+Amp_single_gauss_3D                  = Reshape2DCto4D(gaussian_param(3,:),Msk2);
 
 Est_IRF_with_Delay_4D                = Reshape2DCto4D(mat2cell(Est_IRF_with_Delay,size(Est_IRF_with_Delay,1),ones(1,size(Est_IRF_with_Delay,2))),Msk2);
 Est_IRF_no_Delay_4D                  = Reshape2DCto4D(mat2cell(Est_IRF_no_Delay,size(Est_IRF_no_Delay,1),ones(1,size(Est_IRF_no_Delay,2))),Msk2);
@@ -104,12 +104,12 @@ AIF_Larsson_Duplicated_3D            = repmat(Chosen_AIF,max(size(Est_IRF_no_Del
 AIF_Larsson_4D                       = Reshape2DCto4D(mat2cell(AIF_Larsson_Duplicated_3D,size(AIF_Larsson_Duplicated_3D,1),ones(1,size(AIF_Larsson_Duplicated_3D,2))),Msk2);
 
 % Reshape double gaussian results
-t_delay_1_double_gauss_seconds_3D    = Reshape2DCto4D(double_gauss_params(1,:),Msk2);
-sigma_1_double_gauss_seconds_3D      = Reshape2DCto4D(double_gauss_params(2,:),Msk2);
-amplitude_1_double_gauss_seconds_3D  = Reshape2DCto4D(double_gauss_params(3,:),Msk2);
-t_delay_2_double_gauss_seconds_3D    = Reshape2DCto4D(double_gauss_params(4,:),Msk2);
-sigma_2_double_gauss_seconds_3D      = Reshape2DCto4D(double_gauss_params(5,:),Msk2);
-amplitude_2_double_gauss_seconds_3D  = Reshape2DCto4D(double_gauss_params(6,:),Msk2);
+t_delay_1_double_gauss_seconds_3D    = Reshape2DCto4D(double_gauss_param(1,:),Msk2);
+sigma_1_double_gauss_seconds_3D      = Reshape2DCto4D(double_gauss_param(2,:),Msk2);
+amplitude_1_double_gauss_seconds_3D  = Reshape2DCto4D(double_gauss_param(3,:),Msk2);
+t_delay_2_double_gauss_seconds_3D    = Reshape2DCto4D(double_gauss_param(4,:),Msk2);
+sigma_2_double_gauss_seconds_3D      = Reshape2DCto4D(double_gauss_param(5,:),Msk2);
+amplitude_2_double_gauss_seconds_3D  = Reshape2DCto4D(double_gauss_param(6,:),Msk2);
 RMS_double_gauss_3D                  = Reshape2DCto4D(RMS_double_gauss,Msk2);
 RMS_params_double_gauss_3D           = Reshape2DCto4D(RMS_params_double_gauss,Msk2);
 

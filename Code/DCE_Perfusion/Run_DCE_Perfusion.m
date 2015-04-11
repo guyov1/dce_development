@@ -80,11 +80,11 @@ display('-I- Saving parameters result of Get_Ht_Deconvolving...');
 Mat_File_To_Save = [Output_directory 'All_Parameters_Result.mat'];
 
 save(Mat_File_To_Save,'resultStruct','Msk2','WorkingP','PefusionOutput','num_total_voxels','time_vec_minutes','TimeBetweenDCEVolsFinal','time_vec_minutes'...
-    ,'fitted_gaussian', 'fitted_double_gaussian','Chosen_AIF', 'DCECoregP','Sim_Struct','WM_mask_absolute_path','Subject_Path');
+    ,'Chosen_AIF', 'DCECoregP','Sim_Struct','WM_mask_absolute_path','Subject_Path');
 
 % Write only in case we used the entire brain (say, above 1000 voxels)
 if (num_total_voxels > 1000)
-    resultToNiiAndReport(resultStruct);
+    resultToNiiAndReport(resultStruct, time_vec_minutes, CTC2D, Chosen_AIF, Msk2, Brain_Mask_3D, Output_directory, DCECoregP, Sim_Struct, WM_mask_absolute_path);
 end
 
 %% Create PDF Report
