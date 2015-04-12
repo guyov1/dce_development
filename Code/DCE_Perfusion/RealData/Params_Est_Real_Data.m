@@ -408,11 +408,11 @@ if (est_F_no_Delay~=0)
             [est_params_Larsson_noise_no_Delay_no_E_High_F,~,~,~,~] = ...
                 lsqcurvefit(Larsson_function_no_Delay_no_E_High_F,Init_Guess_Larsson_no_Delay_no_E_High_F,time_vec_minutes_T,To_Fit_no_E_High_F_no_Delay,...
                 LowerBound_Larsson(1),UpperBound_Larsson(1),algorithm_options);
+            
+            % Assigning two compartment parameters estimation
+            Vb_no_Delay_no_E_High_F         = est_params_Larsson_noise_no_Delay_no_E_High_F(1);
         end
-        
-        % Assigning two compartment parameters estimation
-        Vb_no_Delay_no_E_High_F         = est_params_Larsson_noise_no_Delay_no_E_High_F(1);
-        
+                
         
         if (Adjusted_Larsson_Model)
             fitted_larsson_with_Delay_High_F      = Adjusted_Larsson_Filter_High_F( time_vec_minutes, Vb_with_Delay_High_F , Ktrans_with_Delay_High_F , Ve_with_Delay_High_F);
