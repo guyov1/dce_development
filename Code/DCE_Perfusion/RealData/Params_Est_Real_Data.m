@@ -474,8 +474,8 @@ if (est_F_no_Delay~=0)
     MTT_no_Delay_Patlak         = est_MTT_Patlak_noise_no_Delay;
     
     % Delay of the AIF will be calculated according to the place of the maximum value of F*IRF
-    max_index_with_Delay               = find( Est_ht_with_Delay_T == Flow_with_Delay );
-    max_index_no_Delay                 = find( Est_ht_no_Delay_T   == Flow_no_Delay );
+    max_index_with_Delay               = find( Est_ht_with_Delay_T == Flow_with_Delay, 1);
+    max_index_no_Delay                 = find( Est_ht_no_Delay_T   == Flow_no_Delay, 1);
     
     % Translate to minutes
     Delay_sec_by_Max_Val_with_Delay = (max_index_with_Delay - 1) * min_interval * 60;
