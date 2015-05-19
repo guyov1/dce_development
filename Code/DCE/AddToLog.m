@@ -1,7 +1,12 @@
 function AddToLog(WorkingP,Fld,Txt,Img,Clr)
 disp(Txt);
+
+
 LogFN=[WorkingP 'Log.mat'];
-load(LogFN);
+if exist(LogFN,'file')
+    load(LogFN);
+end
+
 if(nargin>4)
     switch Clr
         case 1
@@ -18,4 +23,5 @@ Log.(Fld)={Txt};
 if(nargin>3 && ~isempty(Img))
     Log.(Fld)={Txt,Img};
 end
+
 save(LogFN,'Log');
