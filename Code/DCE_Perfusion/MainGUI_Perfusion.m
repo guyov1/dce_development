@@ -119,6 +119,9 @@ Defaults.Use_Cyclic_Conv_4_ht_est        = 0;
 ParamToolTips.Use_Cyclic_Conv_4_ht_est   = ['Use_Cyclic_Conv_4_ht_est: Use cyclic deconvolution matrix.' 10 'Default: 0'];
 Defaults.Simple_AIF_Delay_Correct        = 0;
 ParamToolTips.Simple_AIF_Delay_Correct   = ['Simple_AIF_Delay_Correct: Estimate BAT using the simple method.' 10 'Default: 0'];
+Defaults.manual_aif                      = 0;
+ParamToolTips.manual_aif                  = ['manual_aif: Use the manual aif from AIF.csv file.' 10 'Default: 0'];
+
 
 handles.ParamToolTips = ParamToolTips;
 
@@ -363,7 +366,7 @@ FNames  = {{'Use_Model_Selection'} {'Ignore_Delay_Model_Selection'} {'Correct_es
            {'Min_Time_Delay'} {'Max_Time_Delay'} {'Force_RealData_Calc'} {'Parallel_Real_Data_Est'} ...
            {'Correct_PVE'} {'AIC_Correction'} {'Data_Weight'} {'Adjusted_Larsson_Model'}...
            {'poly_deg'} {'knot_interval'} {'LQ_Model_AIF_Delay_Correct'} {'Upsampling_resolution_Sec'} ...
-           {'Use_Cyclic_Conv_4_ht_est'} {'Simple_AIF_Delay_Correct'}};
+           {'Use_Cyclic_Conv_4_ht_est'} {'Simple_AIF_Delay_Correct'} {'manual_aif'}};
        
 for i = 1 : length(FNames)
     eval(['Sim_Struct.' cell2mat(FNames{i}) '  = handles.Options.' cell2mat(FNames{i}) ';']);
@@ -567,6 +570,7 @@ function checkboxAdvanced_Perfusion_Callback(hObject, eventdata, handles)
 % Sim_Struct.Upsampling_resolution_Sec              = 0.05;        % Set the upsampling target
 % Sim_Struct.Use_Cyclic_Conv_4_ht_est               = false;       % Use cyclic de-convolution to correct for delay
 % Sim_Struct.Simple_AIF_Delay_Correct               = false;       % Correct AIF by max point shift
+% Sim_Struct.manual_aif                             = false;       % Use the manual AIF.CSV file
 % ----------------------------
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxAdvanced_Perfusion
