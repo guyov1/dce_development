@@ -13,6 +13,7 @@ Art_Mask              = [Subject_Path  '\InspectedRepVox.nii'];
 Vein_Mask             = [Subject_Path  '\Veins_Mask.nii'];
 After_CTC_mat         = [Subject_Path  '\AfterCTC.mat'];
 Brain_Extract_path    = [Subject_Path  '\Manual_BrainMask.nii'];
+Manual_AIF            = [Subject_Path  '\AIF.CSV'];
 
 % Brain Mask
 Brain_Mask_3D   = loadniidata(Brain_Extract_path);
@@ -54,11 +55,38 @@ Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
 time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
 Sim_Struct.time_vec_minutes = time_vec_minutes;
 
+% When time vector is not in equal distances, interpolate
+% if (1)
+%     % New interval will be the biggest possible for equal distances
+%     new_time_interval = 1;
+%     
+%     % Original time vector
+%     
+%     % Create a new time vector
+%     new_time_vector = first_time_point : new_time_interval : last_time_point;
+%     
+%     % Interpolate old data using shape-preserving piecewise cubic
+%     % interpolation (each CTC should be in each vector)
+%     new_CTC = interp1(orig_time_vector, CTC2D, new_time_vector, 'cubic');
+%     
+%     % Update the old vectors and matrices
+%     Sim_Struct.sec_interval     = ;
+%     Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
+%     time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
+%     Sim_Struct.time_vec_minutes = time_vec_minutes;
+%     
+% end
+
 %% Create AIF
-if exist('AIFFindData_mat','var')
-    [AIF_Struct] = chooseAifForRealData(Sim_Struct, CTC2D, Art_Mask, Vein_Mask, Msk2, Output_directory, AIFFindData_mat);
+if Sim_Struct.manual_aif
+    % Read the AIF.csv file
+    AIF_Struct = csvread(Manual_AIF);
 else
-    [AIF_Struct] = chooseAifForRealData(Sim_Struct, CTC2D, Art_Mask, Vein_Mask, Msk2, Output_directory);
+    if exist('AIFFindData_mat','var')
+        [AIF_Struct] = chooseAifForRealData(Sim_Struct, CTC2D, Art_Mask, Vein_Mask, Msk2, Output_directory, AIFFindData_mat);
+    else
+        [AIF_Struct] = chooseAifForRealData(Sim_Struct, CTC2D, Art_Mask, Vein_Mask, Msk2, Output_directory);
+    end
 end
 
 %% Take Ct and AIF and calculate Ht
