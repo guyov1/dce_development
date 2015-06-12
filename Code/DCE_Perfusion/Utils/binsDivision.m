@@ -17,7 +17,7 @@ for i = 1:length(minVec)
 end
 
 switch param_name
-    case 'Flow'
+    case 'Fp'
         chosen_idx = 1;
         realData   = realVec(1,:);
         estData    = estVec(1,:);
@@ -26,7 +26,7 @@ switch param_name
         chosen_idx = 2;
         realData   = realVec(2,:);
         estData    = estVec(2,:);
-    case 'Vb'
+    case 'Vp'
         chosen_idx = 3;
         realData   = realVec(3,:);
         estData    = estVec(3,:);

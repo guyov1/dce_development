@@ -6,7 +6,7 @@ end
 
 %% General run parameters
 % Force serial and not parallel
-Sim_Struct.FORCE_SERIAL                  = true;
+Sim_Struct.FORCE_SERIAL                  = false;
 Sim_Struct.FORCE_MAIN_LOOP_SERIAL        = true;
 
 %% Real Data parameters
@@ -22,9 +22,10 @@ Sim_Struct.AIC_Correction                = true;  % Use correction for AIC
 Sim_Struct.Data_Weight                   = 0.1;   % Data weight comparing to # of params (Gilad uses 0.1)
 Sim_Struct.Ignore_Delay_Model_Selection  = true;  % Ignore models with delay
 Sim_Struct.useUptakeNoETM                = true;  % Use the uptake model for 3 parameters instead of ETM
+
 %% Simulation parameters
 Sim_Struct.num_iterations                = 100; %1500
-Sim_Struct.num_averages                  = 1;  % Do each iteration a few time and average results for better statistic information
+Sim_Struct.num_averages                  = 3;  % Do each iteration a few time and average results for better statistic information
 Sim_Struct.SNR_single                    = 15; % Determines SNR ( noise_var = mean(signal)/SNR_base )
 Sim_Struct.SNR_vec                       = linspace( 20, 1, Sim_Struct.num_iterations);
 
@@ -67,7 +68,7 @@ Sim_Struct.ETM_Model                     = false;
 if Sim_Struct.ETM_Model
     Sim_Struct = setETMParams(Sim_Struct);
 end
-Sim_Struct.Hct_single                    = 0.38;
+Sim_Struct.Hct_single                    = 0.42;
 
 
 %% ------------------- AIF Parameters ------------------------------------
@@ -102,12 +103,12 @@ Sim_Struct.s        = 38.078;
 Sim_Struct.tau      = 0.483;
 
 % Apply cyclic convolution to compensate for AIF delay
-Sim_Struct.Correct_estimation_due_to_delay        = false;       % Try to correct for delay
-Sim_Struct.Use_Cyclic_Conv_4_ht_est               = false;       % Use cyclic de-convolution to correct for delay
+Sim_Struct.Correct_estimation_due_to_delay        = true;      % Try to correct for delay
+Sim_Struct.Use_Cyclic_Conv_4_ht_est               = false;      % Use cyclic de-convolution to correct for delay
 Sim_Struct.Cyclic_End_Padding                     = true;       % Pad at the beginning or end
 Sim_Struct.Use_Upsampling_and_Cyclic              = false;      % Use cyclic de-convolution to correct for delay + upsampling
 Sim_Struct.Use_Upsampling_Delay_Comp              = false;      % Upsample Ct(t) and AIF(t) to try and predict time shift in AIF
-Sim_Struct.Upsampling_resolution_Sec              = 0.05;        % Set the upsampling target
+Sim_Struct.Upsampling_resolution_Sec              = 0.05;       % Set the upsampling target
 Sim_Struct.Upsampling_resolution                  = Sim_Struct.Upsampling_resolution_Sec / 60;   % Set the upsampling target
 Sim_Struct.Max_Time_Delay                         = Sim_Struct.AIF_delay_max;  % Set the maximal possible time delay in seconds for correction
 Sim_Struct.Min_Time_Delay                         = Sim_Struct.AIF_delay_low;  % Set the minimal possible time delay in seconds for correction
@@ -198,8 +199,8 @@ Sim_Struct.Vb_low     = 3; %0.1   [mL/100g]     , they used 3,6,12,18
 Sim_Struct.Vb_max     = 20;%100
 Sim_Struct.Ve_low     = 3; % Must be smaller than Vtis
 Sim_Struct.Ve_max     = 20;
-Sim_Struct.E_low      = 0;
-Sim_Struct.E_max      = 0.99;
+Sim_Struct.E_low      = 0.1;
+Sim_Struct.E_max      = 0.5;
 Sim_Struct.F_single   = 60;                                         % When a single iteration
 Sim_Struct.F_vec      = linspace(Sim_Struct.F_low, Sim_Struct.F_max, Sim_Struct.num_iterations); % When iterating
 Sim_Struct.Vb_single  = 18;

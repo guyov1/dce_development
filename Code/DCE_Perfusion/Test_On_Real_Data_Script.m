@@ -26,4 +26,5 @@ Set_Parallel_Processing(Sim_Struct, Verbosity);
 [Subject_name, Subject_Path, WM_mask_absolute_path, Art_Mask, Vein_Mask, After_CTC_mat, DCECoregP, Brain_Extract_path] = ReadRealData();
 
 %% ---------------------------------------------------------------------------------------------------------------------------------------
+PefusionOutput = [Subject_Path filesep 'Run_Output'];
 Run_DCE_Perfusion( Subject_name, Subject_Path, Sim_Struct, PefusionOutput, Verbosity );

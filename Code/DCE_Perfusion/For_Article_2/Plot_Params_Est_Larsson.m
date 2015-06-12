@@ -50,50 +50,60 @@ idx_fig             = 1;
 create_PDF          = true;
 error_type          = 'rel' ; % Choose 'abs' or 'rel'
 std_or_sem          = 'sem'; % Choose standard deviation or standard error of the mean
-param_list_cells    = {'Flow' 'Ktrans' 'Vb' 'Ve' 'E' 'BAT'};
+param_list_cells    = {'Fp' 'Ktrans' 'Vp' 'Ve' 'E' 'BAT'};
 param_units_cells   = {'[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[mL/100g/min]' '[a.u]' '[sec]'};
 
 % ------------------------------------- Different Analysis Techniques -------------------------------------------
 
-DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
-DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_1st.mat'];
-DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA.mat'];
-Legend_1            = 'PCA 2nd';
-Legend_2            = 'PCA 1st';
-Legend_3            = 'PCA';
+% DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
+% DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_1st.mat'];
+% DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA.mat'];
+% Legend_1            = 'PCA 2nd';
+% Legend_2            = 'PCA 1st';
+% Legend_3            = 'PCA';
 % DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
 % DataPath_4          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Wiener.mat'];
-% Legend_1            = 'ACoPeD';
+% % Legend_1            = 'ACoPeD';
 % Legend_2            = 'Spline 2nd';
 % Legend_3            = 'PCA 2nd';
 % Legend_4            = 'Wiener';
-E_y_scale           = 0.9/max_E_display;
-BAT_y_scale         = 1;
-num_data            = 3;
-Delay_Methods_flag  = false;
+
+% 
+% DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_1          = [Base_Path 'Results_1000_Iterations_No_Delay_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+% DataPath_2          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_PCA_2nd.mat'];
+% DataPath_3          = [Base_Path 'Results_1000_Iterations_No_Delay_No_Correction_2_sec_interval_6_min_total_Wiener.mat'];
+% Legend_1            = 'Spline 2nd';
+% Legend_2            = 'PCA 2nd';
+% Legend_3            = 'Wiener';
+% 
+% E_y_scale           = 0.9/max_E_display;
+% BAT_y_scale         = 1;
+% num_data            = 3;
+% Delay_Methods_flag  = false;
 
 % ------------------------------------- with Delay -------------------------------------------
 
-% %DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
-% %DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+%DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_With_Correction_2_sec_interval_6_min_total.mat'];
+DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
 % DataPath_1          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.05_BiExp_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% %DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
-% DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% %DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
-% DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
-% Legend_1            = 'ACoPeD';
-% Legend_2            = 'Cyclic Deconv. MVT';
-% %Legend_3            = 'MVT';
-% %Legend_2            = 'MVT';
-% Legend_3            = 'LQ';
-% Legend_4            = 'No Correct';
-% E_y_scale           = 1/max_E_display;
-% BAT_y_scale         = 1.4;
-% num_data            = 4;
-% Delay_Methods_flag  = true;
+%DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_Cyclic_Correction_2_sec_interval_6_min_total.mat'];
+DataPath_2          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Cyclic_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+%DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_Simple_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_3          = [Base_Path 'Results_1000_Iterations_With_Delay_0_to_20_resolution_0.1_LQ_MODEL_Correction_2_sec_interval_6_min_total_Spline_2nd.mat'];
+DataPath_4          = [Base_Path 'Results_1000_Iterations_With_Delay_Up_To_20_No_Correction_2_sec_interval_6_min_total.mat'];
+Legend_1            = 'ACoPeD';
+Legend_2            = 'Cyclic Deconv. MVT';
+%Legend_3            = 'MVT';
+%Legend_2            = 'MVT';
+Legend_3            = 'LQ';
+Legend_4            = 'No Correct';
+E_y_scale           = 1/max_E_display;
+BAT_y_scale         = 1.4;
+num_data            = 3;
+Delay_Methods_flag  = true;
 
 % ------------------------------------- Temproal Res. -------------------------------------------
 
@@ -178,7 +188,7 @@ for idx = 1:num_data
 % 51-54. Larsson filter:  original MTT,        estimated Vd, error percent and standard deviation
 % 55-58. Larsson filter:  original MTT,        estimated MTT using normal tissue assumption, error percent and standard deviation
 % 63-66. Gaussian filter: original AIF delay,  estimated AIF delay using Gaussian, error percent and standard deviation
-% 67-70. Sourbron method: original Flow,       estimated Flow, error percent and standard deviation
+% 67-70. Sourbron method: original Fp,       estimated Fp, error percent and standard deviation
 % 71-74. Sourbron method: original Ktrans,     estimated Ktrans using 2CXM, error percent and standard deviation
 % 75-78. Sourbron method: original E,          estimated E using 2CXM, error percent and standard deviation
 % 79-82. Sourbron method: original Vb,         estimated Vb using 2CXM, error percent and standard deviation
@@ -321,7 +331,7 @@ for param_list = param_list_cells
     hold off;
     
     % Plot legend just for F if required
-    if (~Legend_Just_for_F || strcmp(param_name,'Flow'))
+    if (~Legend_Just_for_F || strcmp(param_name,'Fp'))
         [hleg, hobj] = legend(legendInfo,'Location','NorthWest');
         legend boxoff;
         textobj = findobj(hobj, 'type', 'text');
@@ -331,7 +341,7 @@ for param_list = param_list_cells
     %hr = refline(1); % y=x reference line
     %set(hr,'Color','k','LineStyle','--','LineWidth',Line_Width);
     
-    title_string = sprintf(['Est. Vs. True ' param_name]);
+    title_string = sprintf([param_name]);
     title(title_string,'FontSize',font_size,'FontWeight','bold');
     
     xlabel(['True ' param_name ' ' param_unit],'FontSize',font_size,'FontWeight','bold');

@@ -116,6 +116,7 @@ if (num_total_voxels > 1000)
 end
 
 %% Create PDF Report
+LogFN = [WorkingP 'Log.mat'];
 MakeReport_func(Output_directory, LogFN);
 close all;
 
