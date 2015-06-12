@@ -1,16 +1,20 @@
 close all;
-SliceNum            = 4;
-Use_Mask            = true;
-Use_Threshold       = true;
-Remove_Extreme_Vals = true;
+SliceNum            = 2;      % Slice number to test correlation
+Use_Mask            = true;   % Use masks (brain, gm, wm, lesion etc.)
+Use_Threshold       = true;   % Normalize .nii according to a threshold
+
+Threshold_DCE_val       = 4;   %Vp - 0.5 (norm. WM) Flow - 4
+Threshold_DSC_val       = 4000; %CBV - 4000 Flow - 350
+
+Remove_Extreme_Vals = true;  % Remove min and max values
 Close_CorrPlot_Fig  = true;  % Don't display corr figures per segment
 Remove_BV           = true;  % Ignore Blood Vessels Segment
-Scatter_no_legend   = true; % Plot an additional scatter plot with no legend for article
+Scatter_no_legend   = false;  % Plot an additional scatter plot with no legend for article
 Remove_Noisy        = false;  % Remove noisy pixels from correlation
 
 font_size           = 35; % 25
 font_legend         = 35; % 24
-Threshold_val       = 350;
+
 
 % Take values in the range 0.05 - 0.95 (to avoid margin effect)
 MinRange = 0.00;
@@ -21,9 +25,13 @@ MaxRange = 1.00;
 % Path4Correl           = '\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce';
 %DCECoregP             = [Subject_Path  '\ReYe_20140615_2sec'];
 Subj_Name             = 'PEKUROVSKI_NELENTINA';
+
+% Path where masks and CTC are located
 Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_GB\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE6min';
+Subject_Path          = '\\fmri-t9\users\Moran\DCE\HTR_GB\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\Study20140902_092528\DCE6min\PeNe_20140902_2sec';
+% Path were maps for correlation are loccated
 Path4Correl           = '\\fmri-t9\users\Moran\DCE\HTR_GB\Stereotactic_Biopsy\PEKUROVSKI_NELENTINA\forCorral\dce';
-DCECoregP             = [Subject_Path  '\PeNe_20140902_2sec'];
+% DCECoregP             = [Subject_Path  '\PeNe_20140902_2sec'];
 
 WM_mask_absolute_path = [Subject_Path  '\RefT1_WM_830.nii'];
 Art_Mask              = [Subject_Path  '\InspectedRepVox.nii'];
@@ -36,16 +44,25 @@ After_CTC_mat         = [Subject_Path  '\AfterCTC.mat'];
 RefNii                = [Path4Correl '\Flow_Larsson_Relative_WM_30_6.nii'];
 
 % Maps name to check correlation
-map_name        = 'Flow'; % Flow, MTT
+map_name        = 'CBV'; % Flow, MTT, CBV
 
 if strcmp(map_name, 'Flow')
-    FileNormDCE   = 'Flow_Larsson_Relative_WM_30_6';
+%     FileNormDCE   = 'Flow_Larsson_Relative_WM_30_6';
+    FileNormDCE   = 'Flow_Larsson_model_selection_Relative_WM_30_6_Brain_Extract';
+    FileNormDCE   = 'Flow_model_selection';
+   
     %FileNormDCE   = 'Flow_Larsson_model_Relative_WM_30_6';
     
     FileNormDSC   = 'rCBF';
 elseif strcmp(map_name, 'MTT')
     FileNormDCE     = 'MTT_DCE_Sec_Brain_Extract';
-    FileNormDSC     = 'rMTT';    
+    FileNormDSC     = 'rMTT';
+elseif strcmp(map_name, 'CBV')
+%     FileNormDCE     = 'Vb_Model_Selection';
+    FileNormDCE     = 'Vb_Relative_no_Delay_WM_0_01';
+%     FileNormDCE     = 'Vb_no_Delay';
+    FileNormDCE     = 'Vb_model_selection';
+    FileNormDSC     = 'rCBV';
 else
     error('-E- Unknown map requested!');
 end
@@ -87,10 +104,10 @@ end
 %% Create Normalized maps from DCE/DSC results
 
 % Normalize DCE
-Path_DCE     = NormalizeNii( Path4Correl, FileNormDCE, RefNii, Use_Threshold, Threshold_val);
+Path_DCE     = NormalizeNii( Path4Correl, FileNormDCE, RefNii, Use_Threshold, Threshold_DCE_val);
 
 % Normalize DSC
-Path_DSC     = NormalizeNii( Path4Correl, FileNormDSC, RefNii, Use_Threshold, Threshold_val);
+Path_DSC     = NormalizeNii( Path4Correl, FileNormDSC, RefNii, Use_Threshold, Threshold_DSC_val);
 
 
 %% Load data to correlate

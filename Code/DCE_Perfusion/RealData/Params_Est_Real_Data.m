@@ -431,20 +431,26 @@ if (est_F_no_Delay~=0)
                 
         
         if (Adjusted_Larsson_Model)
+            
+            % Effectively ETM model - 3 parameters
             fitted_larsson_with_Delay_High_F      = Adjusted_Larsson_Filter_High_F( time_vec_minutes, Vb_with_Delay_High_F , Ktrans_with_Delay_High_F , Ve_with_Delay_High_F);
             if ~Ignore_Delay_Model_Selection
                 fitted_larsson_no_Delay_High_F    = Adjusted_Larsson_Filter_High_F( time_vec_minutes, Vb_no_Delay_High_F   , Ktrans_no_Delay_High_F   , Ve_no_Delay_High_F);
             end
             
+            % Uptake model -> should fit healthy brain tissues - 3 parameters
             fitted_larsson_with_Delay_no_Ve      = Adjusted_Larsson_Filter_no_Ve( time_vec_minutes, Flow_with_Delay, Vb_with_Delay_no_Ve , E_with_Delay_no_Ve);
             if ~Ignore_Delay_Model_Selection
                 fitted_larsson_no_Delay_no_Ve    = Adjusted_Larsson_Filter_no_Ve( time_vec_minutes, Flow_no_Delay, Vb_no_Delay_no_Ve  , E_no_Delay_no_Ve);
             end
             
+            % Uptake model - no permeability -> should fit WM
             fitted_larsson_with_Delay_no_E            = Flow_with_Delay * Adjusted_Larsson_Filter_no_E( time_vec_minutes, Flow_with_Delay , Vb_with_Delay_no_E);
             if ~Ignore_Delay_Model_Selection
                 fitted_larsson_no_Delay_no_E          = Flow_no_Delay   * Adjusted_Larsson_Filter_no_E( time_vec_minutes, Flow_no_Delay   , Vb_no_Delay_no_E);
             end
+            
+            % Impulse response at height Vp -> should fit GM
             fitted_larsson_with_Delay_no_E_High_F = Adjusted_Larsson_Filter_no_E_High_F ( time_vec_minutes,                          Vb_with_Delay_no_E_High_F );
             if ~Ignore_Delay_Model_Selection
                 fitted_larsson_no_Delay_no_E_High_F   = Adjusted_Larsson_Filter_no_E_High_F ( time_vec_minutes,                          Vb_no_Delay_no_E_High_F   );

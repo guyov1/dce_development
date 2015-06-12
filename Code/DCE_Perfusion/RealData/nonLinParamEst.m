@@ -73,9 +73,6 @@ Vb_no_Delay_no_E_High_F_vec           = zeros(1,num_voxels);
 Vb_with_Delay_Patlak_vec              = zeros(1,num_voxels);
 Vb_no_Delay_Patlak_vec                = zeros(1,num_voxels);
 
-
-
-
 Ve_with_Delay_vec                     = zeros(1,num_voxels);
 Ve_no_Delay_vec                       = zeros(1,num_voxels);
 Ve_with_Delay_High_F_vec              = zeros(1,num_voxels);

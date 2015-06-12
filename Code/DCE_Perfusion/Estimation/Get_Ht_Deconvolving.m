@@ -233,17 +233,55 @@ RMS_params_double_gauss = sqrt( sum( (fitted_double_gaussian - Est_IRF_no_Delay)
 if Sim_Struct.ignore_time_delta
     min_interval = 1;
 end
+
+% Fit without bi-exp fit
 conv_result_no_Delay_IRF                 = filter(AIF*min_interval,1,Est_IRF_no_Delay,[],2);
-conv_result_Larss_with_Delay             = filter(AIF*min_interval,1,fitted_larsson_with_Delay,[],2);
+% Fit with full 4-parameter 2CXM
+conv_result_Larss_with_Delay             = zeros(size(conv_result_no_Delay_IRF));
+for i = 1:size(AIF_delay_corrected,1)
+    conv_result_Larss_with_Delay(i,:)        = filter(AIF_delay_corrected(i,:)*min_interval,1,fitted_larsson_with_Delay(i,:),[],2);
+end
+% conv_result_Larss_with_Delay             = filter(AIF_delay_corrected*min_interval,1,fitted_larsson_with_Delay,[],2);
 conv_result_Larss_no_Delay               = filter(AIF*min_interval,1,fitted_larsson_no_Delay,[],2);
-conv_result_Larss_with_Delay_High_F      = filter(AIF*min_interval,1,fitted_larsson_with_Delay_High_F,[],2);
-conv_result_Larss_no_Delay_High_F        = filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F,[],2);
-conv_result_Larss_with_Delay_no_Ve       = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_Ve,[],2);
+
+% Fit with 3-parameter ETM model (special treatment to a delta function)
+% conv_result_Larss_with_Delay_High_F      = filter(AIF_delay_corrected*min_interval,1,fitted_larsson_with_Delay_High_F,[],2);
+% conv_result_Larss_no_Delay_High_F        = filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F,[],2);
+conv_result_Larss_with_Delay_High_F           = zeros(size(conv_result_no_Delay_IRF));
+conv_result_Larss_no_Delay_High_F             = zeros(size(conv_result_no_Delay_IRF));
+for i = 1:size(AIF_delay_corrected,1)
+    conv_result_Larss_with_Delay_High_F(i,:)       = (Vb_with_Delay_High_F(i) * AIF_delay_corrected(i,:)) + filter(AIF_delay_corrected(i,:)*min_interval,1,fitted_larsson_with_Delay_High_F(i,:),[],2);
+    conv_result_Larss_no_Delay_High_F(i,:)         = (Vb_no_Delay_High_F(i)   * AIF                     ) + filter(AIF*min_interval,1,fitted_larsson_no_Delay_High_F(i,:),[],2);
+end
+
+% Uptake -> health brain tissues
+conv_result_Larss_with_Delay_no_Ve             = zeros(size(conv_result_no_Delay_IRF));
+for i = 1:size(AIF_delay_corrected,1)
+    conv_result_Larss_with_Delay_no_Ve(i,:)        = filter(AIF_delay_corrected(i,:)*min_interval,1,fitted_larsson_with_Delay_no_Ve(i,:),[],2);
+end
+% conv_result_Larss_with_Delay_no_Ve       = filter(AIF_delay_corrected*min_interval,1,fitted_larsson_with_Delay_no_Ve,[],2);
 conv_result_Larss_no_Delay_no_Ve         = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_Ve,[],2);
-conv_result_Larss_with_Delay_no_E        = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E,[],2);
+
+% Uptake, no E -> WM
+conv_result_Larss_with_Delay_no_E             = zeros(size(conv_result_no_Delay_IRF));
+for i = 1:size(AIF_delay_corrected,1)
+    conv_result_Larss_with_Delay_no_E(i,:)        = filter(AIF_delay_corrected(i,:)*min_interval,1,fitted_larsson_with_Delay_no_E(i,:),[],2);
+end
+% conv_result_Larss_with_Delay_no_E        = filter(AIF_delay_corrected*min_interval,1,fitted_larsson_with_Delay_no_E,[],2);
 conv_result_Larss_no_Delay_no_E          = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E,[],2);
-conv_result_Larss_with_Delay_no_E_High_F = filter(AIF*min_interval,1,fitted_larsson_with_Delay_no_E_High_F,[],2);
-conv_result_Larss_no_Delay_no_E_High_F   = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E_High_F,[],2);
+
+% Just Vp -> GM  (special treatment to a delta function)
+conv_result_Larss_with_Delay_no_E_High_F           = zeros(size(conv_result_no_Delay_IRF));
+conv_result_Larss_no_Delay_no_E_High_F             = zeros(size(conv_result_no_Delay_IRF));
+for i = 1:size(AIF_delay_corrected,1)
+    conv_result_Larss_with_Delay_no_E_High_F(i,:)       = (fitted_larsson_with_Delay_no_E_High_F(1) * AIF_delay_corrected(i,:));
+    conv_result_Larss_no_Delay_no_E_High_F(i,:)         = (fitted_larsson_no_Delay_no_E_High_F(1)   * AIF                     );
+end
+% conv_result_Larss_with_Delay_no_E_High_F = filter(AIF_delay_corrected*min_interval,1,fitted_larsson_with_Delay_no_E_High_F,[],2);
+% conv_result_Larss_no_Delay_no_E_High_F   = filter(AIF*min_interval,1,fitted_larsson_no_Delay_no_E_High_F,[],2);
+% conv_result_Larss_with_Delay_no_E_High_F = AIF_delay_corrected * fitted_larsson_with_Delay_no_E_High_F(1);
+% conv_result_Larss_no_Delay_no_E_High_F   = AIF                 * fitted_larsson_no_Delay_no_E_High_F(1);
+
 conv_result_gaussian                     = filter(AIF*min_interval,1,fitted_gaussian,[],2);
 conv_result_double_gaussian              = filter(AIF*min_interval,1,fitted_double_gaussian,[],2);
 

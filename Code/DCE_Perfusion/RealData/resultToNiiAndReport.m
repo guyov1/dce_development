@@ -339,6 +339,9 @@ if Ignore_Delay_Model_Selection
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
+    % Model Selection Map
+    MeanFN=[Output_directory 'Model_Selection_Map.nii'];
+    Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
     
 else % Include Delay
     
@@ -453,12 +456,13 @@ else % Include Delay
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==3) = zeros_map                    (ChosenByAIC_3D==3);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==2) = zeros_map                    (ChosenByAIC_3D==2);
     Ktrans_Model_Selected_3D (ChosenByAIC_3D==1) = zeros_map                    (ChosenByAIC_3D==1);
-    
+
+    % Model Selection Map
+    MeanFN=[Output_directory 'Model_Selection_Map.nii'];
+    Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
 end
 
-% Model Selection Map
-MeanFN=[Output_directory 'Model_Selection_Map.nii'];
-Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
+
 
 %% Maps
 

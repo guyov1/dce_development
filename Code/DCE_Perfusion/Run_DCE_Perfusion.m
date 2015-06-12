@@ -31,7 +31,7 @@ Sim_Struct.init_Ve_guess              = 0.1;
 Set_Parallel_Processing(Sim_Struct, Verbosity);
 
 % Set output directory for figures/report
-Output_directory      =  [PefusionOutput 'Run_Output/'];
+Output_directory      =  [PefusionOutput 'Run_Output' filesep];
 % Create directory if does not exist
 if ~exist(Output_directory,'dir')
     mkdir(Output_directory);

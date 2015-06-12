@@ -1,9 +1,9 @@
-function Filter = Adjusted_Larsson_Filter_no_Ve(time_vec_min, F, Vb, E)
+function Filter = Adjusted_Larsson_Filter_no_Ve(time_vec_min, Fp, Vp, E)
 
 % No extra-vascular - Uptake Model
-Tp     = (Vb/F) * (1-E);
-Ktrans = E*F;
-IRF    = F * exp(-(1/Tp) * time_vec_min) + Ktrans*(1-exp(-(1/Tp) * time_vec_min));
+Tp     = (Vp/Fp) * (1-E);
+Ktrans = E*Fp;
+IRF    = Fp * exp(-(1/Tp) * time_vec_min) + Ktrans*(1-exp(-(1/Tp) * time_vec_min));
 Filter = IRF;
 
 end
