@@ -16,7 +16,7 @@ Brain_Extract_path    = [Subject_Path  '\Manual_BrainMask.nii'];
 Manual_AIF            = [Subject_Path  '\AIF.CSV'];
 
 % Brain Mask
-Brain_Mask_3D   = loadniidata(Brain_Extract_path);
+Brain_Mask_3D         = loadniidata(Brain_Extract_path);
 
 % Override real data flag and parameters range
 Sim_Struct.RealData_Flag              = true;
@@ -47,41 +47,55 @@ else
     error('-E- AfterCTC.mat does not exist...');
 end
 
-% Define needed parameters from DCE data
-Sim_Struct.num_time_stamps  = size(CTC2D,2);
-Sim_Struct.num_voxels       = size(CTC2D,1);
-Sim_Struct.sec_interval     = TimeBetweenDCEVolsFinal;
-Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
-time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
-Sim_Struct.time_vec_minutes = time_vec_minutes;
-
-% When time vector is not in equal distances, interpolate
-% if (1)
-%     % New interval will be the biggest possible for equal distances
-%     new_time_interval = 1;
-%     
-%     % Original time vector
-%     
-%     % Create a new time vector
-%     new_time_vector = first_time_point : new_time_interval : last_time_point;
-%     
-%     % Interpolate old data using shape-preserving piecewise cubic
-%     % interpolation (each CTC should be in each vector)
-%     new_CTC = interp1(orig_time_vector, CTC2D, new_time_vector, 'cubic');
-%     
-%     % Update the old vectors and matrices
-%     Sim_Struct.sec_interval     = ;
-%     Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
-%     time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
-%     Sim_Struct.time_vec_minutes = time_vec_minutes;
-%     
-% end
-
 %% Create AIF
 if Sim_Struct.manual_aif
+    
+    % When time vector is not in equal distances, interpolate
+    
     % Read the AIF.csv file
-    AIF_Struct = csvread(Manual_AIF);
+    tmp_aif_matrix       = csvread(Manual_AIF);
+    
+    % Assign to AIF struct
+    AIF_Struct                    = struct();
+    AIF_Struct.AIF_estimated_ICA  = tmp_aif_matrix(1,:);
+    AIF_Struct.AIF_parametric     = tmp_aif_matrix(1,:);
+    
+    % Get time vector
+    time_vec_minutes              = tmp_aif_matrix(2,:);
+    
+    % New interval will be the biggest possible for equal distances
+    new_time_interval = min(diff(time_vec_minutes));
+    first_time_point  = time_vec_minutes(1);
+    last_time_point   = time_vec_minutes(end);
+
+    % Create a new time vector
+    new_time_vector  = first_time_point : new_time_interval : last_time_point;
+    
+    % Interpolate old data using shape-preserving piecewise cubic
+    % interpolation (each CTC should be in each vector)
+    display('-I- Interpolating CTC...');
+    new_CTC                     = interp1(time_vec_minutes, CTC2D', new_time_vector, 'cubic');
+    
+    % Update the old vectors and matrices
+    Sim_Struct.min_interval     = new_time_interval;
+    Sim_Struct.sec_interval     = new_time_interval * 60;
+    Sim_Struct.time_vec_minutes = new_time_vector;
+    
+    % Overwrite CTC2D
+    CTC2D                       = new_CTC';
+
+    % Use interpolated data
+    Sim_Struct.num_time_stamps  = size(CTC2D,2);
+    Sim_Struct.num_voxels       = size(CTC2D,1);
 else
+    % Define needed parameters from DCE data
+    Sim_Struct.num_time_stamps  = size(CTC2D,2);
+    Sim_Struct.num_voxels       = size(CTC2D,1);
+    Sim_Struct.sec_interval     = TimeBetweenDCEVolsFinal;
+    Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
+    time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
+    Sim_Struct.time_vec_minutes = time_vec_minutes;
+
     if exist('AIFFindData_mat','var')
         [AIF_Struct] = chooseAifForRealData(Sim_Struct, CTC2D, Art_Mask, Vein_Mask, Msk2, Output_directory, AIFFindData_mat);
     else
@@ -91,7 +105,7 @@ end
 
 %% Take Ct and AIF and calculate Ht
 Ct               = CTC2D(:,:);
-num_total_voxels = size(Ct,1);
+num_total_voxels = Sim_Struct.num_voxels;
 
 % Choose the AIF (either parametric or from ICA average)
 Chosen_AIF = AIF_Struct.AIF_estimated_ICA; % AIF_paramtertic, transpose(smooth(AIF_estimated_ICA))
