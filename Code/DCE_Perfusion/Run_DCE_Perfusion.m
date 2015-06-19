@@ -83,7 +83,7 @@ if Sim_Struct.manual_aif
         % Interpolate old data using shape-preserving piecewise cubic
         % interpolation (each CTC should be in each vector)
         display('-I- Interpolating CTC...');
-        new_CTC                     = interp1(time_vec_minutes, CTC2D', new_time_vector, 'cubic');
+        new_CTC                     = interp1(time_vec_minutes, CTC2D', new_time_vector, 'PCHIP');
         
         % Update the old vectors and matrices
         Sim_Struct.min_interval     = new_time_interval;
