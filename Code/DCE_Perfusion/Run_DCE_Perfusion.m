@@ -53,7 +53,7 @@ if Sim_Struct.manual_aif
     % When time vector is not in equal distances, interpolate
     
     % Read the AIF.csv file
-    tmp_aif_matrix       = csvread(Manual_AIF);
+    tmp_aif_matrix                = csvread(Manual_AIF);
     
     % Assign to AIF struct
     AIF_Struct                    = struct();
@@ -62,27 +62,43 @@ if Sim_Struct.manual_aif
     
     % Get time vector
     time_vec_minutes              = tmp_aif_matrix(2,:);
+    time_diff_vec                 = diff(time_vec_minutes);
     
-    % New interval will be the biggest possible for equal distances
-    new_time_interval = min(diff(time_vec_minutes));
-    first_time_point  = time_vec_minutes(1);
-    last_time_point   = time_vec_minutes(end);
-
-    % Create a new time vector
-    new_time_vector  = first_time_point : new_time_interval : last_time_point;
+    % Check the diff vector is bigger than zero
+    if min(time_diff_vec) < 0 
+        error('-E- Error in input time vector of manual AIF!');
+    end
     
-    % Interpolate old data using shape-preserving piecewise cubic
-    % interpolation (each CTC should be in each vector)
-    display('-I- Interpolating CTC...');
-    new_CTC                     = interp1(time_vec_minutes, CTC2D', new_time_vector, 'cubic');
-    
-    % Update the old vectors and matrices
-    Sim_Struct.min_interval     = new_time_interval;
-    Sim_Struct.sec_interval     = new_time_interval * 60;
-    Sim_Struct.time_vec_minutes = new_time_vector;
-    
-    % Overwrite CTC2D
-    CTC2D                       = new_CTC';
+    % Interpolate only in case the time difference vector is not equal
+    if ~all(time_diff_vec == time_diff_vec(1))
+        
+        % New interval will be the biggest possible for equal distances
+        new_time_interval = min(time_diff_vec);
+        first_time_point  = time_vec_minutes(1);
+        last_time_point   = time_vec_minutes(end);
+        
+        % Create a new time vector
+        new_time_vector   = first_time_point : new_time_interval : last_time_point;
+        
+        % Interpolate old data using shape-preserving piecewise cubic
+        % interpolation (each CTC should be in each vector)
+        display('-I- Interpolating CTC...');
+        new_CTC                     = interp1(time_vec_minutes, CTC2D', new_time_vector, 'cubic');
+        
+        % Update the old vectors and matrices
+        Sim_Struct.min_interval     = new_time_interval;
+        Sim_Struct.sec_interval     = new_time_interval * 60;
+        Sim_Struct.time_vec_minutes = new_time_vector;
+        
+        % Overwrite CTC2D
+        CTC2D                       = new_CTC';
+        
+    else
+        Sim_Strct.sec_interval      = TimeBetweenDCEVolsFinal;
+        Sim_Struct.min_interval     = Sim_Struct.sec_interval / 60;
+        time_vec_minutes            = Sim_Struct.min_interval * ( 0 : Sim_Struct.num_time_stamps - 1 );
+        Sim_Struct.time_vec_minutes = time_vec_minutes;
+    end
 
     % Use interpolated data
     Sim_Struct.num_time_stamps  = size(CTC2D,2);
