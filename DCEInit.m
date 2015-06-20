@@ -2,13 +2,16 @@
 Tmp=which('DCEInit');
 cd(Tmp(1:find(Tmp==filesep,1,'last')))
 
+max_processors_to_use = 6;
+
 % Enable parallel processing
 try 
     
-    num_processes = getenv('NUMBER_OF_PROCESSORS');
+    num_processes = round(getenv('NUMBER_OF_PROCESSORS') / 2);
+    
     % Maximum allowed processes are 12 in matlab 2012
-    if (str2double(num_processes) > 12)
-        num_processes = 12;
+    if (str2double(num_processes) > max_processors_to_use)
+        num_processes = max_processors_to_use;
     end
     
     myCluster = parcluster('local'); 
