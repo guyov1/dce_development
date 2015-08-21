@@ -157,34 +157,69 @@ elseif USE_TICHONOV
         
         AIF_delay_corrected = zeros(size(Ct));
         
-        parfor j=1:num_voxels
-            tic;
+        if Parallel_Real_Data_Est
             
-            [ ~, ~, ~, b_spline_result_2nd_deriv_no_Delay, ~, ~, ~, ~ ] =  ...
-                Regularization_Methods_Simulation( Sim_Ct_T, Ct(j,:)', Conv_Matrix, Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
-            
-            Est_IRF_no_Delay(j,:) = b_spline_result_2nd_deriv_no_Delay;
-            
-            % Estimate delay and correct h(t) estimation if it seems we have delay in AIF
-            if Correct_estimation_due_to_delay
-                [est_delay_by_AIF_correct(j), AIF_delay_corrected(j ,:), Est_IRF_with_Delay(j,:), ~] = ...
-                    AIF_Delay_Correct(Delay_Correct_Struct, Delay_Correct_Ht_Struct, Est_IRF_no_Delay(j,:), Ct(j,:)', Verbosity, iter_num, avg_num, idx_fig);
-            else
-                Est_IRF_with_Delay(j ,:)  = Est_IRF_no_Delay(j,:);
-                AIF_delay_corrected(j ,:) = AIF;
+            parfor j=1:num_voxels
+                tic;
+                
+                [ ~, ~, ~, b_spline_result_2nd_deriv_no_Delay, ~, ~, ~, ~ ] =  ...
+                    Regularization_Methods_Simulation( Sim_Ct_T, Ct(j,:)', Conv_Matrix, Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
+                
+                Est_IRF_no_Delay(j,:) = b_spline_result_2nd_deriv_no_Delay;
+                
+                % Estimate delay and correct h(t) estimation if it seems we have delay in AIF
+                if Correct_estimation_due_to_delay
+                    [est_delay_by_AIF_correct(j), AIF_delay_corrected(j ,:), Est_IRF_with_Delay(j,:), ~] = ...
+                        AIF_Delay_Correct(Delay_Correct_Struct, Delay_Correct_Ht_Struct, Est_IRF_no_Delay(j,:), Ct(j,:)', Verbosity, iter_num, avg_num, idx_fig);
+                else
+                    Est_IRF_with_Delay(j ,:)  = Est_IRF_no_Delay(j,:);
+                    AIF_delay_corrected(j ,:) = AIF;
+                end
+                
+                % if Use_Cyclic_Conv_4_ht_est
+                % Cyclic_Deconvolve( Sim_Struct, Verbosity, iter_num, avg_num, idx_fig )
+                
+                % Report after each 1000 voxels
+                if ( mod(j,1000) == 0 )
+                    display(sprintf('Finished Regularization_Methods_Simulation for 1000 voxels in %d minutes...', toc/60));
+                    remaining_voxels = num_voxels - j;
+                    fprintf('Number of remaining voxels: %d .\n',remaining_voxels);
+                end
+                
             end
             
-            % if Use_Cyclic_Conv_4_ht_est
-            % Cyclic_Deconvolve( Sim_Struct, Verbosity, iter_num, avg_num, idx_fig )
-            
-            % Report after each 1000 voxels
-            if ( mod(j,1000) == 0 )
-                display(sprintf('Finished Regularization_Methods_Simulation for 1000 voxels in %d minutes...', toc/60));
-                remaining_voxels = num_voxels - j;
-                fprintf('Number of remaining voxels: %d .\n',remaining_voxels);
+        else
+            for j=1:num_voxels
+                tic;
+                
+                [ ~, ~, ~, b_spline_result_2nd_deriv_no_Delay, ~, ~, ~, ~ ] =  ...
+                    Regularization_Methods_Simulation( Sim_Ct_T, Ct(j,:)', Conv_Matrix, Conv_Matrix_no_noise, time_vec_minutes, lambda_vec_larss, normalize, min_interval, B_mat, B_PCA, plot_L_Curve, idx_fig, filter_type, Derivative_Time_Devision, plot_flag, RealData_Flag );
+                
+                Est_IRF_no_Delay(j,:) = b_spline_result_2nd_deriv_no_Delay;
+                
+                % Estimate delay and correct h(t) estimation if it seems we have delay in AIF
+                if Correct_estimation_due_to_delay
+                    [est_delay_by_AIF_correct(j), AIF_delay_corrected(j ,:), Est_IRF_with_Delay(j,:), ~] = ...
+                        AIF_Delay_Correct(Delay_Correct_Struct, Delay_Correct_Ht_Struct, Est_IRF_no_Delay(j,:), Ct(j,:)', Verbosity, iter_num, avg_num, idx_fig);
+                else
+                    Est_IRF_with_Delay(j ,:)  = Est_IRF_no_Delay(j,:);
+                    AIF_delay_corrected(j ,:) = AIF;
+                end
+                
+                % if Use_Cyclic_Conv_4_ht_est
+                % Cyclic_Deconvolve( Sim_Struct, Verbosity, iter_num, avg_num, idx_fig )
+                
+                % Report after each 1000 voxels
+                if ( mod(j,1000) == 0 )
+                    display(sprintf('Finished Regularization_Methods_Simulation for 1000 voxels in %d minutes...', toc/60));
+                    remaining_voxels = num_voxels - j;
+                    fprintf('Number of remaining voxels: %d .\n',remaining_voxels);
+                end
+                
             end
             
         end
+        
         save(Mat_File_Ht, 'Est_IRF_with_Delay','Est_IRF_no_Delay', 'est_delay_by_AIF_correct', 'AIF_delay_corrected');
         
     end

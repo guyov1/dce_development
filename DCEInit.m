@@ -7,7 +7,7 @@ max_processors_to_use = 6;
 % Enable parallel processing
 try 
     
-    num_processes = round(getenv('NUMBER_OF_PROCESSORS') / 2);
+    num_processes = round(str2double(getenv('NUMBER_OF_PROCESSORS'))/2);
     
     % Maximum allowed processes are 12 in matlab 2012
     if (str2double(num_processes) > max_processors_to_use)

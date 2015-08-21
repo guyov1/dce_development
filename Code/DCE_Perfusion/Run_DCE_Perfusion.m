@@ -29,7 +29,9 @@ Sim_Struct.UpperBound_Larsson         = [Sim_Struct.Vb_max Sim_Struct.E_max  Sim
 Sim_Struct.init_Ve_guess              = 0.1;
 
 % Set parallel processing if needed
-Set_Parallel_Processing(Sim_Struct, Verbosity);
+if Sim_Struct.Parallel_Real_Data_Est
+    Set_Parallel_Processing(Sim_Struct, Verbosity);
+end
 
 % Set output directory for figures/report
 Output_directory      =  [PefusionOutput 'Run_Output' filesep];
