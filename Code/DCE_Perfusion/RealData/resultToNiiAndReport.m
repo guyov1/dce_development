@@ -377,7 +377,7 @@ MaskedBAT     = est_delay_by_AIF_correct_3D;
 MaskedBAT(CTC_4D_Mask_negative_By_Val) = 0;
 
 % Gilad's debug test to see the resulted image
-tmp = squeeze(est_delay_by_AIF_correct_3D(:,:,4)); tmp(CTC_4D_Mask_negative_By_Val(:,:,4))= NaN;figure;imagesc(rot90(tmp))
+%tmp = squeeze(est_delay_by_AIF_correct_3D(:,:,4)); tmp(CTC_4D_Mask_negative_By_Val(:,:,4))= NaN;figure;imagesc(rot90(tmp))
 
 % Output the map
 Raw2Nii(MaskedBAT, [Output_directory 'BAT_ACOPED_Noise_Masked.nii'],'float32',DCEFNs{1});
