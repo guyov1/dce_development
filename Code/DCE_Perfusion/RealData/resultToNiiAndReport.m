@@ -344,7 +344,7 @@ if Ignore_Delay_Model_Selection
     Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
     
 else % Include Delay
-    
+    %%
     NParams          = [0 1 2 2 3 3 4 4 5];
     num_maps         = length(NParams);
     size_3D          = size(RMS_Larss_no_Delay_3D);
@@ -460,6 +460,7 @@ else % Include Delay
     % Model Selection Map
     MeanFN=[Output_directory 'Model_Selection_Map.nii'];
     Raw2Nii(ChosenByAIC_3D,MeanFN,'float32',DCEFNs{1});
+    %%
 end
 
 
@@ -524,13 +525,62 @@ if (USE_DOUBLE_GAUSSIAN)
     
 end
 
+
+%% Create a mask according to CTC median value
+
+% Get the median of the entire volumes
+% mean_CTC                             = mean(abs(CTC_4D),4);
+% max_mean_CTC                         = max(mean_CTC(:));
+% med_mean_CTC                         = median(mean_CTC(:));
+median_CTC                           = median(abs(CTC_4D), 4);
+max_median_CTC                       = max(median_CTC(:));
+screen_val                           = 0.15 / 100; % Percent threshold
+
+%CTC_4D_Mask_By_Val                   = mean_CTC > screen_val*max_mean_CTC;
+CTC_4D_Mask_By_Val                   = median_CTC >= screen_val*max_median_CTC;
+CTC_4D_Mask_negative_By_Val          = median_CTC <  screen_val*max_median_CTC;
+
 % ------------------- Delay -----------------------------
-MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct.nii'];
+
+%% Screen noisy voxels
+% Get the median of the entire volumes
+% MdA           = median(abs(CTC_4D), 4);
+% The BAT map to be masked
+MaskedBAT     = est_delay_by_AIF_correct_3D;
+% Threshold for median value
+% MdA_threshold = 0.00007;
+% % Zero all valus below the threshold
+% MaskedBAT(MdA < MdA_threshold) = 0;
+
+% Zero all valus below the threshold
+MaskedBAT(CTC_4D_Mask_negative_By_Val) = 0;
+
+% Gilad's debug test to see the resulted image
+tmp = squeeze(est_delay_by_AIF_correct_3D(:,:,4)); tmp(CTC_4D_Mask_negative_By_Val(:,:,4))= NaN;figure;imagesc(rot90(tmp))
+
+% Output the map
+Raw2Nii(MaskedBAT, [Output_directory 'BAT_ACOPED_Noise_Masked.nii'],'float32',DCEFNs{1});
+
+% Same with model selection
+MaskedBAT_model_selection                    = zeros(size(est_delay_by_AIF_correct_3D));
+MaskedBAT_model_selection(ChosenByAIC_3D==9) = MaskedBAT (ChosenByAIC_3D==9);
+MaskedBAT_model_selection(ChosenByAIC_3D==7) = MaskedBAT (ChosenByAIC_3D==7);
+MaskedBAT_model_selection(ChosenByAIC_3D==5) = MaskedBAT (ChosenByAIC_3D==5);
+MaskedBAT_model_selection(ChosenByAIC_3D==3) = MaskedBAT (ChosenByAIC_3D==3);
+
+Raw2Nii(MaskedBAT_model_selection,[Output_directory 'BAT_ACOPED_Noise_Masked_Model_Selection.nii'],'float32',DCEFNs{1});
+
+%%
+
+MeanFN=[Output_directory 'BAT_ACOPED.nii'];
 Raw2Nii(est_delay_by_AIF_correct_3D,MeanFN,'float32',DCEFNs{1});
 
 if ~Ignore_Delay_Model_Selection
-    MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct_Model_Selection.nii'];
+    MeanFN=[Output_directory 'BAT_ACOPED_Model_Selection.nii'];
+    %%
+    MeanFN=[Output_directory 'BAT_ACOPED_Model_Selection_Test1.nii'];
     Raw2Nii(AIF_Delay_Model_Selected_3D,MeanFN,'float32',DCEFNs{1});
+    %%
 end
 
 MeanFN=[Output_directory 'Delay_by_Max_Val_Larsson_no_Delay.nii'];
@@ -689,6 +739,12 @@ Raw2Nii(log(RMS_Larss_no_Delay_3D),MeanFN,'float32',DCEFNs{1});
 MeanFN=[Output_directory 'Log_RMS_Larss_with_Delay_High_F.nii'];
 Raw2Nii(log(RMS_Larss_with_Delay_High_F_3D),MeanFN,'float32',DCEFNs{1});
 
+MeanFN=[Output_directory 'RMS_Larss_with_Delay_no_Ve_3D.nii'];
+Raw2Nii(log(RMS_Larss_with_Delay_no_Ve_3D),MeanFN,'float32',DCEFNs{1});
+
+MeanFN=[Output_directory 'RMS_Larss_no_Delay_no_Ve_3D.nii'];
+Raw2Nii(log(RMS_Larss_no_Delay_no_Ve_3D),MeanFN,'float32',DCEFNs{1});
+
 MeanFN=[Output_directory 'Log_RMS_Larss_no_Delay_High_F.nii'];
 Raw2Nii(log(RMS_Larss_no_Delay_High_F_3D),MeanFN,'float32',DCEFNs{1});
 
@@ -715,13 +771,6 @@ Raw2Nii(AIF_Larsson_4D,MeanFN,'float32',DCEFNs{1});
 MeanFN=[Output_directory 'CTC_per_voxel.nii'];
 Raw2Nii(CTC_4D,MeanFN,'float32',DCEFNs{1});
 
-
-mean_CTC           = mean(abs(CTC_4D),4);
-max_mean_CTC       = max(mean_CTC(:));
-med_mean_CTC       = median(mean_CTC(:));
-screen_val         = 0.0015; % 0.00125, 0.001, 0.0015
-CTC_4D_Mask_By_Val = mean_CTC > screen_val*max_mean_CTC;
-
 MeanFN=[Output_directory 'CTC_Mask_per_voxel_' num2str(screen_val*100) '.nii'];
 Raw2Nii(CTC_4D_Mask_By_Val,MeanFN,'float32',DCEFNs{1});
 
@@ -735,19 +784,19 @@ Raw2Nii(CTC_4D_Mask_By_Val_brain_exract,MeanFN,'float32',DCEFNs{1});
 est_delay_by_AIF_correct_no_noisy_3D = zeros(size(est_delay_by_AIF_correct_3D));
 est_delay_by_AIF_correct_no_noisy_3D(CTC_4D_Mask_By_Val > 0) = est_delay_by_AIF_correct_3D(CTC_4D_Mask_By_Val > 0);
 
-MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct_Noisy_' num2str(screen_val*100) '_Masked.nii'];
+MeanFN=[Output_directory 'BAT_ACOPED_Noisy_' num2str(screen_val*100) '_Masked.nii'];
 Raw2Nii(est_delay_by_AIF_correct_no_noisy_3D,MeanFN,'float32',DCEFNs{1});
 
 est_delay_by_AIF_correct_no_noisy_brain_extract_3D      = zeros(size(est_delay_by_AIF_correct_no_noisy_3D));
 est_delay_by_AIF_correct_no_noisy_brain_extract_3D(Brain_Mask_3D > 0) = est_delay_by_AIF_correct_no_noisy_3D(Brain_Mask_3D > 0);
 
-MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct_Noisy_' num2str(screen_val*100) '_Masked_Brain_Extract.nii'];
+MeanFN=[Output_directory 'BAT_ACOPED_Noisy_' num2str(screen_val*100) '_Masked_Brain_Extract.nii'];
 Raw2Nii(est_delay_by_AIF_correct_no_noisy_brain_extract_3D,MeanFN,'float32',DCEFNs{1});
 
 
 est_delay_by_AIF_correct_brain_extract_3D                    = zeros(size(est_delay_by_AIF_correct_3D));
 est_delay_by_AIF_correct_brain_extract_3D(Brain_Mask_3D > 0) = est_delay_by_AIF_correct_3D(Brain_Mask_3D > 0);
-MeanFN=[Output_directory 'Time_Delay_Novel_AIF_Correct_Brain_Extract.nii'];
+MeanFN=[Output_directory 'BAT_ACOPED_Brain_Extract.nii'];
 Raw2Nii(est_delay_by_AIF_correct_brain_extract_3D,MeanFN,'float32',DCEFNs{1});
 
 MeanFN=[Output_directory 'Est_IRF_Larsson_Filter.nii'];
