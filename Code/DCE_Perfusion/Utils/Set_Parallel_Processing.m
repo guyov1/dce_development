@@ -12,7 +12,11 @@ end
 % Enable parallel processing
 if ( ~Sim_Struct.FORCE_SERIAL || ~Sim_Struct.FORCE_MAIN_LOOP_SERIAL )
     try
-        num_processes = getenv('NUMBER_OF_PROCESSORS');
+        if (filesep == '/') % Unix
+            num_processes = feature('numcores');
+        else
+            num_processes = getenv('NUMBER_OF_PROCESSORS');
+        end
         % Maximum allowed processes are 12 in matlab 2012
         if (num_processes > 12)
             num_processes = 11;

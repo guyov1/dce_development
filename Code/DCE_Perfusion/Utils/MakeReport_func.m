@@ -6,7 +6,7 @@ if exist(LogFN,'file')
     load(LogFN);
     
     %TexFN = 'Run_Output\Report.tex';
-    TexFN = [Local_Path '\Report.tex'];
+    TexFN = [Local_Path filesep 'Report.tex'];
     fid=fopen(TexFN,'w');
     
     fprintf(fid,'\\documentclass[english]{article}\r\n');
@@ -80,7 +80,7 @@ else % Windows
         %PDFLatexFN = prog_path;
         PDFLatexFN='C:\Program Files (x86)\Portable Lyx 2\MiKTeX\texmf\miktex\bin\pdflatex.exe';
         
-        Tex_Path = [Local_Path '\Report.tex'];
+        Tex_Path = [Local_Path filesep 'Report.tex'];
         %system(['"' PDFLatexFN '"' ' "' TexFN '"']);
         %system(['"' PDFLatexFN '"' ' "' Tex_Path '"']);
         %system(['"' PDFLatexFN '"' ' "' Tex_Path '"'  ' "' '-output-directory=' Local_Path ' -aux-directory=' Local_Path '"' ]);
@@ -98,7 +98,7 @@ end
 % eval(['!' PDFFN])
 
 % Open the PDF file
-x = [Local_Path '\Report.pdf'];
+x = [Local_Path filesep 'Report.pdf'];
 x = ['"' x '"']; % Add commas to avoid path problems
 str = sprintf('start acrord32.exe %s', x);
 system(str);
