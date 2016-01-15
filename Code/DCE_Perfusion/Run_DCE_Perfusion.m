@@ -8,12 +8,12 @@ disp(datestr(datenum(c(1),c(2),c(3),c(4),c(5),c(6))));
 display('---------------------------------------------------');
 
 DCECoregP             = Subject_Path;
-WM_mask_absolute_path = [Subject_Path  '\RefT1_WM_830.nii'];
-Art_Mask              = [Subject_Path  '\InspectedRepVox.nii'];
-Vein_Mask             = [Subject_Path  '\Veins_Mask.nii'];
-After_CTC_mat         = [Subject_Path  '\AfterCTC.mat'];
-Brain_Extract_path    = [Subject_Path  '\Manual_BrainMask.nii'];
-Manual_AIF            = [Subject_Path  '\AIF.CSV'];
+WM_mask_absolute_path = [Subject_Path  filesep 'RefT1_WM_830.nii'];
+Art_Mask              = [Subject_Path  filesep 'InspectedRepVox.nii'];
+Vein_Mask             = [Subject_Path  filesep 'Veins_Mask.nii'];
+After_CTC_mat         = [Subject_Path  filesep 'AfterCTC.mat'];
+Brain_Extract_path    = [Subject_Path  filesep 'Manual_BrainMask.nii'];
+Manual_AIF            = [Subject_Path  filesep 'AIF.CSV'];
 
 % Brain Mask
 Brain_Mask_3D         = loadniidata(Brain_Extract_path);
