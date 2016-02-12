@@ -672,14 +672,17 @@ if ( exist(WM_mask_absolute_path,'file') )
     MeanFN = [Output_directory 'Flow_Larsson_Relative_WM_30_6_Brain_Extract.nii'];
     Raw2Nii(Normalized_F_Map_Brain_Extract,MeanFN,'float32',DCEFNs{1});
     
-    
-    rCBF                = loadniidata('\\fmri-t9\users\Moran\DCE\HTR_STROKE\01_REMEZ_YECHEZKEL\forCorral\dce\rCBF.nii');
-    rCBF_Brain_Extract                    = zeros(size(rCBF));
-    rCBF_Brain_Extract(Brain_Mask_3D > 0) = rCBF(Brain_Mask_3D > 0);
+    try
+        rCBF                                  = loadniidata([DCECoregP filesep 'rCBF.nii']);
+        rCBF_Brain_Extract                    = zeros(size(rCBF));
+        rCBF_Brain_Extract(Brain_Mask_3D > 0) = rCBF(Brain_Mask_3D > 0);
+    catch err
+        warning('-W- Problem reading rCBF map!');
+        warning(err.message);
+    end
     
     MeanFN = [Output_directory 'rCBF_Brain_Extract.nii'];
     Raw2Nii(rCBF_Brain_Extract,MeanFN,'float32',DCEFNs{1});
-    
     
     
     [ Normalized_F_Model_Select_Map ]         = Normalize_Output_Maps( F_Model_Selected_3D, WM_mask_3D_Flow , 30.6);
